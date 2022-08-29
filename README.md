@@ -28,44 +28,44 @@ Files with the following names will be recognized:
 
 On the left side of the window, you can decide which images will be plotted.
 
-<img src="gui_plot.png" width="30%"/>
+<img src="/pictures/gui_plot.png" width="30%"/>
 
 You can choose between the original and/or the fitted data. The following options are available for the plots:
 
 - *ΔA/λ*: chosen delay values will be plotted in a plot of the absorption change against the wavelenghts
 
-<img src="plot3.png" width="30%"/>
+<img src="/pictures/plot3.png" width="30%"/>
 
 - *t/ΔA*: chosen wavelength values will be plotted in a plot of the delays against the absorption change
 
-<img src="plot1.png" width="30%"/>
+<img src="/pictures/plot1.png" width="30%"/>
 
 - *2D heatmap*: the absorption change will be plotted as a heatmap of the delays against the wavelenghts
 
-<img src="plot2.png" width="50%"/>
+<img src="/pictures/plot2.png" width="50%"/>
 
 - *all in one*: this is an image of the three plots mentioned above combined
 
-<img src="3-in-1.png" width="70%"/>
+<img src="/pictures/3-in-1.png" width="70%"/>
 
 - *kinetics c/t*: the concentration of all species will be plotted against the delays
 
-<img src="kinetics.png" width="35%"/>
+<img src="/pictures/kinetics.png" width="35%"/>
 
 - *associated spectra (ΔA/λ)*: the DAS or SAS in a plot of the absorption change against the delays
 
-<img src="SAS.png" width="35%"/>
+<img src="/pictures/SAS.png" width="35%"/>
 
 - *residuals*: saves an 1D plot of the residuals (from SAS or DAS) against the delays and a heatmap of the residuals
 
-<img src="res_1D.png" width="35%"/>
-<img src="res_2D.png" width="50%"/>
+<img src="/pictures/res_1D.png" width="35%"/>
+<img src="/pictures/res_2D.png" width="50%"/>
 
 ### Settings for the plots
 
 If you wish to customize your plots, you can push the button *Next*.
 
-<img src="gui_plot_det.png" width="30%"/>
+<img src="/pictures/gui_plot_det.png" width="30%"/>
 
 There you will be offered with the following possibilities:
 
@@ -89,21 +89,21 @@ On the right side of the window, you can decide between the SAS and the DAS.
 
 If you choose DAS, you will be asked to set `0`-`a` fixed and `0`-`b` variable values for the decay constants `tau` separated by commatas. The fixed values won't be optimized, whereas the variable ones will be incuded in the fit. The total number of tau values `a`+`b` has to be at least `1`.
 
-<img src="gui_DAS.png" width="30%"/>
+<img src="/pictures/gui_DAS.png" width="30%"/>
 
 ### Settings for the Species Associated Spectra
 
 If you choose SAS, you can decide between the models `1`-`9`, explained below, or a custom matrix. The preset models will generate a matrix K corresponding to the kinetics of the reaction. The custom matrix corresponds to the matrix K in the equation dC/dt = K * C.
 
-<img src="models.png" width="50%"/>
+<img src="/pictures/models.png" width="50%"/>
 
 Also you will be asked to set `0` or `n` initial concentrations with `n` corresponding to the number of species separated by commatas. If you leave the panel empty, the concentration of specie `1` will be set to `1` and the concentration of the other species to `0`.
 
-<img src="gui_SAS_C.png" width="30%"/>
+<img src="/pictures/gui_SAS_C.png" width="30%"/>
 
 By clicking on *Next*, the next page will be opened, where you can specify the starting values for the lifetimes separated by commatas. If you choose a equilibrium model you have to fill in the forward and backward reaction lifetimes. For each lifetime you can define an upper and lower limit. They define the regions where the optimized lifetimes should be found. Should you not want to set a lower and/or upper limit for a certain lifetime, you can simply take `None` as an element of the list. 
 
-<img src="gui_SAS_k.png" width="30%"/>
+<img src="/pictures/gui_SAS_k.png" width="30%"/>
 
 ### Start the calculation
 
@@ -115,7 +115,7 @@ The general features of the GUI are also included in the script, although there 
 
 ### General settings
 
-<img src="skript_gen.png" width="50%"/>
+<img src="/pictures/skript_gen.png" width="50%"/>
 
 First, you have to specify the `path` to the folder with your files. Files with the following names will be recognized:
 > `folder/...lambda.txt` contains the wavelengths/nm,  
@@ -126,7 +126,7 @@ On the top of the script, the general settings will be found.
 
 There you can choose the `model`. The DAS will be calculated with a `0`, for the SAS you can set the models `1`-`9` (explained below) or `"custom"` for a custom matrix.
 
-<img src="models.png" width="50%"/>
+<img src="/pictures/models.png" width="50%"/>
 
 The next settings are `l_limits` and `d_limits` which are the `[lower, upper]` bound for the `lambda` and `delays` where the original data will be cut off. Should you not want to set a lower and/or upper bound, you can simply take `None` as an element of the list. 
 
@@ -144,11 +144,11 @@ For `fit` you can choose:
 
 - `1`: the fitted values will be printed in the console and the results will be saved
 
-<img src="skript_fit1.png" width="50%"/>
+<img src="/pictures/skript_fit1.png" width="50%"/>
 
 - `2`: this will show the *all-in-one* plot of the fitted data and the results will be saved
 
-<img src="3-in-1-SAS.png" width="70%"/>
+<img src="/pictures/3-in-1-SAS.png" width="70%"/>
 
 - `3`: with this option the values will be printed, the plot will be generated and the results will be saved
 
@@ -158,11 +158,11 @@ For `resi` you can choose:
 
 - `1`: the residuals will be plotted in a 1D plot of the residuals against the delays
 
-<img src="res_1D.png" width="30%"/>
+<img src="/pictures/res_1D.png" width="30%"/>
 
 - `2`: this will generate a 2D heatmap of the residuals
 
-<img src="res_2D.png" width="50%"/>
+<img src="/pictures/res_2D.png" width="50%"/>
 
 - `3`: with this option both images will be shown
 
@@ -172,7 +172,7 @@ This option only works, if fit is not 0.
 
 In the next section if you choose DAS, you have to set `0`-`a` fixed and `0`-`b` variable values for the decay constants `tau`. The fixed values won't be optimized, whereas the variable ones will be incuded in the fit. The total number of tau values `a`+`b` has to be at least `1`.
 
-<img src="skript_DAS.png" width="50%"/>
+<img src="/pictures/skript_DAS.png" width="50%"/>
 
 ### Settings for the Species Associated Spectra
 
@@ -184,13 +184,13 @@ For the initial concentrations `C_0`, you will be asked to set `0` or `n` values
 
 Should you choose the model `"custom"` you can specify the matrix `M` at the end. It can be a list or an array either handwritten or imported from a file.
 
-<img src="skript_SAS.png" width="50%"/>
+<img src="/pictures/skript_SAS.png" width="50%"/>
 
 ### Settings for the *all-in-one* plots
 
 In the next section you can configure the settings for the *all-in-one* plots.
 
-<img src="skript_plot.png" width="50%"/>
+<img src="/pictures/skript_plot.png" width="50%"/>
 
 You are offered the following possibilities:
 
@@ -216,15 +216,15 @@ The methdod you will want to use to generate custom images is `Controller.plotCu
 
 - `"1"`: chosen wavelength values will be plotted in a plot of the delays against the absorption change
 
-<img src="plot1.png" width="30%"/>
+<img src="/pictures/plot1.png" width="30%"/>
 
 - `"2"`: the absorption change will be plotted as a heatmap of the delays against the wavelenghts
 
-<img src="plot2.png" width="50%"/>
+<img src="/pictures/plot2.png" width="50%"/>
 
 - `"3"`: chosen delay values will be plotted in a plot of the absorption change against the wavelenghts
 
-<img src="plot3.png" width="30%"/>
+<img src="/pictures/plot3.png" width="30%"/>
 
 - `"1+2"`, `"1+3"`, `"2+3"`, `"1+2+3"`: this is an image of the two or three plots mentioned above combined
 
