@@ -5,7 +5,7 @@ This TA-Evaluation programm most importantly allows the optimizing of the decay 
 
 Also the original and the fitted data can be plotted in a beautiful 3-in-1-image as the one seen below.
 
-![](3-in-1-SAS.png)
+![](/pictures/3-in-1-SAS.png)
 
 You can decide between using the grafical user-interface *EfsTA.exe* or the script form *App.py* in Python. They both have the features for the evaluation (GLA -> DAS and GTA -> SAS), as well as the plotting. However the UI checks for the completeness of the user inputs, whereas the script allows more customization.
 
@@ -13,7 +13,7 @@ You can decide between using the grafical user-interface *EfsTA.exe* or the scri
 
 Upon starting the programm by double clicking the file a window in dark mode will pop up. On the top you can select your data, on the left you can choose the images you wish to plot and on the right you have to decide between SAS and DAS. The inputs you write will be cached for later use.
 
-<img src="gui_start.png" width="50%"/>
+<img src="/pictures/gui_start.png" width="50%"/>
 
 ### Select your folder
 
