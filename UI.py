@@ -81,22 +81,25 @@ class MainWindow(QMainWindow):
         
         ''' 2.3 SAS Stacked Widget '''
         
-        self.ui.SAS_done_eq.clicked.connect(self.checkEqIfEmpty)
-        self.ui.SAS_done_lin.clicked.connect(self.checkLinIfEmpty)
+        self.ui.SAS_next_eq.clicked.connect(self.checkEqIfEmpty)
+        self.ui.SAS_next_lin.clicked.connect(self.checkLinIfEmpty)
         self.ui.SAS_back_ks_eq.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_back_ks_lin.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_back_fin.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_next_model.clicked.connect(self.chooseModel)
         self.ui.SAS_modelSelect.currentIndexChanged.connect(lambda: self.ui.conc_stack.setCurrentIndex(self.getModel()))
-        self.ui.SAS_done_custom.clicked.connect(self.checkUserMatrixIfEmpty)
+        self.ui.SAS_next_custom.clicked.connect(self.checkUserMatrixIfEmpty)
         self.ui.SAS_back_custom.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_table_custom.clicked.connect(self.checkRandCIfEmpty)
+        self.ui.SAS_alg_done.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page6))
+        self.ui.SAS_alg_back.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         
         ''' 2.4 DAS Stacked Widget '''
         
-        self.ui.DAS_done.clicked.connect(self.checkTauIfEmpty)
-        self.ui.DAS_back.clicked.connect(lambda: self.ui.DAS_stack.setCurrentWidget(self.ui.DAS_page1))
-        
+        self.ui.DAS_next.clicked.connect(self.checkTauIfEmpty)
+        self.ui.DAS_back.clicked.connect(lambda: self.ui.DAS_stack.setCurrentWidget(self.ui.DAS_page2))
+        self.ui.DAS_alg_back.clicked.connect(lambda: self.ui.DAS_stack.setCurrentWidget(self.ui.DAS_page1))
+        self.ui.DAS_alg_done.clicked.connect(lambda: self.ui.DAS_stack.setCurrentWidget(self.ui.DAS_page3))
         ''' 2.5 Plot Stacked Widget '''
         
         self.ui.plot_next.clicked.connect(lambda: self.ui.Plot_stack.setCurrentWidget(self.ui.plot_page2))
@@ -287,63 +290,64 @@ class MainWindow(QMainWindow):
     def plottingDAS(self, Controller,ud,uw,db,wb):
     
         if self.ui.raw.isChecked() == True:
-            Controller.createOrigData(db,wb) 
+            Controller.createOrigData(db,wb, self.getDASOptMethod, None) 
             if self.ui.del_wave.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", add="3")
+                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "3", add="3")
             if self.ui.del_A.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1", add="1")
+                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "1", add="1")
             if self.ui.heat.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2", add="2")
+                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2", add="2")
             if self.ui.three_in_one.isChecked() == True:
-                Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour())
+                Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
         
         if self.ui.fitted.isChecked() == True:
-            tau_fit, spec, res, D_fit = Controller.calcDAS(self.getTaus(), db, wb)
+            tau_fit, spec, res, D_fit = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
             
             if self.ui.del_wave.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "3", add="3")
+                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "3", add="3")
             if self.ui.del_A.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "1", add="1")
+                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "1", add="1")
             if self.ui.heat.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "2", add="2")
+                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "2", add="2")
             if self.ui.three_in_one.isChecked() == True:
-                Controller.plot3FittedData(uw, ud, None, None, 0, self.getUserContour())
+                Controller.plot3FittedData(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier())
             if self.ui.residuals.isChecked() == True:
-                Controller.plot1Dresiduals(0)
-                Controller.plot2Dresiduals(None,None,0,self.getUserContour())
+                Controller.plot1Dresiduals(0, self.getMultiplier())
+                Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
             if self.ui.reconstructed.isChecked() == True:
-                Controller.plotDAS(0, tau_fit)
+                Controller.plotDAS(0, tau_fit, self.getMultiplier())
                 
     def plottingSAS(self,Controller,ud,uw,db,wb,model,K):
         
         if self.ui.raw.isChecked() == True:
-            self.Controller.createOrigData(db,wb)
+            self.Controller.createOrigData(db,wb, self.getSASOptMethod(), self.getSASIvpMethod())
             if self.ui.del_wave.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3")
+                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "3")
             if self.ui.del_A.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1")
+                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "1")
             if self.ui.heat.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2")
+                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2")
             if self.ui.three_in_one.isChecked() == True:
-                self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour())
+                self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
         
         if self.ui.fitted.isChecked() == True:
             K =  np.array(K)
-            tau_fit, spec, res, D_fit = self.Controller.calcSAS(K, [], db, wb, model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1])
+            tau_fit, spec, res, D_fit = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
+                    model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod())
             
             if self.ui.del_wave.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "3")
+                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
             if self.ui.del_A.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "1")
+                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "1")
             if self.ui.heat.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "2")
+                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "2")
             if self.ui.three_in_one.isChecked() == True:
-                self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour())
+                self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier())
             if self.ui.residuals.isChecked() == True:
-                self.Controller.plot1Dresiduals(model)
-                self.Controller.plot2Dresiduals(None, None, model, self.getUserContour())
+                self.Controller.plot1Dresiduals(model, self.getMultiplier())
+                self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
             if self.ui.reconstructed.isChecked() == True:
-                Controller.plotDAS(model, tau_fit)
+                Controller.plotDAS(model, tau_fit, self.getMultiplier())
             if self.ui.kinetics.isChecked() == True:
                 Controller.plotKinetics(model)
                 
@@ -465,6 +469,12 @@ class MainWindow(QMainWindow):
         else:
             return self.ui.contour.value()
         
+    def getMultiplier(self):
+        if self.ui.multiplier.text() == "":
+            return 1
+        else:
+            return float(self.ui.multiplier.text())
+        
     ''' 8.3 DAS details '''    
     
     def getTaus(self):
@@ -490,6 +500,9 @@ class MainWindow(QMainWindow):
             map_object = map(float, string_split)
             taus_fix_list = list(map_object)
             return [taus_fix_list, []]
+        
+        def getDASOptMethod(self):
+            return self.ui.DAS_optmethod.currentText()
         
     ''' 8.4 SAS details '''
         
@@ -584,6 +597,16 @@ class MainWindow(QMainWindow):
     def getUserMatrix(self):
         return self.cm
         
+    # def getUserConc(self, model):
+    #     if self.ui.conc_1.text() == "":
+    #         return []
+    #     else:
+    #         ctemp = self.ui.conc_1.text()
+    #         string_split = ctemp.split(',')
+    #         map_object = map(float, string_split)
+    #         C_0 = list(map_object)
+    #         return C_0
+    
     def getCustomConc(self):
         if self.ui.conc_10.text() == "":
             C_0 = np.zeros(self.ui.rows_and_columns.value()+1)
@@ -598,6 +621,15 @@ class MainWindow(QMainWindow):
             
     def getModel(self):
         return self.ui.SAS_modelSelect.currentIndex()
+    
+    def getSASOptMethod(self):
+        return self.ui.SAS_optmethod.currentText()
+    
+    def getSASIvpMethod(self):
+        return self.ui.SAS_ivpmethod.currentText()
+    
+        
+        ''' 8.5 SAS Popup '''
 
     def closePopup(self,popup):
         self.cm = popup.CM 
@@ -608,7 +640,7 @@ class MainWindow(QMainWindow):
         popup.show()
         popup.save.clicked.connect(lambda: self.closePopup(popup))
     
-    ''' 8.5 Other PopUps'''
+    ''' 8.6 Other PopUps '''
     
     def openPopUpResults(self, model, Controller):
         popup = ResultsWindow(model, Controller)

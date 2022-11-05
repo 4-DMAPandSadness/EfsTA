@@ -24,9 +24,9 @@ import time as timee
 """General Settings"""
 
 # The path that contains the data files.
-path = "data/Max"
+path = "/home/hackerman/Documents/fsTA Daten/c_PDI_c"
 # Choose model: 0 for DAS, 1-9 for SAS and "custom" for a custom SAS model.
-model = 0
+model = 1
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]
@@ -40,6 +40,11 @@ fit = 1
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0
+# Algorithm used for the minimazation of the tau values
+opt_method = 'Nelder-Mead'
+# Options:
+# 'Nelder-Mead' 'Powell' 'CG' 'BFGS' 'Newton-CG' 'L-BFGS-B' 'TNC' 'COBYLA'
+# SLSQP' 'trust-constr' 'dogleg' 'trust-ncg' 'trust-exact' 'trust-krylov'
 
 """Settings for the Decay Associated Spectra"""
 
@@ -61,7 +66,7 @@ tau_high_f = [3e2, 1e5, 9e5] # No bounds: tau_high = None
 tau_high_b = []
 # The inital concentrations. If empty all concentrations will be set to 0
 # except the first one which will be 1. Def.: []
-C_0 = []
+C_0 = [1,2,3]
 # A custom matrix for the SAS model which only works if model=="custom"
 # and the dimension of the matrix is (n,n).
 M = [[-0.5,  0  ,  0  , 0],
@@ -69,7 +74,10 @@ M = [[-0.5,  0  ,  0  , 0],
       [ 0.0,  11, -9e5, 0],
       [0,    0,  9e5, 0]]
 # M = np.genfromtxt("path")
-
+# Algorithm used for solving the ivp
+ivp_method = "BDF"
+# Options:
+# 'RK45' 'RK23' 'DOP853' 'Radau' 'BDF' 'LSODA'
 
 """Settings for the 3-in-1 plots of the original and the fitted data"""
 
@@ -106,7 +114,7 @@ if model == "custom":
 
 # Calculation and Plotting
 
-Controller.createOrigData(d_limits, l_limits)
+Controller.createOrigData(d_limits, l_limits, opt_method, ivp_method)
 
 tau_fit = None
 
@@ -114,7 +122,7 @@ if model == 0:
     start = timee.time()
     if fit != 0:
         tau_fit, spec, res, D_fit = Controller.calcDAS(
-            [tau_fix, tau_guess], d_limits, l_limits)
+            [tau_fix, tau_guess], d_limits, l_limits, opt_method)
     print("runtime DAS:", timee.time()-start)
     if fit == 1:
         print("Tau - DAS: ", tau_fit)
@@ -128,7 +136,7 @@ else:
     if fit != 0:
         tau_fit, spec, res, D_fit = Controller.calcSAS(tau, C_0, d_limits,
                                                        l_limits, model,
-                                                       tau_low, tau_high)
+                                                       tau_low, tau_high, opt_method, ivp_method)
     print("runtime SAS:", timee.time()-start)
     if fit == 1:
         if model != "custom":
@@ -179,4 +187,4 @@ add = "1+2"
 if fit != 0:
     if model != 0:
         Controller.plotKinetics(model)
-    Controller.plotDAS(model, tau_fit)
+    Controller.plotDAS(model, tau_fit, mul)

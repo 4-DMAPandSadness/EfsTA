@@ -3,6 +3,7 @@ import scipy.optimize as optimize
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
 import scipy.integrate as scint
+import scipy.linalg as scla
 from matplotlib.ticker import LogLocator
 from models import Models
 import os
@@ -14,7 +15,7 @@ class Model:
     # Initiation Of The Class
 
     def __init__(self, delays_filename, spectra_filename, lambdas_filename,
-                 d_limits, l_limits, model):
+                 d_limits, l_limits, model, opt_method, ivp_method):
         """
         Initiates an object of the class Model with preset data and model.
         Presets a list of colors for the 3-in-1 plot.
@@ -58,6 +59,8 @@ class Model:
             "tab:olive",
             "tab:cyan",
         ]
+        self.opt_method = opt_method
+        self.ivp_method = ivp_method
 
     def findBorders(self, limits, filename):
         """
@@ -199,7 +202,8 @@ class Model:
         E_tau = np.zeros(shape=(len(tau), len(self.delays)))
         for i in range(len(tau)):
             for j in range(len(self.delays)):
-                E_tau[i][j] = np.exp(-self.delays[j] / tau[i])
+                E_tau[i][j] = -self.delays[j] / tau[i]
+        E_tau = np.exp(E_tau)
         return E_tau
 
     # Species Associated Spectra
@@ -249,7 +253,7 @@ class Model:
         dCdt = self.K @ C_0
         return dCdt
 
-    def solveDiff(self, K):
+    def solveDiff(self, K, ivp_method):
         """
         Solves the differential equation of dCdt = K·C.
 
@@ -267,7 +271,7 @@ class Model:
         """
         self.K = K
         Z = scint.solve_ivp(self.calcdCdt, [min(self.delays), max(self.delays)],
-            self.C_0, t_eval=self.delays, method="BDF")
+            self.C_0, t_eval=self.delays, method=ivp_method)
         C_t = Z.get("y")
         return C_t
 
@@ -443,7 +447,7 @@ class Model:
            self.n = len(tau)
        else:  # SAS
            self.K, n = self.getK(tau)
-           M = self.solveDiff(self.K)
+           M = self.solveDiff(self.K, self.ivp_method)
        return M
 
     def calcD_tau(self, tau):
@@ -511,7 +515,7 @@ class Model:
         chiSquare = np.trace(chi)
         return chiSquare
 
-    def findTau_fit(self, tau_fix, tau_guess):
+    def findTau_fit(self, tau_fix, tau_guess, opt_method):
         """
         The function takes the variable tau_guess and optimizes their values,
         so that ChiSquare takes a minimal value. It outputs all tau whic
@@ -542,7 +546,7 @@ class Model:
             tau_sum = tau_fix
         else:
             res_fit = optimize.minimize(self.getChiSquare, tau_guess,
-                                      bounds=bounds, method='Nelder-Mead')
+                                      bounds=bounds, method=opt_method)
             if res_fit.get("success") is False:
                 print("Fitting unsuccesful!")
             self.tau_fit = res_fit.get("x")
@@ -845,8 +849,8 @@ class Model:
                   1.1 * max(y)])
         ax3.set_yticks(())
 
-    def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont,
-                   add="", mul=1):
+    def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont, mul,
+                   add=""):
         """
         Allows for the creation of 1-3 subplots in one plot.
 
