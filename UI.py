@@ -7,6 +7,9 @@ from PyQt5.QtGui import QPalette, QColor
 import Controller as Cont
 import numpy as np
 import os as os
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
     
 ''' 0.0 Additional classes'''
 
@@ -54,6 +57,35 @@ class ResultsWindow(QWidget):
         self.ui.textResults.clear()
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
+    
+class Canvas(FigureCanvasQTAgg):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes1 = fig.add_subplot(111)
+        self.axes2 = fig.add_subplot(121)
+        self.axes3 = fig.add_subplot(211)
+        self.axes4 = fig.add_subplot(221)
+        super(Canvas, self).__init__(fig)
+   
+class PlotViewer(QMainWindow):
+    def __init__(self):
+        super(QWidget,self).__init__()
+        self.ui = loadUi("plotviewer_gui.ui",self)
+        plots = Canvas(self, width=5, height=4, dpi=100)
+        plots.axes1.plot([0,1,2,3,4], [10,1,20,3,40])
+        plots.axes2.plot([0,1,2,3,4], [10,1,20,3,40])
+        plots.axes3.plot([0,1,2,3,4], [10,1,20,3,40])
+        plots.axes4.plot([0,1,2,3,4], [10,1,20,3,40])
+        toolbar = NavigationToolbar(plots, self)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(toolbar)
+        layout.addWidget(plots)
+
+        widget = QtWidgets.QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+        self.show()
         
     def onClose(self):
         self.close()
@@ -121,12 +153,10 @@ class MainWindow(QMainWindow):
     ''' 3.0 Initiation '''
     
     def startUp(self):
-        self.ui.conc_stack.setCurrentWidget(self.ui.conc_page1)
         self.ui.SASorDAS_stack.setCurrentWidget(self.ui.SASorDAS_page3)
         self.ui.Plot_stack.setCurrentWidget(self.ui.plot_page1)
         self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1)
         self.ui.DAS_stack.setCurrentWidget(self.ui.DAS_page1)
-        self.ui.conc_stack.setCurrentWidget(self.ui.conc_page1)
         self.ui.Theme.setChecked(False)
         self.changeTheme()
         self.ui.contour.setMinimum(0)
@@ -250,7 +280,8 @@ class MainWindow(QMainWindow):
     ''' 6.0 Starting or closing '''
 
     def onOK(self):
-        self.finalCheck()
+        self.openPlotViewer()
+        #self.finalCheck()
         
     def programmStart(self):
         self.Controller = Cont.Controller(self.getFolderPath())
@@ -597,24 +628,12 @@ class MainWindow(QMainWindow):
     def getUserMatrix(self):
         return self.cm
         
-    # def getUserConc(self, model):
-    #     if self.ui.conc_1.text() == "":
-    #         return []
-    #     else:
-    #         ctemp = self.ui.conc_1.text()
-    #         string_split = ctemp.split(',')
-    #         map_object = map(float, string_split)
-    #         C_0 = list(map_object)
-    #         return C_0
-    
-    def getCustomConc(self):
-        if self.ui.conc_10.text() == "":
-            C_0 = np.zeros(self.ui.rows_and_columns.value()+1)
-            C_0[0] = 1
-            return C_0
+    def getUserConc(self):
+        if self.ui.conc.text() == "":
+            return []
         else:
-            conc_10 = self.ui.conc_10.text()
-            string_split = conc_10.split(',')
+            ctemp = self.ui.conc.text()
+            string_split = ctemp.split(',')
             map_object = map(float, string_split)
             C_0 = list(map_object)
             return C_0
@@ -651,6 +670,11 @@ class MainWindow(QMainWindow):
         popup = FailSafeWindow(msg)
         popup.show()
         popup.closeFailsafe.clicked.connect(lambda: popup.close())
+
+    def openPlotViewer(self):
+        popup = PlotViewer()
+        popup.show()
+        popup.closePlotViewer.clicked.connect(lambda: popup.close())
 
     ''' 9.0 Cosmetics '''
         
@@ -829,26 +853,7 @@ class MainWindow(QMainWindow):
             C_0 = str(self.getPickle("C_0")[0])
             C_0 = C_0.replace("[","")
             C_0 = C_0.replace("]","")
-            if self.getPickle("model")[0] == 1:
-                self.ui.conc_1.setText(C_0)
-            if self.getPickle("model")[0] == 2:
-                self.ui.conc_2.setText(C_0)
-            if self.getPickle("model")[0]== 3:
-                self.ui.conc_3.setText(C_0)
-            if self.getPickle("model")[0] == 4:
-                self.ui.conc_4.setText(C_0)
-            if self.getPickle("model")[0] == 5:
-                self.ui.conc_5.setText(C_0)
-            if self.getPickle("model")[0] == 6:
-                self.ui.conc_6.setText(C_0)
-            if self.getPickle("model")[0] == 7:
-                self.ui.conc_7.setText(C_0)
-            if self.getPickle("model")[0] == 8:
-                self.ui.conc_8.setText(C_0)
-            if self.getPickle("model")[0] == 9:
-                self.ui.conc_9.setText(C_0)
-            if self.getPickle("model")[0] == 10:
-                self.ui.conc_10.setText(C_0)
+            self.ui.conc.setText(C_0)
                 
         if self.getPickle("cont")[0] != None:
             self.ui.contour.setValue(self.getPickle("cont")[0])
@@ -872,16 +877,7 @@ class MainWindow(QMainWindow):
         self.ui.ks_forwards_lin.setText("")
         self.ui.ks_forwards_lin_high.setText("")
         self.ui.ks_forwards_lin_low.setText("")
-        self.ui.conc_1.setText("")
-        self.ui.conc_2.setText("")
-        self.ui.conc_3.setText("")
-        self.ui.conc_4.setText("")
-        self.ui.conc_5.setText("")
-        self.ui.conc_6.setText("")
-        self.ui.conc_7.setText("")
-        self.ui.conc_8.setText("")
-        self.ui.conc_9.setText("")
-        self.ui.conc_10.setText("")
+        self.ui.conc.setText("")
         if hasattr(self, 'cm') == True:
             self.cm = None
         self.ui.rows_and_columns.setValue(0)

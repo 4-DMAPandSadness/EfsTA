@@ -26,17 +26,17 @@ import time as timee
 # The path that contains the data files.
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_c"
 # Choose model: 0 for DAS, 1-9 for SAS and "custom" for a custom SAS model.
-model = 1
+model = 0
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]
 d_limits = [0.2, 3400]
 # Plotting the data: 0 doesn't show the plot of the original data,
 # 3 shows the 3-in-1 plot or less subplots if wave and time are empty.
-orig = 0
+orig = 3
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
-fit = 1
+fit = 0
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0
@@ -169,7 +169,7 @@ if fit != 0:
         
 if orig == 3:
     Controller.plot3OrigData(
-        wave, time, v_min, v_max, d_limits, l_limits, cont, mul)
+        wave, time, v_min, v_max, d_limits, l_limits, cont, mul, opt_method, ivp_method)
 
 """Custom plots"""
 # If you want to create custom plots you can write the code here below.

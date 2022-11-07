@@ -82,7 +82,7 @@ class Controller():
         tau_fix = tau[0]
         tau_guess = tau[1]
         self.DAS = Model(self.delays_filename, self.spectra_filename,
-                         self.lambdas_filename, d_limits, l_limits, 0)
+                         self.lambdas_filename, d_limits, l_limits, 0, opt_method, None)
         self.DAS.M = self.DAS.getM(np.concatenate((tau_fix, tau_guess)))
         tau_fit = self.DAS.findTau_fit(tau_fix, tau_guess, opt_method)
         D_fit = self.DAS.calcD_fit()

@@ -41,7 +41,7 @@
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="SAS_page1">
              <layout class="QGridLayout" name="gridLayout_6">
@@ -107,152 +107,15 @@
                 <property name="title">
                  <string>Concentrations</string>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_25">
+                <layout class="QGridLayout" name="gridLayout_15">
                  <item row="0" column="0">
-                  <widget class="QStackedWidget" name="conc_stack">
-                   <property name="currentIndex">
-                    <number>0</number>
+                  <widget class="QLineEdit" name="conc">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
-                   <widget class="QWidget" name="conc_page1">
-                    <layout class="QGridLayout" name="gridLayout_15">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_1">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 1</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page2">
-                    <layout class="QGridLayout" name="gridLayout_16">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_2">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 2</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page3">
-                    <layout class="QGridLayout" name="gridLayout_17">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_3">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 3</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page4">
-                    <layout class="QGridLayout" name="gridLayout_18">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_4">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 4</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page5">
-                    <layout class="QGridLayout" name="gridLayout_19">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_5">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0,0].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 5</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page6">
-                    <layout class="QGridLayout" name="gridLayout_20">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_6">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0,0,0].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 6</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page7">
-                    <layout class="QGridLayout" name="gridLayout_21">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_7">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0,0,0].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 7</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page8">
-                    <layout class="QGridLayout" name="gridLayout_22">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_8">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0,0,0,0].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 8</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page9">
-                    <layout class="QGridLayout" name="gridLayout_23">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_9">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting concentrations for Model 9</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                   <widget class="QWidget" name="conc_page10">
-                    <layout class="QGridLayout" name="gridLayout_24">
-                     <item row="0" column="0">
-                      <widget class="QLineEdit" name="conc_10">
-                       <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                       <property name="placeholderText">
-                        <string>Starting conc. for the Custom Model </string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
+                   <property name="placeholderText">
+                    <string>Custom starting concentrations for each species.</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>

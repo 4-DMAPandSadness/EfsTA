@@ -771,7 +771,7 @@ class Model:
             norm=col.TwoSlopeNorm(vcenter=0, vmin=v_min, vmax=v_max),
             shading="auto",
         )
-        cb = plt.colorbar(pcm)  # warum nicht für ax2??
+        cb = plt.colorbar(pcm)
         cb.set_ticks([v_min, 0, v_max])
         contours = ax2.contour(
             self.lambdas,
@@ -888,7 +888,7 @@ class Model:
             v_max = self.setv_max(spectra, mul)
         wave_index = self.findNearestIndex(wave, self.lambdas)
         time_index = self.findNearestIndex(time, self.delays)
-        space = 0
+        space = 0.2 #if 0 overlap between colorbar and y-label of plot3
 
         if custom == "1":
             width = 2.5
