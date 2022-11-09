@@ -14,7 +14,7 @@ import time as timee
 
 # Model 5: A -> B -> C -> D; B -> D
 # Model 6: A -> B -> C -> D -> E; B -> E
-# Model 7: A -> sB -> C -> D -> E; C -> E
+# Model 7: A -> B -> C -> D -> E; C -> E
 # Model 8: A -> B -> C -> D -> E -> F; C -> F
 # Model 9: A -> B; A -> D
 
@@ -33,14 +33,16 @@ l_limits = [350, 750]
 d_limits = [0.2, 3400]
 # Plotting the data: 0 doesn't show the plot of the original data,
 # 3 shows the 3-in-1 plot or less subplots if wave and time are empty.
-orig = 3
+# 4 shows a 3D contour plot
+orig = 4
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
+# 4 shows the fitted 3D contour plot
 fit = 0
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0
-# Algorithm used for the minimazation of the tau values
+# Algorithm used for the minimization of the tau values
 opt_method = 'Nelder-Mead'
 # Options:
 # 'Nelder-Mead' 'Powell' 'CG' 'BFGS' 'Newton-CG' 'L-BFGS-B' 'TNC' 'COBYLA'
@@ -91,7 +93,7 @@ v_min = None
 v_max = None
 # Determines how much contour lines will be shown in the 2D plot.
 # High values will show more lines.
-cont = 20
+cont = 100
 # The value by which the absorption data must be multiplied to get ΔA·10³.
 mul = 1000
 
@@ -168,8 +170,11 @@ if fit != 0:
         Controller.plot2Dresiduals(None, None, model, cont, mul)
         
 if orig == 3:
-    Controller.plot3OrigData(
-        wave, time, v_min, v_max, d_limits, l_limits, cont, mul, opt_method, ivp_method)
+    Controller.plot3OrigData(wave, time, v_min, v_max, d_limits, l_limits, 
+                             cont, mul, opt_method, ivp_method)
+if orig ==4:
+    Controller.plot3DOrigData(v_min, v_max, d_limits, l_limits, 
+                             mul, opt_method, ivp_method)
 
 """Custom plots"""
 # If you want to create custom plots you can write the code here below.

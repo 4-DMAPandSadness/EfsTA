@@ -111,7 +111,7 @@
                  <item row="0" column="0">
                   <widget class="QLineEdit" name="conc">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;p&gt;For the specific models:&lt;/p&gt;&lt;p&gt;Model 5: four concentrations needed.&lt;/p&gt;&lt;p&gt;Model 6: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 7: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 8: six concentrations needed.&lt;/p&gt;&lt;p&gt;Model 9: three concentrations needed.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="placeholderText">
                     <string>Custom starting concentrations for each species.</string>
@@ -801,7 +801,7 @@ p, li { white-space: pre-wrap; }
       <item row="0" column="0" rowspan="2">
        <widget class="QStackedWidget" name="Plot_stack">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="plot_page1">
          <layout class="QGridLayout" name="gridLayout_32">
@@ -814,6 +814,29 @@ p, li { white-space: pre-wrap; }
              <string>Plot choices</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="kinetics">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the concentration of each species against the delays.&lt;/p&gt;&lt;p&gt;Only enabled for if SAS is selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>kinetics c / t</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="del_wave">
+               <property name="toolTip">
+                <string>Plots the change of absorbtion against the wavelengths.</string>
+               </property>
+               <property name="text">
+                <string>ΔA / λ</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0" colspan="2">
               <widget class="QFrame" name="frame">
                <property name="frameShape">
@@ -852,26 +875,13 @@ p, li { white-space: pre-wrap; }
                </layout>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="del_wave">
+             <item row="8" column="0" colspan="2">
+              <widget class="QPushButton" name="plot_next">
                <property name="toolTip">
-                <string>Plots the change of absorbtion against the wavelengths.</string>
+                <string>Moves to the next page, where additional plot details can be set.</string>
                </property>
                <property name="text">
-                <string>ΔA / λ</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="kinetics">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the concentration of each species against the delays.&lt;/p&gt;&lt;p&gt;Only enabled for if SAS is selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>kinetics c / t</string>
+                <string>Next</string>
                </property>
               </widget>
              </item>
@@ -892,6 +902,19 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>associated spectra (ΔA / λ)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="three_in_one">
+               <property name="toolTip">
+                <string>Plots all three plots above in a single image.</string>
+               </property>
+               <property name="text">
+                <string>all in one</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -918,26 +941,10 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
-              <widget class="QCheckBox" name="three_in_one">
-               <property name="toolTip">
-                <string>Plots all three plots above in a single image.</string>
-               </property>
+             <item row="5" column="1">
+              <widget class="QCheckBox" name="threeD_contour">
                <property name="text">
-                <string>all in one</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0" colspan="2">
-              <widget class="QPushButton" name="plot_next">
-               <property name="toolTip">
-                <string>Moves to the next page, where additional plot details can be set.</string>
-               </property>
-               <property name="text">
-                <string>Next</string>
+                <string>3D contour</string>
                </property>
               </widget>
              </item>

@@ -45,6 +45,9 @@ class FailSafeWindow(QWidget):
         self.ui.closeFailsafe.clicked.connect(self.close)
         self.ui.textFailsafe.setText(msg)
         self.setWindowModality(Qt.ApplicationModal)
+        
+    def onClose(self):
+        self.close()
 
 class ResultsWindow(QWidget):
     def __init__(self, model, Controller):
@@ -52,50 +55,41 @@ class ResultsWindow(QWidget):
         self.ui = loadUi("results_gui.ui",self)
         self.ui.closeResults.clicked.connect(self.onClose)
         self.setText(model, Controller)
+    
+    def onClose(self):
+        self.close()
         
     def setText(self, model, Controller):
         self.ui.textResults.clear()
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
-    
-class Canvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes1 = fig.add_subplot(111)
-        self.axes2 = fig.add_subplot(121)
-        self.axes3 = fig.add_subplot(211)
-        self.axes4 = fig.add_subplot(221)
-        super(Canvas, self).__init__(fig)
    
 class PlotViewer(QMainWindow):
-    def __init__(self):
-        super(QWidget,self).__init__()
+    def __init__(self, fig):
+        super(QMainWindow,self).__init__()
         self.ui = loadUi("plotviewer_gui.ui",self)
-        plots = Canvas(self, width=5, height=4, dpi=100)
-        plots.axes1.plot([0,1,2,3,4], [10,1,20,3,40])
-        plots.axes2.plot([0,1,2,3,4], [10,1,20,3,40])
-        plots.axes3.plot([0,1,2,3,4], [10,1,20,3,40])
-        plots.axes4.plot([0,1,2,3,4], [10,1,20,3,40])
-        toolbar = NavigationToolbar(plots, self)
-
+        plot = FigureCanvasQTAgg(fig)
+        toolbar = NavigationToolbar(plot, self)
+        
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(toolbar)
-        layout.addWidget(plots)
+        layout.addWidget(plot)
+        layout.addWidget(self.ui.closePlotViewer)
 
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        self.show()
         
-    def onClose(self):
-        self.close()
+    def draw(self):
+        pass
+        
 
 class MainWindow(QMainWindow):
     def __init__(self):
         
         ''' 1.0 MainWindow initiation'''
         
-        super(MainWindow,self).__init__()
+        super(QMainWindow,self).__init__()
         self.ui = loadUi("gui.ui",self)
         self.setWindowTitle("EfsTA")
         self.startUp()
@@ -245,7 +239,8 @@ class MainWindow(QMainWindow):
                 self.ui.three_in_one.isChecked() == False and
                 self.ui.residuals.isChecked() == False and 
                 self.ui.kinetics.isChecked() == False and 
-                self.ui.reconstructed.isChecked() == False):
+                self.ui.reconstructed.isChecked() == False and
+                self.ui.threeD_contour.isChecked() == False):
                 self.openFailSafe("Please choose which data to plot.")
                 return True
     
@@ -280,8 +275,7 @@ class MainWindow(QMainWindow):
     ''' 6.0 Starting or closing '''
 
     def onOK(self):
-        self.openPlotViewer()
-        #self.finalCheck()
+        self.finalCheck()
         
     def programmStart(self):
         self.Controller = Cont.Controller(self.getFolderPath())
@@ -321,7 +315,7 @@ class MainWindow(QMainWindow):
     def plottingDAS(self, Controller,ud,uw,db,wb):
     
         if self.ui.raw.isChecked() == True:
-            Controller.createOrigData(db,wb, self.getDASOptMethod, None) 
+            Controller.createOrigData(db,wb, self.getDASOptMethod(), None) 
             if self.ui.del_wave.isChecked() == True:
                 Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "3", add="3")
             if self.ui.del_A.isChecked() == True:
@@ -330,6 +324,9 @@ class MainWindow(QMainWindow):
                 Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2", add="2")
             if self.ui.three_in_one.isChecked() == True:
                 Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+            if self.ui.threeD_contour.isChecked() == True:
+                x = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.openPlotViewer(x)
         
         if self.ui.fitted.isChecked() == True:
             tau_fit, spec, res, D_fit = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
@@ -359,7 +356,7 @@ class MainWindow(QMainWindow):
             if self.ui.heat.isChecked() == True:
                 self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2")
             if self.ui.three_in_one.isChecked() == True:
-                self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
         
         if self.ui.fitted.isChecked() == True:
             K =  np.array(K)
@@ -532,8 +529,8 @@ class MainWindow(QMainWindow):
             taus_fix_list = list(map_object)
             return [taus_fix_list, []]
         
-        def getDASOptMethod(self):
-            return self.ui.DAS_optmethod.currentText()
+    def getDASOptMethod(self):
+        return self.ui.DAS_optmethod.currentText()
         
     ''' 8.4 SAS details '''
         
@@ -671,8 +668,8 @@ class MainWindow(QMainWindow):
         popup.show()
         popup.closeFailsafe.clicked.connect(lambda: popup.close())
 
-    def openPlotViewer(self):
-        popup = PlotViewer()
+    def openPlotViewer(self,fig):
+        popup = PlotViewer(fig)
         popup.show()
         popup.closePlotViewer.clicked.connect(lambda: popup.close())
 

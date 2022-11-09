@@ -197,8 +197,39 @@ class Controller():
                          opt_method, ivp_method)
         origData.plotCustom(origData.spectra, wave, time,
                             v_min, v_max, custom, cont, mul)
+        
+    def plot3DOrigData(self, v_min, v_max, d_limits, l_limits,
+                      mul, opt_method, ivp_method):
+        """
+        Allows the plotting of the original data in a 3D contour plot.
 
-    def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
+        Parameters
+        ----------
+        v_min : float
+            Lower limit for the colorbar.
+        v_max : float
+            Upper limit for the colorbar.
+        d_limits : list with two int/float elements
+            Lower and upper limits for the delay values.
+        l_limits : list with two int/float elements
+            Lower and upper limits for the lambda values.
+        cont : float
+            Determines how much contour lines will be shown in the 2D plot.
+            High values will show more lines.
+        mul : float
+            The value by which data will be multiplied.
+
+        Returns
+        -------
+        None.
+
+        """
+        origData = Model(self.delays_filename, self.spectra_filename,
+                         self.lambdas_filename, d_limits, l_limits, None, 
+                         opt_method, ivp_method)
+        return origData.plot3D(origData.spectra, v_min, v_max, mul)
+    
+    def plot3FittedData(self, wave, time, v_min, v_max, model, mul):
         """
         Allows the plotting of the fitted data in a 3-in-1 plot.
         If the lists wave and/or time are empty the corresponding subplots
@@ -241,10 +272,18 @@ class Controller():
             custom = "1+2+3"
         if model == 0:
             self.DAS.plotCustom(self.DAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, add="_GLA")
+                                v_min, v_max, custom, mul, add="_GLA")
         else:
             self.SAS.plotCustom(self.SAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, add="_GTA")
+                                v_min, v_max, custom, mul, add="_GTA")
+            
+    def plot3DFittedData(self,v_min, v_max, model, mul):
+        
+        if model == 0:
+            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, add="_GLA")
+        else:
+            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, add="_GTA")
+        
             
     def createOrigData(self, d_limits, l_limits, opt_method, ivp_method):
         """

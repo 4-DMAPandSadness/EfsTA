@@ -2,12 +2,16 @@ import numpy as np
 import scipy.optimize as optimize
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
+import matplotlib as mpl
 import scipy.integrate as scint
 import scipy.linalg as scla
 from matplotlib.ticker import LogLocator
 from models import Models
 import os
 import math
+import mpl_toolkits.mplot3d
+
+mpl.rcParams['interactive'] == True
 
 
 class Model:
@@ -848,6 +852,51 @@ class Model:
         ax3.axis([min(self.lambdas), max(self.lambdas), 1.1 * mini,
                   1.1 * max(y)])
         ax3.set_yticks(())
+        
+    def plot3D(self, spectra,v_min, v_max, mul, add=""):
+        """
+        Allows for the creation of a 3D contour plot. Just because I can.        
+
+        Parameters
+        ----------
+        spectra : np.array
+            Contains the values of the spectra.
+        v_min : float
+            Lower limit for the colorbar.
+        v_max : float
+            Upper limit for the colorbar.
+        cont : float
+            Determines how much contour lines will be shown in the 2D plot.
+            High values will show more lines.
+        add : string, optional
+            Addition to the title of the subplot. The default is "".
+        mul : float
+            The value by which the spectra will be multiplied.
+            The default is 1.
+
+        Returns
+        -------
+        None.
+
+        """
+        if v_min is None:
+            v_min = self.setv_min(spectra, mul)
+        if v_max is None:
+            v_max = self.setv_max(spectra, mul)
+        X, Y = np.meshgrid(self.lambdas, self.delays)
+        Z = spectra.T*mul
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
+        ax.contour3D(X,Y,Z,80,cmap='seismic')
+        #ax.title((self.name + add).replace("_", " "))
+        ax.set_xlabel('wavelength / nm')
+        ax.set_ylabel('delay / ps')
+        #ax.set_yticks(1000)
+        ax.set_zlabel("$\Delta A \cdot " + str(mul) + "$")
+        ax.view_init(20,250)
+        plt.savefig(self.path + self.name + add + ".png", dpi=300,
+            bbox_inches="tight")
+        return fig
 
     def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont, mul,
                    add=""):
@@ -938,7 +987,7 @@ class Model:
             ax2, cb = self.plot2(grid, wave, time, v_min,
                                  v_max, spectra*mul, add, cont)
             if w3 == 0:
-                cb.set_label("$\Delta A \cdot 10^3$")
+                cb.set_label("$\Delta A \cdot " + str(mul) + "$")
             if w2 == 4.7:
                 ax2.yaxis.set_major_locator(LogLocator())
                 ax2.set_ylabel("delay / ps")

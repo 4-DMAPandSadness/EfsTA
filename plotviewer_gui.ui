@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PlotViewer</class>
- <widget class="QWidget" name="PlotViewer">
+ <widget class="QMainWindow" name="PlotViewer">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>868</width>
-    <height>618</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>PlotViewer</string>
   </property>
-  <widget class="QPushButton" name="closePlotViewer">
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="closePlotViewer">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>520</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Close</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>530</y>
-     <width>80</width>
-     <height>23</height>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Close</string>
-   </property>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
