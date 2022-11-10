@@ -64,32 +64,37 @@ class ResultsWindow(QWidget):
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
    
-class PlotViewer(QMainWindow):
+class PlotViewer(QWidget):
     def __init__(self, fig):
-        super(QMainWindow,self).__init__()
+        super(PlotViewer,self).__init__()
         self.ui = loadUi("plotviewer_gui.ui",self)
-        plot = FigureCanvasQTAgg(fig)
-        toolbar = NavigationToolbar(plot, self)
+        self.fig = fig
         
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(toolbar)
-        layout.addWidget(plot)
-        layout.addWidget(self.ui.closePlotViewer)
+        #for testing
+        self.test = Figure(figsize=(2,2), dpi=100)
+        self.axes = self.test.add_subplot(111)
+        self.axes.plot([0,1,2,3,4], [10,1,20,3,40])
+        
+        
+        self.plot = FigureCanvasQTAgg(self.fig)
+        self.toolbar = NavigationToolbar(self.plot, self)
 
-        widget = QtWidgets.QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-        
-    def draw(self):
-        pass
-        
+        self.ui.verticalLayout.addWidget(self.toolbar)
+        self.ui.verticalLayout.addWidget(self.plot)
+        self.ui.verticalLayout.addWidget(self.ui.closePlotViewer)
+
+
+'''
+The problem seems to be, that an already fully drawn figure is added. Testing 
+the problem with a locally new created figure worked just fine.
+'''
 
 class MainWindow(QMainWindow):
     def __init__(self):
         
         ''' 1.0 MainWindow initiation'''
         
-        super(QMainWindow,self).__init__()
+        super(MainWindow,self).__init__()
         self.ui = loadUi("gui.ui",self)
         self.setWindowTitle("EfsTA")
         self.startUp()

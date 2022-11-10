@@ -885,13 +885,12 @@ class Model:
             v_max = self.setv_max(spectra, mul)
         X, Y = np.meshgrid(self.lambdas, self.delays)
         Z = spectra.T*mul
-        fig = plt.figure()
+        fig = plt.figure(figsize=(10,10), dpi=(300))
         ax = plt.axes(projection='3d')
         ax.contour3D(X,Y,Z,80,cmap='seismic')
-        #ax.title((self.name + add).replace("_", " "))
+        ax.set_title((self.name + add).replace("_", " "))
         ax.set_xlabel('wavelength / nm')
         ax.set_ylabel('delay / ps')
-        #ax.set_yticks(1000)
         ax.set_zlabel("$\Delta A \cdot " + str(mul) + "$")
         ax.view_init(20,250)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
