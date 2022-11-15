@@ -23,6 +23,9 @@ import time as timee
 
 """General Settings"""
 
+# for an interactive plot overlay type "%matplotlib qt5" into the console
+# to revert this type "%matplotlib inline"
+
 # The path that contains the data files.
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_c"
 # Choose model: 0 for DAS, 1-9 for SAS and "custom" for a custom SAS model.
@@ -34,7 +37,7 @@ d_limits = [0.2, 3400]
 # Plotting the data: 0 doesn't show the plot of the original data,
 # 3 shows the 3-in-1 plot or less subplots if wave and time are empty.
 # 4 shows a 3D contour plot
-orig = 4
+orig = 3
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
 # 4 shows the fitted 3D contour plot
@@ -93,7 +96,7 @@ v_min = None
 v_max = None
 # Determines how much contour lines will be shown in the 2D plot.
 # High values will show more lines.
-cont = 100
+cont = 25
 # The value by which the absorption data must be multiplied to get ΔA·10³.
 mul = 1000
 

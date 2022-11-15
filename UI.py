@@ -69,25 +69,16 @@ class PlotViewer(QWidget):
         super(PlotViewer,self).__init__()
         self.ui = loadUi("plotviewer_gui.ui",self)
         self.fig = fig
-        
-        #for testing
-        self.test = Figure(figsize=(2,2), dpi=100)
-        self.axes = self.test.add_subplot(111)
-        self.axes.plot([0,1,2,3,4], [10,1,20,3,40])
-        
-        
+        # creating canvas and coolbar
         self.plot = FigureCanvasQTAgg(self.fig)
         self.toolbar = NavigationToolbar(self.plot, self)
-
+        # adding canvas, toolbar and close button to layout
         self.ui.verticalLayout.addWidget(self.toolbar)
         self.ui.verticalLayout.addWidget(self.plot)
         self.ui.verticalLayout.addWidget(self.ui.closePlotViewer)
-
-
-'''
-The problem seems to be, that an already fully drawn figure is added. Testing 
-the problem with a locally new created figure worked just fine.
-'''
+        
+        if self.isVisible() == False:
+            self.close()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -322,67 +313,98 @@ class MainWindow(QMainWindow):
         if self.ui.raw.isChecked() == True:
             Controller.createOrigData(db,wb, self.getDASOptMethod(), None) 
             if self.ui.del_wave.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "3", add="3")
+                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier(), add="3")
+                self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "1", add="1")
+                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1", self.getMultiplier(), add="1")
+                self.openPlotViewer(plot)
             if self.ui.heat.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2", add="2")
+                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2", self.getMultiplier(), add="2")
+                self.openPlotViewer(plot)
             if self.ui.three_in_one.isChecked() == True:
-                Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                plot = Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.openPlotViewer(plot)
             if self.ui.threeD_contour.isChecked() == True:
-                x = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
-                self.openPlotViewer(x)
+                plot = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.openPlotViewer(plot)
         
         if self.ui.fitted.isChecked() == True:
             tau_fit, spec, res, D_fit = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
             
             if self.ui.del_wave.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "3", add="3")
+                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
+                self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "1", add="1")
+                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "1", self.getMultiplier(), add="1")
+                self.openPlotViewer(plot)
             if self.ui.heat.isChecked() == True:
-                Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier(), "2", add="2")
+                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "2", self.getMultiplier(), add="2")
+                self.openPlotViewer(plot)
             if self.ui.three_in_one.isChecked() == True:
-                Controller.plot3FittedData(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier())
+                plot = Controller.plot3FittedData(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier())
+                self.openPlotViewer(plot)
+            if self.ui.threeD_contour.isChecked() == True:
+                plot = Controller.plot3DFittedData(None, None, 0, self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.residuals.isChecked() == True:
-                Controller.plot1Dresiduals(0, self.getMultiplier())
-                Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
+                plot = Controller.plot1Dresiduals(0, self.getMultiplier())
+                plot2 = Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
+                self.openPlotViewer(plot)
+                self.openPlotViewer(plot2)
             if self.ui.reconstructed.isChecked() == True:
-                Controller.plotDAS(0, tau_fit, self.getMultiplier())
+                plot = Controller.plotDAS(0, tau_fit, self.getMultiplier())
+                self.openPlotViewer(plot)
                 
     def plottingSAS(self,Controller,ud,uw,db,wb,model,K):
         
         if self.ui.raw.isChecked() == True:
             self.Controller.createOrigData(db,wb, self.getSASOptMethod(), self.getSASIvpMethod())
             if self.ui.del_wave.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "3")
+                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "1")
+                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1", self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.heat.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), self.getMultiplier(), "2")
+                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2", self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.three_in_one.isChecked() == True:
-                self.self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
-        
+                plot = self.self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.openPlotViewer(plot)
+            if self.ui.threeD_contour.isChecked() == True:
+                plot = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getSASOptMethod(), self.getSASIvpMethod())
+                self.openPlotViewer(plot)
+                
         if self.ui.fitted.isChecked() == True:
             K =  np.array(K)
             tau_fit, spec, res, D_fit = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
-                    model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod())
-            
+                    model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod()) 
             if self.ui.del_wave.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
+                self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "1")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "1")
+                self.openPlotViewer(plot)
             if self.ui.heat.isChecked() == True:
-                self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "2")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "2")
+                self.openPlotViewer(plot)
             if self.ui.three_in_one.isChecked() == True:
-                self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier())
+                self.openPlotViewer(plot)
+            if self.ui.threeD_contour.isChecked() == True:
+                plot = Controller.plot3DFittedData(None, None, model, self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.residuals.isChecked() == True:
-                self.Controller.plot1Dresiduals(model, self.getMultiplier())
-                self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot1Dresiduals(model, self.getMultiplier())
+                plot2 = self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
+                self.openPlotViewer(plot)
+                self.openPlotViewer(plot2)
             if self.ui.reconstructed.isChecked() == True:
-                Controller.plotDAS(model, tau_fit, self.getMultiplier())
+                plot = Controller.plotDAS(model, tau_fit, self.getMultiplier())
+                self.openPlotViewer(plot)
             if self.ui.kinetics.isChecked() == True:
-                Controller.plotKinetics(model)
+                plot = Controller.plotKinetics(model)
+                self.openPlotViewer(plot)
                 
     ''' 7.1 Usability of widgets ''' 
     
@@ -506,7 +528,7 @@ class MainWindow(QMainWindow):
         if self.ui.multiplier.text() == "":
             return 1
         else:
-            return float(self.ui.multiplier.text())
+            return int(self.ui.multiplier.text())
         
     ''' 8.3 DAS details '''    
     
@@ -674,9 +696,9 @@ class MainWindow(QMainWindow):
         popup.closeFailsafe.clicked.connect(lambda: popup.close())
 
     def openPlotViewer(self,fig):
-        popup = PlotViewer(fig)
-        popup.show()
-        popup.closePlotViewer.clicked.connect(lambda: popup.close())
+        self.pltView = PlotViewer(fig)
+        self.pltView.show()
+        self.pltView.closePlotViewer.clicked.connect(lambda: self.pltView.close())
 
     ''' 9.0 Cosmetics '''
         

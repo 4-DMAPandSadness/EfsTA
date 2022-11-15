@@ -549,8 +549,12 @@ class Model:
             self.x_fit = []
             tau_sum = tau_fix
         else:
-            res_fit = optimize.minimize(self.getChiSquare, tau_guess,
-                                      bounds=bounds, method=opt_method)
+            # basinhopping as better global minimization?
+            
+            #res_fit = optimize.minimize(self.getChiSquare, tau_guess,
+            #                          bounds=bounds, method=opt_method)
+            res_fit = optimize.basinhopping(self.getChiSquare, tau_guess, minimizer_kwargs={"bounds" : bounds, "method" : opt_method})
+            
             if res_fit.get("success") is False:
                 print("Fitting unsuccesful!")
             self.tau_fit = res_fit.get("x")
@@ -885,7 +889,7 @@ class Model:
             v_max = self.setv_max(spectra, mul)
         X, Y = np.meshgrid(self.lambdas, self.delays)
         Z = spectra.T*mul
-        fig = plt.figure(figsize=(10,10), dpi=(300))
+        fig = plt.figure(figsize=(10,10), dpi=(100))
         ax = plt.axes(projection='3d')
         ax.contour3D(X,Y,Z,80,cmap='seismic')
         ax.set_title((self.name + add).replace("_", " "))
@@ -999,6 +1003,7 @@ class Model:
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
         plt.show()
+        return grid
 
     def plotData(self, x, y, x_label, y_label, add="", label=None):
         """
@@ -1024,6 +1029,7 @@ class Model:
         None.
 
         """
+        fig = plt.figure()
         plt.plot(x, y)
         plt.title((str(self.name) + str(add)).replace("_", " "))
         plt.xlabel(x_label)
@@ -1034,3 +1040,4 @@ class Model:
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
                     bbox_inches="tight")
         plt.show()
+        return fig
