@@ -65,6 +65,8 @@ class Controller():
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
             Lower and upper limits for the lambda values.
+        opt_method : string
+            The algorithm used by the minimize function.
 
         Returns
         -------
@@ -114,7 +116,15 @@ class Controller():
         model : int/string
             Describes the desired model for the SAS. Can be a number 1-9 or
             "custom" for a custom model.
-
+        tau_low: list
+            The lower bound for each tau value.
+        tau_high: list
+            The upper bound for each tau value.
+        opt_method : string
+            The algorithm used by the minimize function.
+        ivp_method : string
+            The algorithm used by the initial value problem solver.
+            
         Returns
         -------
         tau_fit : list
@@ -177,10 +187,15 @@ class Controller():
             High values will show more lines.
         mul : float
             The value by which data will be multiplied.
+        opt_method : string
+            The algorithm used by the minimize function.
+        ivp_method : string
+            The algorithm used by the initial value problem solver.
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if len(list(wave)) <= 0 or len(wave) > 10:
@@ -195,9 +210,10 @@ class Controller():
         origData = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, None, 
                          opt_method, ivp_method)
-        return origData.plotCustom(origData.spectra, wave, time,
+        fig = origData.plotCustom(origData.spectra, wave, time,
                             v_min, v_max, custom, cont, mul)
-        
+        return fig
+    
     def plot3DOrigData(self, v_min, v_max, d_limits, l_limits,
                       mul, opt_method, ivp_method):
         """
@@ -213,21 +229,24 @@ class Controller():
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
             Lower and upper limits for the lambda values.
-        cont : float
-            Determines how much contour lines will be shown in the 2D plot.
-            High values will show more lines.
         mul : float
             The value by which data will be multiplied.
-
+        opt_method : string
+            The algorithm used by the minimize function.
+        ivp_method : string
+            The algorithm used by the initial value problem solver.
+            
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         origData = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, None, 
                          opt_method, ivp_method)
-        return origData.plot3D(origData.spectra, v_min, v_max, mul)
+        fig = origData.plot3D(origData.spectra, v_min, v_max, mul)
+        return fig
     
     def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
         """
@@ -258,7 +277,8 @@ class Controller():
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if len(wave) <= 0 or len(wave) > 10:
@@ -272,14 +292,34 @@ class Controller():
             custom = "1+2+3"
         if model == 0:
             fig = self.DAS.plotCustom(self.DAS.spec, wave, time,
-                                v_min, v_max, model, cont, custom, mul, add="_GLA")
+                                v_min, v_max, custom, cont, mul, add="_GLA")
         else:
             fig = self.SAS.plotCustom(self.SAS.spec, wave, time,
-                                v_min, v_max, model, cont, custom, mul, add="_GTA")
+                                v_min, v_max, custom, cont, mul, add="_GTA")
         return fig
             
     def plot3DFittedData(self,v_min, v_max, model, mul):
-        
+        """
+        Allows the plotting of the original data in a 3D contour plot.
+
+        Parameters
+        ----------
+        v_min : float
+            Lower limit for the colorbar.
+        v_max : float
+            Upper limit for the colorbar.
+        model : int/string
+            Describes the desired model. 0 for the DAS. For SAS it can be a
+            number 1-9 or "custom" for a custom model.
+        mul : float
+            The value by which data will be multiplied.
+            
+        Returns
+        -------
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
+
+        """
         if model == 0:
             fig = self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, add="_GLA")
         else:
@@ -292,10 +332,10 @@ class Controller():
 
         Parameters
         ----------
-        d_limits : TYPE
-            DESCRIPTION.
-        l_limits : TYPE
-            DESCRIPTION.
+        d_limits : list
+            The upper and lower bound for the delay values.
+        l_limits : list
+            The upper and lower value for the wavelenght bounds.
 
         Returns
         -------
@@ -321,20 +361,22 @@ class Controller():
         v_max : float
             Upper limit for the colorbar.
         model : int/string
-            Variable for the choice of model (DAS or which SAS).
+            Describes the desired model. 0 for the DAS. For SAS it can be a
+            number 1-9 or "custom" for a custom model.
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
         custom : string
             Describes which subplots will be plotted.
-        add : string
-            Addition to the title of the plot. The default is "".
         mul : float
             The value by which data will be multiplied.
+        add : string
+            Addition to the title of the plot. The default is "".
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if model == None:
@@ -360,10 +402,14 @@ class Controller():
         model : int/string
             Describes the desired model. 0 for the DAS. For SAS it can be a
             number 1-9 or "custom" for a custom model.
+        mul : float
+            The value by which data will be multiplied.
+            
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if model == 0:
@@ -397,7 +443,8 @@ class Controller():
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if model == 0:
@@ -423,7 +470,8 @@ class Controller():
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         if model == 0:
@@ -449,7 +497,8 @@ class Controller():
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         tau = list(tau)

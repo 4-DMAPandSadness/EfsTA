@@ -4,12 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as col
 import matplotlib as mpl
 import scipy.integrate as scint
-import scipy.linalg as scla
 from matplotlib.ticker import LogLocator
 from models import Models
 import os
-import math
-import mpl_toolkits.mplot3d
 
 mpl.rcParams['interactive'] == True
 
@@ -550,10 +547,12 @@ class Model:
             tau_sum = tau_fix
         else:
             # basinhopping as better global minimization?
+            # basinhopping does not show any significant improvement 
             
-            #res_fit = optimize.minimize(self.getChiSquare, tau_guess,
-            #                          bounds=bounds, method=opt_method)
-            res_fit = optimize.basinhopping(self.getChiSquare, tau_guess, minimizer_kwargs={"bounds" : bounds, "method" : opt_method})
+            res_fit = optimize.minimize(self.getChiSquare, tau_guess,
+                                    bounds=bounds, method=opt_method)
+            #res_fit = optimize.basinhopping(self.getChiSquare, tau_guess, 
+            #     minimizer_kwargs={"bounds" : bounds, "method" : opt_method})
             
             if res_fit.get("success") is False:
                 print("Fitting unsuccesful!")
@@ -1003,7 +1002,7 @@ class Model:
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
         plt.show()
-        return grid
+        return fig
 
     def plotData(self, x, y, x_label, y_label, add="", label=None):
         """

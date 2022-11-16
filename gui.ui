@@ -41,7 +41,7 @@
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="SAS_page1">
              <layout class="QGridLayout" name="gridLayout_6">
@@ -456,11 +456,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item>
                       <property name="text">
-                       <string>Newton-CG</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
                        <string>L-BFGS-B</string>
                       </property>
                      </item>
@@ -482,26 +477,6 @@ p, li { white-space: pre-wrap; }
                      <item>
                       <property name="text">
                        <string>trust-constr</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>dogleg</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>trust-ncg</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>trust-exact</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>trust-krylov</string>
                       </property>
                      </item>
                     </widget>
@@ -716,11 +691,6 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <property name="text">
-                     <string>Newton-CG</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
                      <string>L-BFGS-B</string>
                     </property>
                    </item>
@@ -742,26 +712,6 @@ p, li { white-space: pre-wrap; }
                    <item>
                     <property name="text">
                      <string>trust-constr</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>dogleg</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>trust-ncg</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>trust-exact</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>trust-krylov</string>
                     </property>
                    </item>
                   </widget>

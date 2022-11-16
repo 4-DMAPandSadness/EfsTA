@@ -9,7 +9,6 @@ import numpy as np
 import os as os
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
     
 ''' 0.0 Additional classes'''
 
@@ -69,10 +68,8 @@ class PlotViewer(QWidget):
         super(PlotViewer,self).__init__()
         self.ui = loadUi("plotviewer_gui.ui",self)
         self.fig = fig
-        # creating canvas and coolbar
         self.plot = FigureCanvasQTAgg(self.fig)
         self.toolbar = NavigationToolbar(self.plot, self)
-        # adding canvas, toolbar and close button to layout
         self.ui.verticalLayout.addWidget(self.toolbar)
         self.ui.verticalLayout.addWidget(self.plot)
         self.ui.verticalLayout.addWidget(self.ui.closePlotViewer)

@@ -27,9 +27,9 @@ import time as timee
 # to revert this type "%matplotlib inline"
 
 # The path that contains the data files.
-path = "/home/hackerman/Documents/fsTA Daten/c_PDI_c"
+path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
 # Choose model: 0 for DAS, 1-9 for SAS and "custom" for a custom SAS model.
-model = 0
+model = 1
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]
@@ -37,24 +37,26 @@ d_limits = [0.2, 3400]
 # Plotting the data: 0 doesn't show the plot of the original data,
 # 3 shows the 3-in-1 plot or less subplots if wave and time are empty.
 # 4 shows a 3D contour plot
-orig = 3
+orig = 0
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
 # 4 shows the fitted 3D contour plot
-fit = 0
+fit = 1
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0
 # Algorithm used for the minimization of the tau values
 opt_method = 'Nelder-Mead'
 # Options:
-# 'Nelder-Mead' 'Powell' 'CG' 'BFGS' 'Newton-CG' 'L-BFGS-B' 'TNC' 'COBYLA'
-# SLSQP' 'trust-constr' 'dogleg' 'trust-ncg' 'trust-exact' 'trust-krylov'
+# 'Nelder-Mead' 'Powell' 'CG' 'BFGS' 'L-BFGS-B' 'TNC' 'COBYLA'
+# SLSQP' 'trust-constr' 
+
+# !'Newton-CG' 'dogleg' 'trust-ncg' 'trust-exact' 'trust-krylov' nicht möglich!
 
 """Settings for the Decay Associated Spectra"""
 
 # The guessed decay constants which will be fitted.
-tau_guess = [27, 103]
+tau_guess = [1, 100]
 # The decay constants which won't be fitted.
 tau_fix = [900000]
 
@@ -62,7 +64,7 @@ tau_fix = [900000]
 """Settings for the Species Associated Spectra"""
 
 # The guessed decay constants which will be fitted.
-tau_forwards = [0.5, 11, 9e5]
+tau_forwards = [1, 100, 9e5]
 tau_backwards = []
 # Lower and upper limits for the fitting of the decay constants.
 tau_low_f = [0, 0, 9e5] # No bounds: tau_low = None
@@ -71,7 +73,7 @@ tau_high_f = [3e2, 1e5, 9e5] # No bounds: tau_high = None
 tau_high_b = []
 # The inital concentrations. If empty all concentrations will be set to 0
 # except the first one which will be 1. Def.: []
-C_0 = [1,2,3]
+C_0 = []
 # A custom matrix for the SAS model which only works if model=="custom"
 # and the dimension of the matrix is (n,n).
 M = [[-0.5,  0  ,  0  , 0],
@@ -128,7 +130,7 @@ if model == 0:
     if fit != 0:
         tau_fit, spec, res, D_fit = Controller.calcDAS(
             [tau_fix, tau_guess], d_limits, l_limits, opt_method)
-    print("runtime DAS:", timee.time()-start)
+    print("runtime GLA:", timee.time()-start)
     if fit == 1:
         print("Tau - DAS: ", tau_fit)
     elif fit == 2:
@@ -136,13 +138,18 @@ if model == 0:
     elif fit == 3:
         print("Tau - DAS: ", tau_fit)
         Controller.plot3FittedData(wave, time, v_min, v_max, model, cont, mul)
+    elif fit == 4:
+        print("Tau - DAS: ", tau_fit)
+        Controller.plot3DFittedData(v_min, v_max, model, mul)
+    
 else:
     start = timee.time()
     if fit != 0:
         tau_fit, spec, res, D_fit = Controller.calcSAS(tau, C_0, d_limits,
                                                        l_limits, model,
-                                                       tau_low, tau_high, opt_method, ivp_method)
-    print("runtime SAS:", timee.time()-start)
+                                                       tau_low, tau_high,
+                                                       opt_method, ivp_method)
+        print("runtime GTA:", timee.time()-start)
     if fit == 1:
         if model != "custom":
             print("Tau - SAS: ", tau_fit)
@@ -162,6 +169,15 @@ else:
                               where=tau_fit!=0)
             print("Custom Matrix - SAS: ", k_fit)
         Controller.plot3FittedData(wave, time, v_min, v_max, model, cont, mul)
+    elif fit == 4:
+        if model != "custom":
+            print("Tau - SAS: ", tau_fit)
+        else:
+            ones = np.full(tau_fit.shape, 1)
+            k_fit = np.divide(ones, tau_fit, out=np.zeros_like(tau_fit),
+                              where=tau_fit!=0)
+            print("Custom Matrix - SAS: ", k_fit)
+        Controller.plot3DFittedData(v_min, v_max, model, mul)
         
 if fit != 0:
     if resi == 1:
@@ -183,16 +199,16 @@ if orig ==4:
 # If you want to create custom plots you can write the code here below.
 # Keep in mind that you still have to choose the right values for model,
 # d_limits, l_limits and C_0 for SAS in the settings at the beginning.
-# The methdod you will want to use is Controller.plotCustom.
+# The method you will want to use is Controller.plotCustom(args).
 
 # custom describes which subplots will be plotted, read further in README
 custom = "1+2"
 # add is an addition to the title of the plot, the default is ""
 add = "1+2"
 
-# Controller.plotCustom(wave, time, v_min, v_max, model, cont, custom, add)
+# Controller.plotCustom(wave, time, v_min, v_max, model, cont, custom, mul, add)
 
-if fit != 0:
-    if model != 0:
-        Controller.plotKinetics(model)
-    Controller.plotDAS(model, tau_fit, mul)
+# if fit != 0:
+#     if model != 0:
+#         Controller.plotKinetics(model)
+#     Controller.plotDAS(model, tau_fit, mul)
