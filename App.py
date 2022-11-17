@@ -29,7 +29,7 @@ import time as timee
 # The path that contains the data files.
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
 # Choose model: 0 for DAS, 1-9 for SAS and "custom" for a custom SAS model.
-model = 1
+model = 0
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]

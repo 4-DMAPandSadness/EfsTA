@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.optimize as optimize
+from lmfit import minimize, Parameters, fit_report
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
 import matplotlib as mpl
@@ -211,7 +212,7 @@ class Model:
 
     def setInitialConcentrations(self, C_0):
         """
-        Creates an array with the initial concentrations for the SAS.
+        Creates an array with the initial concentrations for the GTA.
 
         Parameters
         ----------
@@ -262,6 +263,8 @@ class Model:
         ----------
         K : np.array
             The matrix with the reaction constants for each concentration.
+        ivp_method: string
+            The algorithm used by the initial value problem solver.
 
         Returns
         -------
@@ -516,7 +519,7 @@ class Model:
         chiSquare = np.trace(chi)
         return chiSquare
 
-    def findTau_fit(self, tau_fix, tau_guess, opt_method):
+    def findTau_fit__TEMP_DISABLED(self, tau_fix, tau_guess, opt_method):
         """
         The function takes the variable tau_guess and optimizes their values,
         so that ChiSquare takes a minimal value. It outputs all tau whic
@@ -530,6 +533,8 @@ class Model:
         tau_guess : list, np.array
             A list of the variables tau_guess for the DAS or all tau values for
             the SAS.
+        opt_method: string
+            The algorithm used by the optimization function.
 
         Returns
         -------
@@ -546,7 +551,7 @@ class Model:
             self.x_fit = []
             tau_sum = tau_fix
         else:
-            # basinhopping as better global minimization?
+            # basinhopping for better global minimization?
             # basinhopping does not show any significant improvement 
             
             res_fit = optimize.minimize(self.getChiSquare, tau_guess,
@@ -557,6 +562,34 @@ class Model:
             if res_fit.get("success") is False:
                 print("Fitting unsuccesful!")
             self.tau_fit = res_fit.get("x")
+            if self.model == "custom":
+                tau_sum = self.regenM(self.tau_fit)
+            else:
+                tau_sum = np.concatenate([self.tau_fit, self.tau_fix])
+        return tau_sum
+    
+    def findTau_fit(self, tau_fix, tau_guess, opt_method):
+        params = Parameters()
+        self.tau_fit = []
+        if self.model == "custom":
+            tau_guess = self.getM_lin(tau_guess)
+            for i in tau_guess:
+                params.add('tau_guess'+str(i), tau_guess[i])
+        self.tau_fix = tau_fix
+        bounds = self.getTauBounds(tau_guess)
+        if tau_guess == []:
+            self.x_fit = []
+            tau_sum = tau_fix
+        else:
+            for i in range(len(tau_guess)):
+                params.add('tau_guess'+str(i), tau_guess[i],
+                           min=bounds[i][0], max=bounds[i][1])
+            res_fit = minimize(self.getChiSquare, params, method='opt_method')
+            if res_fit.params.success is False:
+                print("Fitting unsuccesful!")
+            for name, param in res_fit.params.items():
+                self.tau_fit.append(param.value)
+                print(param.stderr)
             if self.model == "custom":
                 tau_sum = self.regenM(self.tau_fit)
             else:
