@@ -86,7 +86,7 @@ class Controller():
         self.DAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, 0, opt_method, None)
         self.DAS.M = self.DAS.getM(np.concatenate((tau_fix, tau_guess)))
-        tau_fit = self.DAS.findTau_fit(tau_fix, tau_guess, opt_method)
+        tau_fit, fit_report = self.DAS.findTau_fit(tau_fix, tau_guess, opt_method)
         D_fit = self.DAS.calcD_fit()
         spec = self.DAS.calcA_fit()
         res = self.DAS.calcResiduals()
@@ -94,7 +94,7 @@ class Controller():
                          l_limits, d_limits, spec, D_fit,
                          self.DAS.getTauBounds(tau_guess), self.DAS.lambdas,
                          self.DAS.delays, self.DAS.spectra)
-        return tau_fit, spec, res, D_fit
+        return tau_fit, spec, res, D_fit, fit_report
 
     def calcSAS(self, tau, C_0, d_limits, l_limits, model, tau_low, tau_high, opt_method, ivp_method):
         """
@@ -104,7 +104,7 @@ class Controller():
         Parameters
         ----------
         tau : list/np.array
-            The decay constants tau for a model 1-9 or a matrix Tau for a
+            The decay constants tau for a model 1-10 or a matrix tau for a
             "custom" model.
         C_0 : list
             The list that contains values for C_0 set by the user.
@@ -114,8 +114,8 @@ class Controller():
         l_limits : list with two int/float elements
             Lower and upper limits for the lambda values.
         model : int/string
-            Describes the desired model for the SAS. Can be a number 1-9 or
-            "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         tau_low: list
             The lower bound for each tau value.
         tau_high: list
@@ -150,14 +150,14 @@ class Controller():
             K,n = self.SAS.getK(tau)
         self.SAS.setInitialConcentrations(C_0)
         self.SAS.solveDiff(self.SAS.K, ivp_method)
-        tau_fit = self.SAS.findTau_fit([], tau, opt_method)
+        tau_fit, fit_report = self.SAS.findTau_fit([], tau, opt_method)
         D_fit = self.SAS.calcD_fit()
         spec = self.SAS.calcA_fit()
         res = self.SAS.calcResiduals()        
         self.saveResults(model, tau, tau_fit, l_limits, d_limits, spec, D_fit,
                          self.SAS.getTauBounds(tau), self.SAS.lambdas,
                          self.SAS.delays, self.SAS.spectra)
-        return tau_fit, spec, res, D_fit
+        return tau_fit, spec, res, D_fit, fit_report
 
     def plot3OrigData(self, wave, time, v_min, v_max, d_limits, l_limits,
                       cont, mul, opt_method, ivp_method):
@@ -267,8 +267,8 @@ class Controller():
         v_max : float
             Upper limit for the colorbar.
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -309,8 +309,8 @@ class Controller():
         v_max : float
             Upper limit for the colorbar.
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         mul : float
             The value by which data will be multiplied.
             
@@ -361,8 +361,8 @@ class Controller():
         v_max : float
             Upper limit for the colorbar.
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -400,8 +400,8 @@ class Controller():
         Parameters
         ----------
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         mul : float
             The value by which data will be multiplied.
             
@@ -412,13 +412,17 @@ class Controller():
             The figure containing the plot.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
         if model == 0:
             fig = self.DAS.plotData(self.DAS.delays, self.DAS.residuals.T,
-                              "delays / ps", "$\Delta A \cdot " + str(mul) + "$",
+                              "delays / ps", "$\Delta A" + dot + "$",
                               add="_GLA_Residuals_1D")
         else:
             fig = self.SAS.plotData(self.SAS.delays, self.SAS.residuals.T,
-                              "delays / ps", "$\Delta A \cdot " + str(mul) + "$",
+                              "delays / ps", "$\Delta A" + dot + "$",
                               add="_GTA_Residuals_1D")
         return fig 
     
@@ -433,8 +437,8 @@ class Controller():
         v_max : float
             Upper limit for the colorbar.
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -465,8 +469,8 @@ class Controller():
         Parameters
         ----------
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
 
         Returns
         -------
@@ -490,8 +494,8 @@ class Controller():
         Parameters
         ----------
         model : int/string
-            Describes the desired model. 0 for the DAS. For SAS it can be a
-            number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         tau_fit : list
             The decay constants for the DAS or SAS.
 
@@ -501,18 +505,22 @@ class Controller():
             The figure containing the plot.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
         tau = list(tau)
         if model == 0:
             fig = self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A \cdot " + str(mul) + "$", add="_DAS",
+                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_DAS",
                               label = tau)
         elif model == "custom":
             fig = self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A \cdot " + str(mul) + "$", add="_SAS",
+                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
                               label=list(self.SAS.getM_lin(np.array(tau))))
         else:
             fig = self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A \cdot " + str(mul) + "$", add="_SAS",
+                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
                               label=tau)
         return fig
             
@@ -520,13 +528,13 @@ class Controller():
                     D_fit, bounds, lambdas, delays, spectra):
         """
         Saves the results of the DAS or SAS at the end of the optimizing in a
-        txt file.
+        .txt file.
 
         Parameters
         ----------
         model : int/string
-           Describes the desired model. 0 for the DAS. For SAS it can be a
-           number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         tau_start : list, np.array
             An array containing the start values for tau.
         tau_fit : list, np.array
@@ -574,7 +582,7 @@ class Controller():
             "\nWavelength range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
             " nm\nTime" + "delay range: " + str(d_limits[0])+" - "
             + str(d_limits[1]) + " ps\n\nTime constants / ps: " + str(tau_fit)
-            + "\nRate constants / ps^-1: " + str(k_fit))
+            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n"  + "\n")
         
         np.savetxt(path+name+"_A_fit.txt", A_fit)
         np.savetxt(path+name+"_D_fit.txt", D_fit)
@@ -591,8 +599,8 @@ class Controller():
         Parameters
         ----------
         model : int/string
-           Describes the desired model. 0 for the DAS. For SAS it can be a
-           number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
 
         Returns
         -------
@@ -620,8 +628,8 @@ class Controller():
         Parameters
         ----------
         model : int/string
-           Describes the desired model. 0 for the DAS. For SAS it can be a
-           number 1-9 or "custom" for a custom model.
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
         d_limits : list with two int/float elements
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
@@ -636,7 +644,7 @@ class Controller():
             Can contain 0-10 values for the wavelengths which will be plotted
             in a subplot of delays against absorption change.
         tau : list/np.array
-            The decay constants tau for a model 1-9 or a matrix Tau for a
+            The decay constants tau for a model 1-10 or a matrix Tau for a
             "custom" model.
        C_0 : list
            The list that contains values for C_0 set by the user.

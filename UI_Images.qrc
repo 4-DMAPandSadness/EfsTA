@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="custom">
+    <file>pictures/reaction example.png</file>
+    <file>pictures/matrix example.png</file>
+  </qresource>
+</RCC>

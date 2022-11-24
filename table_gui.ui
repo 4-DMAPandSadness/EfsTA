@@ -14,8 +14,18 @@
    <string>Custom Matrix</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QPushButton" name="save">
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTableWidget" name="custom_Matrix">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Here you have to input your custom reaction matrix. How this matrix should look like &lt;/p&gt;&lt;p&gt;and how there from the reaction equation will be explained through the following example:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/custom/pictures/reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;In this reaction there are three species which decay/develop at different rates &lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt;&lt;span style=&quot; font-style:italic; vertical-align:sub;&quot;&gt;i&lt;/span&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;There is an equalibrium between species A &amp;amp; B and species A decays into two species, A &amp;amp; C.&lt;/p&gt;&lt;p&gt;The resulting 3x3 reaction matrix for this example would look like this:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/custom/pictures/matrix example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;The position highlighted in red describes the decay of species A. &lt;/p&gt;&lt;p&gt;The reaction equation shows that decays with k&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; to species B and with k&lt;span style=&quot; vertical-align:sub;&quot;&gt;5&lt;/span&gt; to species C, therefore&lt;/p&gt;&lt;p&gt;the negative sum of the two reaction rate constants describes the decay of species A.&lt;/p&gt;&lt;p&gt;The position highlighted in blue shows the dependence of species B from species C. Since there&lt;/p&gt;&lt;p&gt;is no reaction from species C back to species B the value is 0.&lt;/p&gt;&lt;p&gt;Every other position in this matrix is filled in the same way.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;This program transforms the lifetimes automatically into the corresponding reaction rates so the input in each&lt;/p&gt;&lt;p&gt;field in this table should be the guessed lifetime. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="rowCount">
       <number>0</number>
      </property>
@@ -36,15 +46,10 @@
      </attribute>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="save">
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="UI_Images.qrc"/>
+ </resources>
  <connections/>
 </ui>

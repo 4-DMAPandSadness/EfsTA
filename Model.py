@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.optimize as optimize
 from lmfit import minimize, Parameters, fit_report
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
@@ -446,10 +445,10 @@ class Model:
            The matrix for the matrix reconstruction algorithm.
 
        """
-       if self.model == 0:  # DAS
+       if self.model == 0:  # GLA
            M = self.genE_tau(tau)
            self.n = len(tau)
-       else:  # SAS
+       else:  # GTA
            self.K, n = self.getK(tau)
            M = self.solveDiff(self.K, self.ivp_method)
        return M
@@ -494,7 +493,7 @@ class Model:
         A_tau = D_tau @ self.M
         return A_tau
 
-    def getChiSquare(self, tau_guess):
+    def getDifference(self, tau):
         """
         Calculates the measure of difference between the initial spectra
         matrix and the calculated A_tau matrix with given values for tau_guess
@@ -508,23 +507,23 @@ class Model:
 
         Returns
         -------
-        chiSquare : float
-            Measure of difference between matrices.
+        getDifferences : np.ndarray
+            Difference between the modeled data and the experimental data.
 
         """
-        tau_sum = np.concatenate([tau_guess, self.tau_fix])
+        tau_dict = tau.valuesdict()
+        tau_sum = []
+        for x in tau_dict:
+            tau_sum.append(tau_dict[x])
         self.M = self.getM(tau_sum)
-        dif = self.calcA_tau(tau_sum) - self.spectra
-        chi = dif.T @ dif
-        chiSquare = np.trace(chi)
-        return chiSquare
-
-    def findTau_fit__TEMP_DISABLED(self, tau_fix, tau_guess, opt_method):
+        difference = self.calcA_tau(tau_sum) - self.spectra
+        return difference
+    
+    def findTau_fit(self, tau_fix, tau_guess, opt_method):
         """
         The function takes the variable tau_guess and optimizes their values,
-        so that ChiSquare takes a minimal value. It outputs all tau whic
-        contains the fitted parameters tau_fit and the fixed values tau_fix,
-        if DAS.
+        so that ChiSquare takes a minimal value. It outputs a list of the 
+        optimized tau values and the non-varied ones, if GLA was used.
 
         Parameters
         ----------
@@ -539,36 +538,9 @@ class Model:
         Returns
         -------
         tau_sum : list
-            The fitted parameters tau_fit and the fixed values x_fix combined.
+            The fitted parameters tau_fit and the fixed values tau_fix combined.
 
         """
-        self.tau_fit = []
-        if self.model == "custom":
-                tau_guess = self.getM_lin(tau_guess)
-        self.tau_fix = tau_fix
-        bounds = self.getTauBounds(tau_guess)
-        if tau_guess == []:
-            self.x_fit = []
-            tau_sum = tau_fix
-        else:
-            # basinhopping for better global minimization?
-            # basinhopping does not show any significant improvement 
-            
-            res_fit = optimize.minimize(self.getChiSquare, tau_guess,
-                                    bounds=bounds, method=opt_method)
-            #res_fit = optimize.basinhopping(self.getChiSquare, tau_guess, 
-            #     minimizer_kwargs={"bounds" : bounds, "method" : opt_method})
-            
-            if res_fit.get("success") is False:
-                print("Fitting unsuccesful!")
-            self.tau_fit = res_fit.get("x")
-            if self.model == "custom":
-                tau_sum = self.regenM(self.tau_fit)
-            else:
-                tau_sum = np.concatenate([self.tau_fit, self.tau_fix])
-        return tau_sum
-    
-    def findTau_fit(self, tau_fix, tau_guess, opt_method):
         params = Parameters()
         self.tau_fit = []
         if self.model == "custom":
@@ -584,17 +556,22 @@ class Model:
             for i in range(len(tau_guess)):
                 params.add('tau_guess'+str(i), tau_guess[i],
                            min=bounds[i][0], max=bounds[i][1])
-            res_fit = minimize(self.getChiSquare, params, method='opt_method')
-            if res_fit.params.success is False:
-                print("Fitting unsuccesful!")
+            for i in range(len(tau_fix)):
+                params.add('tau_fix'+str(i), tau_fix[i],
+                            min=bounds[len(tau_guess)-1+i][0], 
+                            max=bounds[len(tau_guess)-1+i][1],vary=False)
+            res_fit = minimize(self.getDifference, params, method=opt_method)
+            fit_rep = fit_report(res_fit)
+            if hasattr(res_fit, "success"):
+                if res_fit.success is False:
+                    print("Fitting unsuccesful!")
             for name, param in res_fit.params.items():
                 self.tau_fit.append(param.value)
-                print(param.stderr)
             if self.model == "custom":
                 tau_sum = self.regenM(self.tau_fit)
             else:
-                tau_sum = np.concatenate([self.tau_fit, self.tau_fix])
-        return tau_sum
+                tau_sum = self.tau_fit
+        return tau_sum, fit_rep
 
     def calcD_fit(self):
         """
@@ -607,7 +584,7 @@ class Model:
             Matrix D with the fitted values for tau.
 
         """
-        self.M_fit = self.getM(np.concatenate([self.tau_fit, self.tau_fix]))
+        self.M_fit = self.getM(self.tau_fit)
         res1 = self.spectra @ self.M_fit.T
         bra1 = np.linalg.inv(self.M_fit @ self.M_fit.T)
         D_fit = res1 @ bra1
@@ -633,7 +610,7 @@ class Model:
     def calcResiduals(self):
         """
         Calculates the difference between the original spectra and the
-        calculated spectra to obtain the residuals.
+        calculated spectra to obtain residuals.
 
         Returns
         -------
@@ -642,9 +619,8 @@ class Model:
 
         """
         mul1 = self.D_fit @ self.M_fit
-        residuals = mul1 - self.spectra
-        self.residuals = residuals
-        return residuals
+        self.residuals = mul1 - self.spectra
+        return self.residuals
 
     # Plotting of the data
 
@@ -716,7 +692,7 @@ class Model:
             x[i] = mini
         return x
 
-    def plot1(self, grid, wave, wave_index, spectra):
+    def plot1(self, grid, wave, wave_index, spectra, mul):
         """
         Plots a subplot of delays against absorption change for chosen
         wavelenghts.
@@ -737,9 +713,14 @@ class Model:
         None.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
+        
         ax1 = plt.subplot(grid[0, 0])
         ax1.set_yscale("log")
-        ax1.set_xlabel("$\Delta A \cdot 10^3$")
+        ax1.set_xlabel("$\Delta A" + dot + "$")
         ax1.set_ylabel("delay / ps")
 
         for i in range(len(wave)):
@@ -845,7 +826,7 @@ class Model:
         plt.title((self.name + add).replace("_", " "))
         return ax2, cb
 
-    def plot3(self, grid, time, time_index, spectra):
+    def plot3(self, grid, time, time_index, spectra, mul):
         """
         Plots a subplot of absorption change against wavelenghts for chosen
         delays.
@@ -866,8 +847,12 @@ class Model:
         None.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
         ax3 = plt.subplot(grid[0, 2])
-        ax3.set_ylabel("$\Delta A \cdot 10^3$")
+        ax3.set_ylabel("$\Delta A" + dot + "$")
         ax3.set_xlabel("$\lambda$ / nm")
         y = np.zeros(len(self.lambdas))
         hoehe = 0
@@ -915,6 +900,10 @@ class Model:
         None.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
         if v_min is None:
             v_min = self.setv_min(spectra, mul)
         if v_max is None:
@@ -927,7 +916,7 @@ class Model:
         ax.set_title((self.name + add).replace("_", " "))
         ax.set_xlabel('wavelength / nm')
         ax.set_ylabel('delay / ps')
-        ax.set_zlabel("$\Delta A \cdot " + str(mul) + "$")
+        ax.set_zlabel("$\Delta A" + dot + "$")
         ax.view_init(20,250)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
@@ -966,6 +955,10 @@ class Model:
         None.
 
         """
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
         if v_min is None:
             v_min = self.setv_min(spectra, mul)
         if v_max is None:
@@ -1017,17 +1010,17 @@ class Model:
         grid = plt.GridSpec(1, 3, wspace=space, width_ratios=[w1, w2, w3])
 
         if w1 != 0:
-            self.plot1(grid, wave, wave_index, spectra*mul)
+            self.plot1(grid, wave, wave_index, spectra*mul, mul)
         if w2 != 0:
             ax2, cb = self.plot2(grid, wave, time, v_min,
                                  v_max, spectra*mul, add, cont)
             if w3 == 0:
-                cb.set_label("$\Delta A \cdot " + str(mul) + "$")
+                cb.set_label("$\Delta A" + dot + "$")
             if w2 == 4.7:
                 ax2.yaxis.set_major_locator(LogLocator())
                 ax2.set_ylabel("delay / ps")
         if w3 != 0:
-            self.plot3(grid, time, time_index, spectra*mul)
+            self.plot3(grid, time, time_index, spectra*mul, mul)
 
         if w2 == 0:
             plt.suptitle((self.name + add).replace("_", " "))

@@ -14,6 +14,20 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 
 class TableWindow(QWidget):
     def __init__(self,size):
+        """
+        Initializes the popup window where the user inputs their own lifetime
+        matrix through a QTableWidget.
+
+        Parameters
+        ----------
+        size : int
+            Size of the square table.
+
+        Returns
+        -------
+        None.
+
+        """
         super(QWidget,self).__init__()
         self.ui = loadUi("table_gui.ui",self)
         self.ui.custom_Matrix.setRowCount(size)
@@ -22,6 +36,15 @@ class TableWindow(QWidget):
         self.setWindowModality(Qt.ApplicationModal)
         
     def readTable(self):
+        """
+        Reads the lifetime matrix input by the user and saves the matrix in a
+        numpy array as an attribute.
+
+        Returns
+        -------
+        None.
+
+        """
         row = self.ui.custom_Matrix.rowCount()
         col = self.ui.custom_Matrix.columnCount()
         K = np.zeros((row,col))
@@ -34,48 +57,100 @@ class TableWindow(QWidget):
         self.CM = K
         
     def onSave(self):
+        """
+        Executes the readTable function and closes the popup window, when the 
+        user clicks the "Save"-Button.
+
+        Returns
+        -------
+        None.
+
+        """
         self.readTable()
         self.close()
 
 class FailSafeWindow(QWidget):
     def __init__(self,msg):
+        """
+        Initializes the failsafe popup window, where the most common GUI input
+        errors will be displayed in a QTextEdit.
+
+        Parameters
+        ----------
+        msg : string
+            Description of the user error.
+
+        Returns
+        -------
+        None.
+
+        """
         super(QWidget,self).__init__()
         self.ui = loadUi("failsafe_gui.ui",self)
-        self.ui.closeFailsafe.clicked.connect(self.close)
+        self.ui.closeFailsafe.clicked.connect(lambda: self.close)
         self.ui.textFailsafe.setText(msg)
         self.setWindowModality(Qt.ApplicationModal)
         
-    def onClose(self):
-        self.close()
-
 class ResultsWindow(QWidget):
-    def __init__(self, model, Controller):
+    def __init__(self, model, Controller, fit_report):
+        """
+        Initializes the results popup window, where the results of the fitting
+        routine will be displayed in a QTextEdit.
+
+        Parameters
+        ----------
+        model : int/string
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
+        Controller : Controller
+            An Object of the Controller class.
+        fit_report : string
+            The report of the minimize routine by lmfit.
+
+        Returns
+        -------
+        None.
+
+        """
         super(QWidget,self).__init__()
         self.ui = loadUi("results_gui.ui",self)
-        self.ui.closeResults.clicked.connect(self.onClose)
-        self.setText(model, Controller)
-    
-    def onClose(self):
-        self.close()
+        self.ui.closeResults.clicked.connect(lambda: self.close)
+        self.setText(model, Controller, fit_report)
         
-    def setText(self, model, Controller):
+    def setText(self, model, Controller, fit_report):
+        """
+        Fills the QTextEdit object with the corresponding data.
+
+        Parameters
+        ----------
+        model : int/string
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-10 or "custom" for a custom model.
+        Controller : Controller
+            An Object of the Controller class.
+        fit_report : string
+            The report of the minimize routine by lmfit.
+
+        Returns
+        -------
+        None.
+
+        """
         self.ui.textResults.clear()
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
+        self.ui.textResults.append(fit_report)
    
 class PlotViewer(QWidget):
     def __init__(self, fig):
         super(PlotViewer,self).__init__()
         self.ui = loadUi("plotviewer_gui.ui",self)
-        self.fig = fig
-        self.plot = FigureCanvasQTAgg(self.fig)
-        self.toolbar = NavigationToolbar(self.plot, self)
-        self.ui.verticalLayout.addWidget(self.toolbar)
-        self.ui.verticalLayout.addWidget(self.plot)
+        plot = FigureCanvasQTAgg(fig)
+        toolbar = NavigationToolbar(plot, self)
+        self.ui.verticalLayout.addWidget(toolbar)
+        self.ui.verticalLayout.addWidget(plot)
         self.ui.verticalLayout.addWidget(self.ui.closePlotViewer)
-        
-        if self.isVisible() == False:
-            self.close()
+        self.ui.closePlotViewer.clicked.connect(lambda: self.close)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -106,7 +181,6 @@ class MainWindow(QMainWindow):
         self.ui.SAS_back_ks_lin.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_back_fin.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_next_model.clicked.connect(self.chooseModel)
-        self.ui.SAS_modelSelect.currentIndexChanged.connect(lambda: self.ui.conc_stack.setCurrentIndex(self.getModel()))
         self.ui.SAS_next_custom.clicked.connect(self.checkUserMatrixIfEmpty)
         self.ui.SAS_back_custom.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_table_custom.clicked.connect(self.checkRandCIfEmpty)
@@ -162,7 +236,7 @@ class MainWindow(QMainWindow):
         self.ui.kinetics.setChecked(True)
 
     def chooseModel(self):
-        if self.ui.SAS_modelSelect.currentIndex() == 9:
+        if self.ui.SAS_modelSelect.currentText() == "Custom Model":
             self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page4)
         elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
             self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page3)
@@ -248,7 +322,7 @@ class MainWindow(QMainWindow):
                      self.ui.SAS_modelSelect.currentIndex()>3) and 
                     self.checkLinIfEmpty() == True):
                     pass
-                elif (self.ui.SAS_modelSelect.currentIndex() == 9 and 
+                elif (self.ui.SAS_modelSelect.currentText() == "Custom Model" and 
                     self.checkUserMatrixIfEmpty() == True):
                     pass
                 elif ((self.ui.SAS_modelSelect.currentIndex() == 2 or
@@ -281,7 +355,7 @@ class MainWindow(QMainWindow):
         wb = [self.getUserWavelengthBoundsLow(), self.getUserWavelengthBoundsUp()]
             
         if self.SAS_radio.isChecked() == True:
-            if self.ui.SAS_modelSelect.currentIndex() == 9:
+            if self.ui.SAS_modelSelect.currentText() == "Custom Model":
                 model = "custom"
                 self.plottingSAS(self.Controller, ud, uw, db, wb, "custom", self.getUserMatrix())
             elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
@@ -294,7 +368,7 @@ class MainWindow(QMainWindow):
             model = 0
             self.plottingDAS(self.Controller,ud,uw,db,wb)
         if self.ui.fitted.isChecked() == True:
-            self.openPopUpResults(model, self.Controller)
+            self.openPopUpResults(model, self.Controller, self.fit_report)
             
     def onCancel(self):
         if hasattr(self, 'Controller') == True:
@@ -326,7 +400,7 @@ class MainWindow(QMainWindow):
                 self.openPlotViewer(plot)
         
         if self.ui.fitted.isChecked() == True:
-            tau_fit, spec, res, D_fit = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
+            tau_fit, spec, res, D_fit, self.fit_report = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
             
             if self.ui.del_wave.isChecked() == True:
                 plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
@@ -374,7 +448,7 @@ class MainWindow(QMainWindow):
                 
         if self.ui.fitted.isChecked() == True:
             K =  np.array(K)
-            tau_fit, spec, res, D_fit = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
+            tau_fit, spec, res, D_fit, self.fit_report = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
                     model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod()) 
             if self.ui.del_wave.isChecked() == True:
                 plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
@@ -434,13 +508,19 @@ class MainWindow(QMainWindow):
         if self.ui.filepath.text() != "":
             C = Cont.Controller(folderpath)
             path = C.path+"/"
-            temp = C.delays_filename[::-1]
-            temp = temp.index("/")
-            name = C.delays_filename[-temp:-11]
-            txt = name+"_pickle"
-            pickle = path + txt + ".dir"
-            if os.path.isfile(pickle):
-                self.setPickle()
+            names = ["delays_filename","lambdas_filename", "spectra_filename"]
+            if all(hasattr(C, attr) for attr in names) == False:
+                self.openFailSafe('Please make sure the selected folder ' + 
+                                  'contains *.txt files with "spectra",' + 
+                                  '"delays" and "lambda" in their name.')
+            else:
+                temp = C.delays_filename[::-1]
+                temp = temp.index("/")
+                name = C.delays_filename[-temp:-11]
+                txt = name+"_pickle"
+                pickle = path + txt + ".dir"
+                if os.path.isfile(pickle):
+                    self.setPickle()
         
     def getFolderPath(self):
         if self.ui.filepath == "":
@@ -682,10 +762,10 @@ class MainWindow(QMainWindow):
     
     ''' 8.6 Other PopUps '''
     
-    def openPopUpResults(self, model, Controller):
-        popup = ResultsWindow(model, Controller)
-        popup.show()
-        popup.closeResults.clicked.connect(lambda: popup.close())
+    def openPopUpResults(self, model, Controller, fit_report):
+        self.resultView = ResultsWindow(model, Controller, fit_report)
+        self.resultView.show()
+        self.resultView.closeResults.clicked.connect(lambda: self.resultView.close())
         
     def openFailSafe(self,msg):
         popup = FailSafeWindow(msg)
@@ -738,7 +818,7 @@ class MainWindow(QMainWindow):
     def savePickle(self):
         if self.DAS_radio.isChecked():
             model = 0
-        elif self.getModel() == 9:
+        elif self.ui.SAS_modelSelect.currentText() == "Custom Model":
             model = "custom"
         else:
             model = self.getModel()+1
@@ -759,7 +839,7 @@ class MainWindow(QMainWindow):
         if model == 0:
             tau = self.getTaus()
             self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, das_tau=tau)
-        elif self.ui.SAS_modelSelect.currentIndex() == 9:
+        elif self.ui.SAS_modelSelect.currentText() == "Custom Model":
              tau = self.getUserMatrix()
              self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, das_tau=tau)
         elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
@@ -887,6 +967,7 @@ class MainWindow(QMainWindow):
         self.ui.lowwave.setText("")
         self.ui.upwave.setText("")
         self.ui.contour.setValue(0)
+        self.ui.multiplier.setText("")
         self.ui.tau_var.setText("")
         self.ui.tau_fix.setText("")
         self.ui.ks_forwards_eq.setText("")
