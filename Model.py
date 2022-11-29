@@ -5,6 +5,7 @@ import matplotlib.colors as col
 import matplotlib as mpl
 import scipy.integrate as scint
 from matplotlib.ticker import LogLocator
+import matplotlib.ticker as mticker
 from models import Models
 import os
 
@@ -667,6 +668,9 @@ class Model:
         flat_A = [item for i in list(data) for item in i]
         v_max = max(flat_A)*mul
         return v_max
+    
+        def log_tick_formatter(val, pos=None):
+            return r"$10^{{{:.0f}}}$".format(val)
 
     def findNearestIndex(self, x, data):
         """
@@ -691,7 +695,10 @@ class Model:
             mini = np.argmin(abs(data - x[i]))
             x[i] = mini
         return x
-
+    
+    def log_tick_formatter(self, val, pos=None):
+        return r"$10^{{{:.0f}}}$".format(val)
+    
     def plot1(self, grid, wave, wave_index, spectra, mul):
         """
         Plots a subplot of delays against absorption change for chosen
@@ -897,9 +904,11 @@ class Model:
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
+        log_delay = np.log10(self.delays)
         ltx = str(mul).count("0")
         dot = ""
         if mul != 1:
@@ -908,7 +917,7 @@ class Model:
             v_min = self.setv_min(spectra, mul)
         if v_max is None:
             v_max = self.setv_max(spectra, mul)
-        X, Y = np.meshgrid(self.lambdas, self.delays)
+        X, Y = np.meshgrid(self.lambdas, log_delay)
         Z = spectra.T*mul
         fig = plt.figure(figsize=(10,10), dpi=(100))
         ax = plt.axes(projection='3d')
@@ -917,6 +926,10 @@ class Model:
         ax.set_xlabel('wavelength / nm')
         ax.set_ylabel('delay / ps')
         ax.set_zlabel("$\Delta A" + dot + "$")
+        ax.yaxis.set_major_formatter(mticker.FuncFormatter(self.log_tick_formatter))
+        yticks = np.linspace(min(log_delay), max(log_delay), 4)
+        yticks[0] = -1
+        ax.set_yticks(yticks)
         ax.view_init(20,250)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
@@ -952,7 +965,8 @@ class Model:
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         ltx = str(mul).count("0")
@@ -1051,7 +1065,8 @@ class Model:
 
         Returns
         -------
-        None.
+        fig: matplotlib.pyplot.figure
+            The figure containing the plot.
 
         """
         fig = plt.figure()

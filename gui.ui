@@ -30,7 +30,7 @@
       <item row="1" column="1">
        <widget class="QStackedWidget" name="SASorDAS_stack">
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="SASorDAS_page1"/>
         <widget class="QWidget" name="SASorDAS_page2">
@@ -598,7 +598,7 @@ p, li { white-space: pre-wrap; }
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="DAS_page1">
              <layout class="QGridLayout" name="gridLayout_11">
@@ -782,7 +782,7 @@ p, li { white-space: pre-wrap; }
       <item row="0" column="0" rowspan="2">
        <widget class="QStackedWidget" name="Plot_stack">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="plot_page1">
          <layout class="QGridLayout" name="gridLayout_32">
@@ -1091,7 +1091,7 @@ p, li { white-space: pre-wrap; }
     <item row="0" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLineEdit" name="filepath">
+       <widget class="QLineEdit" name="folderpath">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the selected folder directory. &lt;/p&gt;&lt;p&gt;Copy and paste the folder directory of the data or use the &amp;quot;Browse&amp;quot; button on the right (recommended).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
@@ -1169,6 +1169,8 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="UI_Images.qrc"/>
+ </resources>
  <connections/>
 </ui>

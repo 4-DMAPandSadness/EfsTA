@@ -207,10 +207,7 @@ class Controller():
             custom = "1+2"
         else:
             custom = "1+2+3"
-        origData = Model(self.delays_filename, self.spectra_filename,
-                         self.lambdas_filename, d_limits, l_limits, None, 
-                         opt_method, ivp_method)
-        fig = origData.plotCustom(origData.spectra, wave, time,
+        fig = self.origData.plotCustom(self.origData.spectra, wave, time,
                             v_min, v_max, custom, cont, mul)
         return fig
     
@@ -242,10 +239,7 @@ class Controller():
             The figure containing the plot.
 
         """
-        origData = Model(self.delays_filename, self.spectra_filename,
-                         self.lambdas_filename, d_limits, l_limits, None, 
-                         opt_method, ivp_method)
-        fig = origData.plot3D(origData.spectra, v_min, v_max, mul)
+        fig = self.origData.plot3D(self.origData.spectra, v_min, v_max, mul)
         return fig
     
     def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
