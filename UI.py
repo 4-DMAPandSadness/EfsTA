@@ -1,6 +1,7 @@
 import sys
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLineEdit, 
+                             QSpinBox, QComboBox)
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor
@@ -9,7 +10,8 @@ import numpy as np
 import os as os
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-    
+import TTIMG
+
 ''' 0.0 Additional classes'''
 
 class TableWindow(QWidget):
@@ -171,7 +173,6 @@ class MainWindow(QMainWindow):
         
         super(MainWindow,self).__init__()
         self.ui = loadUi("gui.ui",self)
-        self.setWindowTitle("EfsTA")
         self.startUp()
         self.PltView = []
 
@@ -417,7 +418,7 @@ class MainWindow(QMainWindow):
             self.openFailSafe("Please choose which data to plot.")
             return True
         else:
-            if (self.ui.del_wave.isChecked() == False and
+            if (self.ui.A_wave.isChecked() == False and
                 self.ui.del_A.isChecked() == False and
                 self.ui.heat.isChecked() == False and
                 self.ui.three_in_one.isChecked() == False and
@@ -480,10 +481,8 @@ class MainWindow(QMainWindow):
         """
         self.Controller = Cont.Controller(self.getFolderPath())
         self.savePickle()
-        ud = self.getUserDelay()
-        ud.sort()
-        uw = self.getUserWavelength()
-        uw.sort()
+        ud = sorted(self.getUserDelay())
+        uw = sorted(self.getUserWavelength())
         db = [self.getUserDelayBoundsLow(), self.getUserDelayBoundsUp()]
         wb = [self.getUserWavelengthBoundsLow(), self.getUserWavelengthBoundsUp()]
             
@@ -496,7 +495,7 @@ class MainWindow(QMainWindow):
                 self.plottingSAS(self.Controller, ud, uw, db, wb, model, np.array(self.getK_lin()))   
             else:
                 model = self.getModel()+1
-                self.plottingSAS(self.Controller, ud, uw, db, wb, model,np.array(self.getK_eq()))
+                self.plottingSAS(self.Controller, ud, uw, db, wb, model,np.array(self.getK_eq()).flatten())
         else:
             model = 0
             self.plottingDAS(self.Controller,ud,uw,db,wb)
@@ -546,7 +545,7 @@ class MainWindow(QMainWindow):
     
         if self.ui.raw.isChecked() == True:
             Controller.createOrigData(db,wb, self.getDASOptMethod(), None) 
-            if self.ui.del_wave.isChecked() == True:
+            if self.ui.A_wave.isChecked() == True:
                 plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier(), add="3")
                 self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
@@ -565,7 +564,7 @@ class MainWindow(QMainWindow):
         if self.ui.fitted.isChecked() == True:
             tau_fit, spec, res, D_fit, self.fit_report = Controller.calcDAS(self.getTaus(), db, wb, self.getDASOptMethod())
             
-            if self.ui.del_wave.isChecked() == True:
+            if self.ui.A_wave.isChecked() == True:
                 plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
                 self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
@@ -581,10 +580,8 @@ class MainWindow(QMainWindow):
                 plot = Controller.plot3DFittedData(None, None, 0, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.residuals.isChecked() == True:
-                plot = Controller.plot1Dresiduals(0, self.getMultiplier())
-                plot2 = Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
+                plot = Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
-                self.openPlotViewer(plot2)
             if self.ui.reconstructed.isChecked() == True:
                 plot = Controller.plotDAS(0, tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
@@ -619,7 +616,7 @@ class MainWindow(QMainWindow):
         
         if self.ui.raw.isChecked() == True:
             self.Controller.createOrigData(db,wb, self.getSASOptMethod(), self.getSASIvpMethod())
-            if self.ui.del_wave.isChecked() == True:
+            if self.ui.A_wave.isChecked() == True:
                 plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
@@ -639,7 +636,7 @@ class MainWindow(QMainWindow):
             K =  np.array(K)
             tau_fit, spec, res, D_fit, self.fit_report = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
                     model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod()) 
-            if self.ui.del_wave.isChecked() == True:
+            if self.ui.A_wave.isChecked() == True:
                 plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
                 self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
@@ -655,10 +652,8 @@ class MainWindow(QMainWindow):
                 plot = Controller.plot3DFittedData(None, None, model, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.residuals.isChecked() == True:
-                plot = self.Controller.plot1Dresiduals(model, self.getMultiplier())
-                plot2 = self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
-                self.openPlotViewer(plot2)
             if self.ui.reconstructed.isChecked() == True:
                 plot = Controller.plotDAS(model, tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
@@ -759,12 +754,12 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.delaysinput.text() == "":
-            user_delays = [4, 67, 130]
-        else:
-            delaysinput = self.ui.delaysinput.text()
-            string_split = delaysinput.split(',')
-            map_object = map(float, string_split)
-            user_delays = list(map_object)
+            user_delays = []
+        else: 
+            user_delays = self.ui.delaysinput.text().split(',')
+            for i in range(len(user_delays)):
+                if user_delays[i] != "":
+                    user_delays[i] = float(user_delays[i])
         return user_delays
     
     def getUserWavelength(self):
@@ -778,13 +773,13 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.wavelengthsinput.text() == "":
-            user_lambdas = [360, 560, 700]
+            user_lambdas = []
         else:
-            wavelengthsinput = self.ui.wavelengthsinput.text()
-            string_split = wavelengthsinput.split(',')
-            map_object = map(float, string_split)
-            user_lambdas = list(map_object)
-            return user_lambdas
+            user_lambdas = self.ui.wavelengthsinput.text().split(',')
+            for i in range(len(user_lambdas)):
+                if user_lambdas[i] != "":
+                    user_lambdas[i] = float(user_lambdas[i])
+        return user_lambdas
         
     def getUserDelayBoundsLow(self):
         """
@@ -798,7 +793,7 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.lowdelay.text() == "":
-            delay_lb = 0.3
+            delay_lb = 0
         else:
             lb_text=self.ui.lowdelay.text()
             delay_lb = float(lb_text)
@@ -816,7 +811,7 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.updelay.text() == "":
-            delay_ub = 3000
+            delay_ub = 4000
         else:
             ub_text=self.ui.updelay.text()
             delay_ub = float(ub_text)
@@ -834,11 +829,11 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.lowwave.text() == "":
-            lambda_lb = 355
+            lambda_lb = 350
         else:
             lb_text=self.ui.lowwave.text()
             lambda_lb = float(lb_text)
-            return lambda_lb
+        return lambda_lb
     
     def getUserWavelengthBoundsUp(self):
         """
@@ -856,7 +851,7 @@ class MainWindow(QMainWindow):
         else:
             ub_text=self.ui.upwave.text()
             lambda_ub = float(ub_text)
-            return lambda_ub
+        return lambda_ub
     
     def getUserContour(self):
         """
@@ -905,28 +900,24 @@ class MainWindow(QMainWindow):
             The lifetimes input by the user.
 
         """
-        if self.ui.tau_fix.text() == "" and self.ui.tau_var.text() != "":
-            taus_var = self.ui.tau_var.text()
-            string_split = taus_var.split(',')
-            map_object = map(float, string_split)
-            taus_var_list = list(map_object)
-            return [[], taus_var_list]
-        elif self.ui.tau_fix.text() != "" and self.ui.tau_var.text() != "":
-            taus_var1 = self.ui.tau_var.text()
-            string_split = taus_var1.split(',')
-            map_object = map(float, string_split)
-            taus_var1_list = list(map_object)     
-            taus_fix = self.ui.tau_fix.text()
-            string_split = taus_fix.split(',')
-            map_object = map(float, string_split)
-            taus_fix_list = list(map_object)
-            return [taus_fix_list, taus_var1_list]
-        elif self.ui.tau_fix.text() != "" and self.ui.tau_var.text() == "":
-            taus_fix = self.ui.tau_fix.text()
-            string_split = taus_fix.split(',')
-            map_object = map(float, string_split)
-            taus_fix_list = list(map_object)
-            return [taus_fix_list, []]
+        tau_var = self.ui.tau_var.text().split(',')
+        tau_fix = self.ui.tau_fix.text().split(',')
+        for i in range(len(tau_var)):
+            if tau_var[i] != "":
+                tau_var[i] = float(tau_var[i])
+        for i in range(len(tau_fix)):
+            if tau_fix[i] != "":
+                tau_fix[i] = float(tau_fix[i])
+        if any(isinstance(obj,float) for obj in tau_var):
+            tau_var = [None if item == '' else item for item in tau_var]
+        else:
+            tau_var = []
+            
+        if any(isinstance(obj,float) for obj in tau_fix):
+            tau_fix = [None if item == '' else item for item in tau_fix]
+        else:
+            tau_fix = [] 
+        return [tau_fix, tau_var]
         
     def getDASOptMethod(self):
         """
@@ -955,13 +946,13 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.ks_forwards_lin.text() == "":
-            ks_list = None
+            ks = []
         else:
-            ks = self.ui.ks_forwards_lin.text()
-            string_split = ks.split(',')
-            map_object = map(float, string_split)
-            ks_list = list(map_object)
-        return ks_list
+            ks = self.ui.ks_forwards_lin.text().split(',')
+            for i in range(len(ks)):
+                if ks[i] != "":
+                    ks[i] = float(ks[i])
+        return ks
     
     def getK_lin_bounds(self):
         """
@@ -973,22 +964,25 @@ class MainWindow(QMainWindow):
             A list containing the lower bounds and upper bounds list.
 
         """
-        if self.ui.ks_forwards_lin_low.text() == "":
-            kslb_list = None
+        kslb = self.ui.ks_forwards_lin_low.text().split(',')
+        ksub = self.ui.ks_forwards_lin_high.text().split(',')
+        for i in range(len(kslb)):
+            if kslb[i] != "":
+                kslb[i] = float(kslb[i])
+        for i in range(len(ksub)):
+            if ksub[i] != "":
+                ksub[i] = float(ksub[i])
+        if any(isinstance(obj,float) for obj in kslb):
+            kslb = [None if item == '' else item for item in kslb]
         else:
-            kslb = self.ui.ks_forwards_lin_low.text()
-            string_split = kslb.split(',')
-            map_object = map(float, string_split)
-            kslb_list = list(map_object)
-        if self.ui.ks_forwards_lin_high.text() == "":
-            ksub_list = None
+            kslb = []
+            
+        if any(isinstance(obj,float) for obj in ksub):
+            ksub = [None if item == '' else item for item in ksub]
         else:
-            ksub = self.ui.ks_forwards_lin_high.text()
-            string_split = ksub.split(',')
-            map_object = map(float, string_split)
-            ksub_list = list(map_object)
-        return [kslb_list,ksub_list]
-    
+            ksub = []
+        return [kslb,ksub]
+
     def getK_eq(self):
         """
         Reads the lifetimes input by the user if a equilibrium model is
@@ -996,50 +990,28 @@ class MainWindow(QMainWindow):
 
         Returns
         -------
-        ks_list : list
-            A list containing the lifetimes for the forwards reactions and then
-            the backwards reactions.
-
+          list
+            A list containing a list of the lifetimes for the forwards 
+            reactions and then the backwards reactions.
+            
         """
-        ks1 = self.ui.ks_forwards_eq.text()
-        string_split = ks1.split(',')
-        map_object = map(float, string_split)
-        ks_list = list(map_object)
-        ks2 = self.ui.ks_backwards_eq.text()
-        string_split = ks2.split(',')
-        map_object = map(float, string_split)
-        ks2_list = list(map_object)
-        for i in range(len(ks2_list)):
-             ks_list.append(ks2_list[i])
-        return ks_list
-
-    def getK_eq_pickle(self):
-        """
-        Reads the lifetimes for the equibrium reactions input by the user
-        to pickle them.
-
-        Returns
-        -------
-        list
-            A list containing the list for the lifetimes for the forwards 
-            reactions and then a list for the backwards reactions.
-
-        """
-        if self.ui.ks_forwards_eq.text() == "":
-            ks1_list = None
+        ksf = self.ui.ks_forwards_eq.text().split(',')
+        ksb = self.ui.ks_backwards_eq.text().split(',')
+        for i in range(len(ksf)):
+            if ksf[i] != "":
+                ksf[i] = float(ksf[i])
+        for i in range(len(ksb)):
+            if ksb[i] != "":
+                ksb[i] = float(ksb[i])
+        if any(isinstance(obj,float) for obj in ksf):
+            ksf = ksf
         else:
-            ks1 = self.ui.ks_forwards_eq.text()
-            string_split = ks1.split(',')
-            map_object = map(float, string_split)
-            ks1_list = list(map_object)
-        if self.ui.ks_backwards_eq.text() == "":
-            ks2_list = None
+            ksf = []
+        if any(isinstance(obj,float) for obj in ksb):
+            ksb = ksb
         else:
-            ks2 = self.ui.ks_backwards_eq.text()
-            string_split = ks2.split(',')
-            map_object = map(float, string_split)
-            ks2_list = list(map_object)
-        return [ks1_list,ks2_list]
+            ksb = []
+        return [ksf,ksb]
 
     def getK_eq_bounds(self):
         """
@@ -1052,35 +1024,39 @@ class MainWindow(QMainWindow):
             A list containing all lists for all bounds for the equilibrium
             model.
         """
-        if self.ui.ks_forwards_eq_low.text() == "":
-            ksflb_list = None
+        ksflb = self.ui.ks_forwards_eq_low.text().split(',')
+        ksfub = self.ui.ks_forwards_eq_high.text().split(',')
+        ksblb = self.ui.ks_backwards_eq_low.text().split(',')
+        ksbub = self.ui.ks_backwards_eq_high.text().split(',')
+        for i in range(len(ksflb)):
+            if ksflb[i] != "":
+                ksflb[i] = float(ksflb[i])
+        for i in range(len(ksfub)):
+            if ksfub[i] != "":
+                ksfub[i] = float(ksfub[i])
+        for i in range(len(ksblb)):
+            if ksblb[i] != "":
+                ksblb[i] = float(ksblb[i])        
+        for i in range(len(ksbub)):
+            if ksbub[i] != "":
+                ksbub[i] = float(ksbub[i])        
+        if any(isinstance(obj,float) for obj in ksflb):
+            ksflb = [None if item == '' else item for item in ksflb]
         else:
-            ksflb = self.ui.ks_forwards_eq_low.text()
-            string_split = ksflb.split(',')
-            map_object = map(float, string_split)
-            ksflb_list = list(map_object)
-        if self.ui.ks_forwards_eq_high.text() == "":
-            ksfub_list = None
+            ksflb = []
+        if any(isinstance(obj,float) for obj in ksfub):
+            ksfub = [None if item == '' else item for item in ksfub]
         else:
-            ksfub = self.ui.ks_forwards_eq_high.text()
-            string_split = ksfub.split(',')
-            map_object = map(float, string_split)
-            ksfub_list = list(map_object)
-        if self.ui.ks_backwards_eq_low.text() == "":
-            ksblb_list = None
+            ksfub = []
+        if any(isinstance(obj,float) for obj in ksblb):
+            ksblb = [None if item == '' else item for item in ksblb]
         else:
-            ksblb = self.ui.ks_backwards_eq_low.text()
-            string_split = ksblb.split(',')
-            map_object = map(float, string_split)
-            ksblb_list = list(map_object)
-        if self.ui.ks_backwards_eq_high.text() == "":
-            ksbub_list = None
+            ksblb = []
+        if any(isinstance(obj,float) for obj in ksbub):
+            ksbub = [None if item == '' else item for item in ksbub]
         else:
-            ksbub = self.ui.ks_backwards_eq_high.text()
-            string_split = ksbub.split(',')
-            map_object = map(float, string_split)
-            ksbub_list = list(map_object)
-        return [ksflb_list,ksfub_list,ksblb_list,ksbub_list]
+            ksbub = []
+        return [ksflb,ksfub,ksblb,ksbub]
 
     def getUserMatrix(self):
         """
@@ -1105,15 +1081,16 @@ class MainWindow(QMainWindow):
             The concentration vector set by the user.
 
         """
-        if self.ui.conc.text() == "":
-            return []
+        C_0 = self.ui.conc.text().split(',')
+        for i in range(len(C_0)):
+            if C_0[i] != "":
+                C_0[i] = float(C_0[i])
+        if any(isinstance(obj,float) for obj in C_0):
+            C_0 = C_0
         else:
-            ctemp = self.ui.conc.text()
-            string_split = ctemp.split(',')
-            map_object = map(float, string_split)
-            C_0 = list(map_object)
-            return C_0
-            
+            C_0 = []
+        return C_0
+    
     def getModel(self):
         """
         Returns the current selected kinetic model.
@@ -1315,12 +1292,13 @@ class MainWindow(QMainWindow):
         else:
             model = self.getModel()+1
             
-        ud = self.getUserDelay()
-        ud.sort()
-        uw = self.getUserWavelength()
-        uw.sort()
-        db = [self.getUserDelayBoundsLow(), self.getUserDelayBoundsUp()]
-        wb = [self.getUserWavelengthBoundsLow(), self.getUserWavelengthBoundsUp()]
+        C_0 = self.getUserConc()
+        ud = sorted(self.getUserDelay())
+        uw = sorted(self.getUserWavelength())
+        db_low = self.getUserDelayBoundsLow()
+        db_high = self.getUserDelayBoundsUp()
+        wb_low = self.getUserWavelengthBoundsLow()
+        wb_high = self.getUserWavelengthBoundsUp()
         cont = self.getUserContour()
         kseqflb = self.getK_eq_bounds()[0]
         kseqfub = self.getK_eq_bounds()[1]
@@ -1328,45 +1306,48 @@ class MainWindow(QMainWindow):
         kseqbub = self.getK_eq_bounds()[3]
         ksflb = self.getK_lin_bounds()[0]
         ksfub = self.getK_lin_bounds()[1]
+        
         if model == 0:
-            tau = self.getTaus()
-            self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, das_tau=tau)
+            tau_fix = self.getTaus()[0]
+            tau_var = self.getTaus()[1]
+            self.Controller.pickleData(model=model, d_limits_low=db_low, 
+                                       d_limits_high=db_high, l_limits_low=wb_low,
+                                       l_limits_high=wb_high, cont=cont, time=ud, 
+                                       wave=uw, tau_fix=tau_fix, tau_var=tau_var)
         elif self.ui.SAS_modelSelect.currentText() == "Custom Model":
              tau = self.getUserMatrix()
-             self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, das_tau=tau)
+             self.Controller.pickleData(model=model,C_0=C_0, db_low=db_low, 
+                                        db_high=db_high, wb_low=wb_low,
+                                        wb_high=wb_high, cont=cont, time=ud, wave=uw, das_tau=tau)
         elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
             tau = np.array(self.getK_lin())
-            self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, ksfl=list(tau), ksflb=ksflb, ksfub=ksfub)
+            self.Controller.pickleData(model=model,C_0=C_0, d_limits_low=db_low, 
+                                       d_limits_high=db_high, l_limits_low=wb_low,
+                                       l_limits_high=wb_high, cont=cont, time=ud, wave=uw, 
+                                       ksf=list(tau), ksflb=ksflb, ksfub=ksfub)
         else:
-            ksfeq = self.getK_eq_pickle()[0]
-            ksbeq = self.getK_eq_pickle()[1]
-            self.Controller.pickleData(model=model, d_limits=db, l_limits=wb, cont=cont, time=ud, wave=uw, ksfeq=ksfeq, ksbeq=ksbeq, kseqflb=kseqflb, kseqfub=kseqfub, kseqblb=kseqblb, kseqbub=kseqbub)
+            ksfeq = self.getK_eq()[0]
+            ksbeq = self.getK_eq()[1]
+            self.Controller.pickleData(model=model, C_0=C_0, d_limits_low=db_low, 
+                                       d_limits_high=db_high, l_limits_low=wb_low,
+                                       l_limits_high=wb_high,
+                                       cont=cont, time=ud, wave=uw, 
+                                       ksfeq=ksfeq, ksbeq=ksbeq, 
+                                       kseqflb=kseqflb, kseqfub=kseqfub, 
+                                       kseqblb=kseqblb, kseqbub=kseqbub)
             
-    def getPickle(self, *keys):
+    def getPickle(self):
         """
         Reloads the saved user inputs.
 
-        Parameters
-        ----------
-        *keys : TYPE
-            DESCRIPTION.
-
         Returns
         -------
-        values : list
-            A list containing all saved values.
+        None.
 
         """
         if hasattr(self, 'Controller') == False:
             self.Controller = Cont.Controller(self.getFolderPath())
-        values = []
-        shelf = self.Controller.getPickle()
-        for key in keys:
-            try:
-                values.append(shelf[key])
-            except:
-                values.append(None)       
-        return values
+        self.shelf = self.Controller.getPickle()
     
     def setPickle(self):
         """
@@ -1377,100 +1358,60 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        if self.getPickle("time")[0] != None:
-            delay = str(self.getPickle("time")[0])
-            delay = delay.replace("[","")
-            delay = delay.replace("]","")
-            self.ui.delaysinput.setText(delay)            
-        if self.getPickle("wave")[0] != None:
-            wave = str(self.getPickle("wave")[0])
-            wave = wave.replace("[","")
-            wave = wave.replace("]","")
-            self.ui.wavelengthsinput.setText(wave)            
-        if self.getPickle("d_limits")[0] != None:
-            lowd = str(self.getPickle("d_limits")[0][0])
-            lowd = lowd.replace("[","")
-            lowd = lowd.replace("]","")
-            self.ui.lowdelay.setText(lowd)
-        if self.getPickle("d_limits")[0] != None:
-            upd = str(self.getPickle("d_limits")[0][1])
-            upd = upd.replace("[","")
-            upd = upd.replace("]","")
-            self.ui.updelay.setText(upd)
-        if self.getPickle("l_limits")[0] != None:
-            loww = str(self.getPickle("l_limits")[0][0])
-            loww = loww.replace("[","")
-            loww = loww.replace("]","")
-            self.ui.lowwave.setText(loww)
-        if self.getPickle("l_limits")[0] != None:
-            upw = str(self.getPickle("l_limits")[0][1])
-            upw = upw.replace("[","")
-            upw = upw.replace("]","")
-            self.ui.upwave.setText(upw)
-        if self.getPickle("das_tau")[0] != None:
-            tau_fix = str(self.getPickle("das_tau")[0][0])
-            tau_fix = tau_fix.replace("[","")
-            tau_fix = tau_fix.replace("]","")
-            self.ui.tau_fix.setText(tau_fix)
-        if self.getPickle("das_tau")[0] != None:
-            tau_var = str(self.getPickle("das_tau")[0][1])
-            tau_var = tau_var.replace("[","")
-            tau_var = tau_var.replace("]","")
-            self.ui.tau_var.setText(tau_var)
-        if self.getPickle("ksfeq")[0] != None:
-            ksfeq = str(self.getPickle("ksfeq")[0])
-            ksfeq = ksfeq.replace("[","")
-            ksfeq = ksfeq.replace("]","")
-            self.ui.ks_forwards_eq.setText(ksfeq)
-        if self.getPickle("ksbeq")[0] != None:
-            ksbeq = str(self.getPickle("ksbeq")[0])
-            ksbeq = ksbeq.replace("[","")
-            ksbeq = ksbeq.replace("]","")
-            self.ui.ks_backwards_eq.setText(ksbeq)    
-        if self.getPickle("kseqflb")[0] != None:
-            kseqflb = str(self.getPickle("kseqflb")[0])
-            kseqflb = kseqflb.replace("[","")
-            kseqflb = kseqflb.replace("]","")
-            self.ui.ks_backwards_eq_low.setText(kseqflb)
-        if self.getPickle("kseqfub")[0] != None:
-            kseqfub = str(self.getPickle("kseqfub")[0])
-            kseqfub = kseqfub.replace("[","")
-            kseqfub = kseqfub.replace("]","")
-            self.ui.ks_backwards_eq_high.setText(kseqfub)
-        if self.getPickle("kseqblb")[0] != None:
-            kseqblb = str(self.getPickle("kseqblb")[0])
-            kseqblb = kseqblb.replace("[","")
-            kseqblb = kseqblb.replace("]","")
-            self.ui.ks_backwards_eq_low.setText(kseqblb)
-        if self.getPickle("kseqbub")[0] != None:
-            kseqbub = str(self.getPickle("kseqbub")[0])
-            kseqbub = kseqbub.replace("[","")
-            kseqbub = kseqbub.replace("]","")
-            self.ui.ks_backwards_eq_high.setText(kseqbub)            
-        if self.getPickle("ksfl")[0] != None:
-            ksfl = str(self.getPickle("ksfl")[0])
-            ksfl = ksfl.replace("[","")
-            ksfl = ksfl.replace("]","")
-            self.ui.ks_forwards_lin.setText(ksfl)   
-        if self.getPickle("ksflb")[0] != None:
-            ksflb = str(self.getPickle("ksflb")[0])
-            ksflb = ksflb.replace("[","")
-            ksflb = ksflb.replace("]","")
-            self.ui.ks_forwards_lin_low.setText(ksflb)
-        if self.getPickle("ksfub")[0] != None:
-            ksfub = str(self.getPickle("ksfub")[0])
-            ksfub = ksfub.replace("[","")
-            ksfub = ksfub.replace("]","")
-            self.ui.ks_forwards_lin_high.setText(ksfub)
-
-        if self.getPickle("C_0")[0] != None:
-            C_0 = str(self.getPickle("C_0")[0])
-            C_0 = C_0.replace("[","")
-            C_0 = C_0.replace("]","")
-            self.ui.conc.setText(C_0)
-                
-        if self.getPickle("cont")[0] != None:
-            self.ui.contour.setValue(self.getPickle("cont")[0])
+        self.getPickle()
+        for key in self.shelf:
+            val = str(self.shelf[key])
+            val = val.replace("[","")
+            val = val.replace("]","")
+            val = val.replace("None","")
+            val = val.replace(" ","")
+            if key == "time":
+                self.ui.delaysinput.setText(val)
+            if key == "wave":
+                self.ui.wavelengthsinput.setText(val)
+            if key == "ksfeq":
+                self.ui.ks_forwards_eq.setText(val)
+            if key == "ksbeq":
+                self.ui.ks_backwards_eq.setText(val)
+            if key == "kseqflb":
+                self.ui.ks_forwards_eq_low.setText(val)
+            if key == "kseqfub":
+                self.ui.ks_forwards_eq_high.setText(val)
+            if key == "kseqblb":
+                self.ui.ks_backwards_eq_low.setText(val)
+            if key == "kseqbub":
+                self.ui.ks_backwards_eq_high.setText(val)
+            if key == "ksf":
+                self.ui.ks_forwards_lin.setText(val)
+            if key == "ksflb":
+                self.ui.ks_forwards_lin_low.setText(val)
+            if key == "ksfub":
+                self.ui.ks_forwards_lin_high.setText(val)
+            if key == "C_0":
+                self.ui.conc.setText(val)
+            if key == "cont":
+                self.ui.contour.setValue(int(val))
+            if key == "model":
+                if val == "0":
+                    self.ui.DAS_radio.setChecked(True)
+                elif val == "custom":
+                    self.ui.SAS_radio.setChecked(True)
+                    self.ui.SAS_modelSelect.setCurrentIndex(10)
+                else:
+                    self.ui.SAS_radio.setChecked(True)
+                    self.ui.SAS_modelSelect.setCurrentIndex(int(val)-1)
+            if key == "db_low":
+                self.ui.lowdelay.setText(val)
+            if key == "db_high":
+                self.ui.highdelay.setText(val)
+            if key == "wb_low":
+                self.ui.lowwave.setText(val)
+            if key == "wb_high":
+                self.ui.highwave.setText(val)
+            if key == "tau_fix":
+                self.ui.tau_fix.setText(val)
+            if key == "tau_var":
+                self.ui.tau_var.setText(val)
             
     def clearPickle(self):
         """
@@ -1481,30 +1422,15 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        self.ui.delaysinput.setText("")
-        self.ui.wavelengthsinput.setText("")
-        self.ui.lowdelay.setText("")
-        self.ui.updelay.setText("")
-        self.ui.lowwave.setText("")
-        self.ui.upwave.setText("")
-        self.ui.contour.setValue(0)
-        self.ui.multiplier.setText("")
-        self.ui.tau_var.setText("")
-        self.ui.tau_fix.setText("")
-        self.ui.ks_forwards_eq.setText("")
-        self.ui.ks_forwards_eq_high.setText("")
-        self.ui.ks_forwards_eq_low.setText("")
-        self.ui.ks_backwards_eq.setText("")
-        self.ui.ks_backwards_eq_high.setText("")
-        self.ui.ks_backwards_eq_low.setText("")
-        self.ui.ks_forwards_lin.setText("")
-        self.ui.ks_forwards_lin_high.setText("")
-        self.ui.ks_forwards_lin_low.setText("")
-        self.ui.conc.setText("")
+        for lineedit in self.findChildren(QLineEdit):
+            if lineedit != self.ui.folderpath:
+                lineedit.clear()
+        for spinbox in self.findChildren(QSpinBox):
+            spinbox.setValue(0)
+        for combobox in self.findChildren(QComboBox):
+            combobox.setCurrentIndex(0)
         if hasattr(self, 'cm') == True:
             self.cm = None
-        self.ui.rows_and_columns.setValue(0)
-        self.ui.SAS_modelSelect.setCurrentIndex(0)
         
 if __name__ == '__main__':
 

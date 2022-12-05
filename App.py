@@ -30,7 +30,7 @@ import time as timee
 # The path that contains the data files.
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
 # Choose model: 0 for GLA, 1-10 for GTA and "custom" for a custom GTA model.
-model = 1
+model = 0
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]
@@ -42,7 +42,7 @@ orig = 0
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
 # 4 shows the fitted 3D contour plot and the fitted parameters
-fit = 1
+fit = 2
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0

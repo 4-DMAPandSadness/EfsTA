@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>EfsTA</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_30">
@@ -598,7 +598,7 @@ p, li { white-space: pre-wrap; }
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="DAS_page1">
              <layout class="QGridLayout" name="gridLayout_11">
@@ -795,6 +795,19 @@ p, li { white-space: pre-wrap; }
              <string>Plot choices</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="three_in_one">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots all three plots above in a single image.&lt;/p&gt;&lt;p&gt;Will only plot the heat map if no specific delay &lt;/p&gt;&lt;p&gt;or wavelength values ar provided.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>all in one</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
              <item row="1" column="1">
               <widget class="QCheckBox" name="kinetics">
                <property name="enabled">
@@ -808,13 +821,53 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="heat">
+               <property name="toolTip">
+                <string>Plots all data in a heatmap.</string>
+               </property>
+               <property name="text">
+                <string>2D heatmap</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="residuals">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>residuals</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QCheckBox" name="threeD_contour">
+               <property name="text">
+                <string>3D contour</string>
+               </property>
+              </widget>
+             </item>
              <item row="1" column="0">
-              <widget class="QCheckBox" name="del_wave">
+              <widget class="QCheckBox" name="A_wave">
                <property name="toolTip">
                 <string>Plots the change of absorbtion against the wavelengths.</string>
                </property>
                <property name="text">
                 <string>ΔA / λ</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="del_A">
+               <property name="toolTip">
+                <string>Plots the delays against the change of absorbtion.</string>
+               </property>
+               <property name="text">
+                <string>t / ΔA</string>
                </property>
               </widget>
              </item>
@@ -856,66 +909,16 @@ p, li { white-space: pre-wrap; }
                </layout>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="del_A">
-               <property name="toolTip">
-                <string>Plots the delays against the change of absorbtion.</string>
-               </property>
-               <property name="text">
-                <string>t / ΔA</string>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="1">
               <widget class="QCheckBox" name="reconstructed">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If SAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra with fitted lifetimes against the delays.&lt;/p&gt;&lt;p&gt;If DAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra with fitted lifetimes against the delays.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If DAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If SAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>associated spectra (ΔA / λ)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QCheckBox" name="three_in_one">
-               <property name="toolTip">
-                <string>Plots all three plots above in a single image.</string>
-               </property>
-               <property name="text">
-                <string>all in one</string>
+                <string>DAS / SAS (ΔA / λ)</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QCheckBox" name="heat">
-               <property name="toolTip">
-                <string>Plots all data in a heatmap.</string>
-               </property>
-               <property name="text">
-                <string>2D heatmap</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QCheckBox" name="residuals">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap and a plot of the changes in absorption against the delays.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>residuals</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QCheckBox" name="threeD_contour">
-               <property name="text">
-                <string>3D contour</string>
                </property>
               </widget>
              </item>
@@ -1169,8 +1172,6 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="UI_Images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

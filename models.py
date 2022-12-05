@@ -142,6 +142,7 @@ class Models:
             for an equilibrium reaction.
 
         '''
+        # self.k[0] und self.k[1]?
         k_hin = self.k[:int(0.5*len(self.k)+0.5)]
         k_back = self.k[int(0.5*len(self.k)+0.5):]
         k1 = np.array(k_hin) * (-1)
@@ -327,8 +328,7 @@ class Models:
         Returns
         -------
         K : np.array
-            A 2D array which corresponds to the reaction rate constant matrix
-            for an equilibrium reaction.
+            A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
         k_hin = self.k
@@ -356,8 +356,7 @@ class Models:
         Returns
         -------
         K : np.array
-            A 2D array which corresponds to the reaction rate constant matrix
-            for an equilibrium reaction.
+            A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
         k_hin = self.k
@@ -378,13 +377,12 @@ class Models:
         Generates the matrix K.
 
         In this model the last species does not react any further.
-        ONLY two reaction rate constants are allowed.
+        ONLY three reaction rate constants are allowed.
 
         Returns
         -------
         K : np.array
-            A 2D array which corresponds to the reaction rate constant matrix
-            for an equilibrium reaction.
+            A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
         k_hin = self.k

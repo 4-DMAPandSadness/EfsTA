@@ -579,7 +579,10 @@ class Controller():
             + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n"  + "\n")
         
         np.savetxt(path+name+"_A_fit.txt", A_fit)
-        np.savetxt(path+name+"_D_fit.txt", D_fit)
+        if model == 0:
+            np.savetxt(path+name+"_DAS.txt", D_fit)
+        else:
+            np.savetxt(path+name+"_SAS.txt", D_fit)
         np.savetxt(path+name+"_limited_lambda.txt", lambdas)
         np.savetxt(path+name+"_limited_delays.txt", delays)
         np.savetxt(path+name+"_limited_spectra.txt", spectra)
@@ -655,6 +658,7 @@ class Controller():
         name = self.delays_filename[-temp:-11]
         txt = name+"_pickle"
         s = shelve.open(path+txt, writeback=True)
+        s.clear()
         for key, value in kwargs.items():
             s[key] = value
         s.close()

@@ -395,9 +395,9 @@ class Model:
         None.
 
         """
-        if tau_low == None:
+        if tau_low == []:
             tau_low = [None for i in tau]
-        if tau_high == None:
+        if tau_high == []:
             tau_high = [None for i in tau]
         for i in range(len(tau_low)):
             if tau_low[i] == 0 or tau_low[i] == None:
@@ -567,7 +567,8 @@ class Model:
                 if res_fit.success is False:
                     print("Fitting unsuccesful!")
             for name, param in res_fit.params.items():
-                self.tau_fit.append(param.value)
+                tau_sig = round(param.value,2)
+                self.tau_fit.append(tau_sig)
             if self.model == "custom":
                 tau_sum = self.regenM(self.tau_fit)
             else:
