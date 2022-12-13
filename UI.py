@@ -198,8 +198,12 @@ class MainWindow(QMainWindow):
         self.ui.SAS_next_custom.clicked.connect(self.checkUserMatrixIfEmpty)
         self.ui.SAS_back_custom.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
         self.ui.SAS_table_custom.clicked.connect(self.checkRandCIfEmpty)
-        self.ui.SAS_alg_done.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page6))
+        self.ui.SAS_alg_done.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page7))
         self.ui.SAS_alg_back.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
+        self.ui.SAS_next_user.clicked.connect(self.checkIfUserModelEmpty)
+        self.ui.SAS_back_user.clicked.connect(lambda: self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page1))
+        self.ui.SAS_user_save.clicked.connect(self.saveUserModel)
+        self.ui.SAS_user_del.clicked.connect(self.deleteUserModel)
         
         ''' 2.4 DAS Stacked Widget '''
         
@@ -276,9 +280,11 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        if self.ui.SAS_modelSelect.currentText() == "Custom Model":
-            self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page4)
-        elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
+        if self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
+            if self.ui.SAS_modelSelect.currentText() == "Custom Model":
+                self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page4)
+            if self.ui.SAS_modelSelect.currentText() == "User Model":
+                self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page5)
             self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page3)
         else:
             self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page2)
@@ -300,7 +306,33 @@ class MainWindow(QMainWindow):
         self.ui.kinetics.setChecked(False)
 
     ''' 5.0  Idiot Checkpoints '''
-            
+    
+    def checkIfLamdaEmpty(self):
+        """
+        Checks if the user provided specific wavelengths for data slicing.
+        If not disables corresponding plot option.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.wavelengthsinput.text() == "":
+            self.ui.A_wave.setChecked(False)
+    
+    def checkIfDelayEmpty(self):
+        """
+        Checks if the user provided specific delays for data slicing.
+        If not disables corresponding plot option.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.delaysinput.text() == "":
+            self.ui.del_A.setChecked(False)
+        
     def checkEqIfEmpty(self):
         """
         Checks if the required information is provided, if not opens up a popup
@@ -365,7 +397,7 @@ class MainWindow(QMainWindow):
 
         """
         if hasattr(self, 'cm') == True:
-            self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page5)
+            self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page6)
         else:
             self.openFailSafe("Please input custom reaction rate constant matrix.")
             return True
@@ -428,6 +460,16 @@ class MainWindow(QMainWindow):
                 self.ui.threeD_contour.isChecked() == False):
                 self.openFailSafe("Please choose which data to plot.")
                 return True
+            
+    def checkIfUserModelEmpty(self):
+        if self.ui.SAS_user_equation.text() == "":
+           self.openFailSafe("Please input a reaction equation.")
+           return True
+        elif self.ui.SAS_user_tau.text() == "":
+            self.openFailSafe("Please input lifetimes.")
+            return True
+        else:
+            self.ui.SAS_stack.setCurrentWidget(self.ui.SAS_page6)
     
     def finalCheck(self):
         """
@@ -438,23 +480,28 @@ class MainWindow(QMainWindow):
         None.
 
         """
+        self.checkIfLamdaEmpty()
+        self.checkIfDelayEmpty()
         if (self.checkPlotChoicesIfEmpty() or self.checkBrowseIfEmpty()) == True:
             pass
         else:
             if self.SAS_radio.isChecked() == True:
                 if (self.ui.fitted.isChecked() == False):
                     self.programStart()
-                elif ((self.ui.SAS_modelSelect.currentIndex() <=1 or
-                     self.ui.SAS_modelSelect.currentIndex()>3) and 
-                    self.checkLinIfEmpty() == True):
-                    pass
                 elif (self.ui.SAS_modelSelect.currentText() == "Custom Model" and 
                     self.checkUserMatrixIfEmpty() == True):
                     pass
+                elif (self.ui.SAS_modelSelect.currentText() == "User Model" and 
+                    self.checkIfUserModelEmpty() == True):
+                    pass 
                 elif ((self.ui.SAS_modelSelect.currentIndex() == 2 or
                      self.ui.SAS_modelSelect.currentIndex() == 3) and 
                       self.checkEqIfEmpty() == True):
                     pass
+                # elif ((self.ui.SAS_modelSelect.currentIndex() <=1 or
+                #      self.ui.SAS_modelSelect.currentIndex()>3) and 
+                #     self.checkLinIfEmpty() == True):
+                #     pass
                 else:
                     self.programStart()
             else:
@@ -489,7 +536,10 @@ class MainWindow(QMainWindow):
         if self.SAS_radio.isChecked() == True:
             if self.ui.SAS_modelSelect.currentText() == "Custom Model":
                 model = "custom"
-                self.plottingSAS(self.Controller, ud, uw, db, wb, "custom", self.getUserMatrix())
+                self.plottingSAS(self.Controller, ud, uw, db, wb, model, self.getUserMatrix())
+            if self.ui.SAS_modelSelect.currentText() == "User Model":
+                model = "user"
+                self.plottingSAS(self.Controller, ud, uw, db, wb, "custom", self.getUserModel())
             elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
                 model = self.getModel()+1
                 self.plottingSAS(self.Controller, ud, uw, db, wb, model, np.array(self.getK_lin()))   
@@ -637,15 +687,16 @@ class MainWindow(QMainWindow):
             tau_fit, spec, res, D_fit, self.fit_report = self.Controller.calcSAS(K, self.getUserConc(), db, wb,
                     model,self.getK_lin_bounds()[0], self.getK_lin_bounds()[1],self.getSASOptMethod(), self.getSASIvpMethod()) 
             if self.ui.A_wave.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "3")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.del_A.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "1")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "1", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.heat.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier(), "2")
+                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "2", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.three_in_one.isChecked() == True:
+                print("all good alla")
                 plot = self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.threeD_contour.isChecked() == True:
@@ -1127,6 +1178,107 @@ class MainWindow(QMainWindow):
         return self.ui.SAS_ivpmethod.currentText()
     
         
+    def getUserModel(self):
+        letterstonumbers = { "A":0,
+                            "B":1,
+                            "C":2,
+                            "D":3,
+                            "E":4,
+                            "F":5,
+                            "G":6,
+                            "H":7,
+                            "I":8,
+                            "J":9,
+                            "K":10,
+                            "L":11,
+                            "M":12,
+                            "N":13,
+                            "O":14,
+                            "P":15,
+                            "Q":16,
+                            "R":17,
+                            "S":18,
+                            "T":19,
+                            "U":20,
+                            "V":21,
+                            "W":22,
+                            "X":23,
+                            "Y":24,
+                            "Z":25
+                            }
+
+        eq = self.ui.SAS_user_equation.text()
+
+        tau = self.ui.SAS_user_tau.text().split(',')
+        for i in range(len(tau)):
+                tau[i] = float(tau[i])
+
+        eq_split = eq.split(";")
+        
+        eq_no_arrows = []
+
+        for string in eq_split:
+            temp = string.split("->")
+            eq_no_arrows.append(temp)
+
+        pairs = []
+        for list_ in eq_no_arrows:
+            for i in range(len(list_)-1):
+                pairs.append([list_[i],list_[i+1]])
+
+        for list_ in pairs:
+            for i in range(len(list_)):
+                list_[i] = letterstonumbers[list_[i]]
+                
+        all_letters = np.array(pairs).flatten()
+        species = len(np.unique(all_letters))
+
+        M = np.zeros((species,species))
+
+        list_index = 0
+        for list_ in pairs:
+            if list_[0] < list_[1]:
+                M[list_[0]][list_[0]] += tau[list_index]
+                M[list_[1]][list_[0]] += tau[list_index]
+            else:
+                M[list_[0]][list_[0]] += tau[list_index]
+                M[list_[1]][list_[0]] += tau[list_index]
+            list_index += 1
+        N = np.ones((species,species))
+        np.fill_diagonal(N,-1)
+        M *= N
+        return M
+    
+    def saveUserModel(self):
+        """
+        Saves the currently input reaction equation to the combobox.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.SAS_user_equation.text() == "":
+            pass
+        elif self.ui.SAS_user_saved_equations.findText(self.ui.SAS_user_equation.text()) != -1:
+            pass
+        else:
+            self.ui.SAS_user_saved_equations.addItem(self.ui.SAS_user_equation.text())
+    
+    def deleteUserModel(self):
+        """
+        Deletes the currently selected reaction equation from the combobox.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.SAS_user_saved_equations.currentText() == "":
+            pass
+        else:
+            self.ui.SAS_user_saved_equations.removeItem(self.ui.SAS_user_saved_equations.currentIndex())
+        
         ''' 8.5 SAS Popup '''
 
     def closePopupMatrix(self,popup):
@@ -1277,6 +1429,8 @@ class MainWindow(QMainWindow):
     ''' 10.0 Pickle '''
     
     def savePickle(self):
+        # improve aesthetic with loop?
+        
         """
         Saves the user inputs to reload them for future evaluations.
 
@@ -1307,6 +1461,7 @@ class MainWindow(QMainWindow):
         ksflb = self.getK_lin_bounds()[0]
         ksfub = self.getK_lin_bounds()[1]
         
+        
         if model == 0:
             tau_fix = self.getTaus()[0]
             tau_var = self.getTaus()[1]
@@ -1319,6 +1474,17 @@ class MainWindow(QMainWindow):
              self.Controller.pickleData(model=model,C_0=C_0, db_low=db_low, 
                                         db_high=db_high, wb_low=wb_low,
                                         wb_high=wb_high, cont=cont, time=ud, wave=uw, das_tau=tau)
+        elif self.ui.SAS_modelSelect.currentText() == "User Model":
+             user_tau = self.ui.SAS_user_tau.text()
+             user_eq = self.ui.SAS_user_equation.text()
+             user_lb = self.ui.SAS_user_tau_lb.text()
+             user_ub = self.ui.SAS_user_tau_ub.text()
+             user_models = [self.ui.SAS_user_saved_equations.itemText(i) for i in range(self.ui.SAS_user_saved_equations.count())]
+             self.Controller.pickleData(model=model,C_0=C_0, db_low=db_low, 
+                                        db_high=db_high, wb_low=wb_low,
+                                        wb_high=wb_high, cont=cont, time=ud, wave=uw, 
+                                        user_tau=user_tau,user_eq=user_eq,user_lb=user_lb,user_ub=user_ub,
+                                        user_models=user_models)
         elif self.ui.SAS_modelSelect.currentIndex() <=1 or self.ui.SAS_modelSelect.currentIndex()>3:
             tau = np.array(self.getK_lin())
             self.Controller.pickleData(model=model,C_0=C_0, d_limits_low=db_low, 
@@ -1359,6 +1525,10 @@ class MainWindow(QMainWindow):
 
         """
         self.getPickle()
+        if "user_models" in self.shelf:
+            models = self.shelf["user_models"]
+            for i in range(len(models)):
+                self.ui.SAS_user_saved_equations.addItem(models[i])
         for key in self.shelf:
             val = str(self.shelf[key])
             val = val.replace("[","")
@@ -1403,16 +1573,24 @@ class MainWindow(QMainWindow):
             if key == "db_low":
                 self.ui.lowdelay.setText(val)
             if key == "db_high":
-                self.ui.highdelay.setText(val)
+                self.ui.updelay.setText(val)
             if key == "wb_low":
                 self.ui.lowwave.setText(val)
             if key == "wb_high":
-                self.ui.highwave.setText(val)
+                self.ui.upwave.setText(val)
             if key == "tau_fix":
                 self.ui.tau_fix.setText(val)
             if key == "tau_var":
                 self.ui.tau_var.setText(val)
-            
+            if key == "user_eq":
+                self.ui.SAS_user_equation.setText(val)
+            if key == "user_tau":
+                self.ui.SAS_user_tau.setText(val)
+            if key == "user_lb":
+                self.ui.SAS_user_tau_lb.setText(val)
+            if key == "user_ub":
+                self.ui.SAS_user_tau_ub.setText(val)
+                
     def clearPickle(self):
         """
         Clears the set reloaded user inputs.

@@ -25,12 +25,75 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="OK">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starts the program and saves the user input for future evaluations. Please make sure, that all necessary information is provided.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="folderpath">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the selected folder directory. &lt;/p&gt;&lt;p&gt;Copy and paste the folder directory of the data or use the &amp;quot;Browse&amp;quot; button on the right (recommended).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Select data folder</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="browse">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press to select the folderpath, where the measurement data is located.&lt;/p&gt;&lt;p&gt;There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt &lt;/span&gt;files with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra, delays &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda &lt;/span&gt;in the filename.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTextBrowser" name="TutorialText">
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption spectroscopy data, using a matrix reconstruction algorithm. For now the data analysed by this program needs to be prepared by correcting the group velocity dispersion. This program cannot do that.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;To use it select a folder where ONLY the three relevant .txt files, for &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; are saved. These three words NEED to be part of the name of the respective files. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;On the bottom left various parameters for plotting the data can be set. If left blank the program will use preset standard values. On the bottom right the method of analysis can be selected and to the method corresponding parameters can be set. Multiple inputs NEED to be separeted by a comma, so for decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/README.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+        <property name="openLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="clearCache">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clears the cached input values from the last evaluation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Clear Cache</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout_29">
       <item row="1" column="1">
        <widget class="QStackedWidget" name="SASorDAS_stack">
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="SASorDAS_page1"/>
         <widget class="QWidget" name="SASorDAS_page2">
@@ -41,14 +104,14 @@
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="SAS_page1">
              <layout class="QGridLayout" name="gridLayout_6">
               <item row="0" column="0">
                <widget class="QComboBox" name="SAS_modelSelect">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a kinetic model, through which the data will be analysed.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;General models for any amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 1: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 2: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z&lt;/p&gt;&lt;p&gt;Model 3: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 4: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Specific models for a certain amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 5: A -&amp;gt; B -&amp;gt; C -&amp;gt; D; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model 6: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; B -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 7: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; C -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 8: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E -&amp;gt; F; C -&amp;gt; F&lt;/p&gt;&lt;p&gt;Model 9: A -&amp;gt; B; A -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model 10: A -&amp;gt; B ; B -&amp;gt; C ; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model Custom: Input your own kinetic model. (bugged at the moment)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a kinetic model, through which the data will be analysed.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;General models for any amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 1: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 2: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z&lt;/p&gt;&lt;p&gt;Model 3: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 4: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Specific models for a certain amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 5: A -&amp;gt; B -&amp;gt; C -&amp;gt; D; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model 6: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; B -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 7: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; C -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 8: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E -&amp;gt; F; C -&amp;gt; F&lt;/p&gt;&lt;p&gt;Model 9: A -&amp;gt; B; A -&amp;gt; C&lt;/p&gt;&lt;p&gt;Model 10: A -&amp;gt; B ; B -&amp;gt; C ; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model Custom: Input your own kinetic model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <item>
                  <property name="text">
@@ -105,6 +168,11 @@
                   <string>Custom Model</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>User Model</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="1" column="0">
@@ -116,7 +184,7 @@
                  <item row="0" column="0">
                   <widget class="QLineEdit" name="conc">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;p&gt;For the specific models:&lt;/p&gt;&lt;p&gt;Model 5: four concentrations needed.&lt;/p&gt;&lt;p&gt;Model 6: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 7: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 8: six concentrations needed.&lt;/p&gt;&lt;p&gt;Model 9: three concentrations needed.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;p&gt;For the specific models:&lt;/p&gt;&lt;p&gt;Model 5: four concentrations needed.&lt;/p&gt;&lt;p&gt;Model 6: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 7: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 8: six concentrations needed.&lt;/p&gt;&lt;p&gt;Model 9: three concentrations needed.&lt;/p&gt;&lt;p&gt;Model 10: four concentrations needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="placeholderText">
                     <string>Custom starting concentrations for each species.</string>
@@ -425,6 +493,106 @@ p, li { white-space: pre-wrap; }
              </layout>
             </widget>
             <widget class="QWidget" name="SAS_page5">
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="2" column="0">
+               <widget class="QPushButton" name="SAS_back_user">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_next_user">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="groupBox">
+                <property name="title">
+                 <string>User Model</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_16">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QComboBox" name="SAS_user_saved_equations">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the saved models from previous evaluations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau_lb">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Optional!&lt;/p&gt;&lt;p&gt;To restrict the optimization algorithm, you can input bounds which the lifetimes cannot break.&lt;/p&gt;&lt;p&gt;For the lifetime input of &amp;quot;k1,k2,k3,k4&amp;quot;, if k4 should never be lower then 8000, the input would look like this.&lt;/p&gt;&lt;p&gt;,,,8000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input lower bounds tau</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the kinetic model.&lt;/p&gt;&lt;p&gt;Lifetimes need to be input in the same order as the reaction arrows are in the equation.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;For this equation&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/user reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;with the input&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&amp;quot;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&amp;quot;,&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;the lifetime input would look like:&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;k1,k2,k3,k4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input tau values</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau_ub">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Optional!&lt;/p&gt;&lt;p&gt;To restrict the optimization algorithm, you can input bounds which the lifetimes cannot break.&lt;/p&gt;&lt;p&gt;For the lifetime input of &amp;quot;k1,k2,k3,k4&amp;quot;, if k4 should never be higher then 10000, the input would look like this.&lt;/p&gt;&lt;p&gt;,,,10000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input upper bounds tau</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_equation">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the reaction equation for the kinetic model.&lt;/p&gt;&lt;p&gt;Input has to be in the following form:&lt;/p&gt;&lt;p&gt;For species use letters from A to Z.&lt;/p&gt;&lt;p&gt;For arrows use &amp;quot;-&amp;gt;&amp;quot;.&lt;/p&gt;&lt;p&gt;If the reaction splits or goes backwards, write it after the linear reaction separated by &amp;quot;;&amp;quot;.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/user reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The input for this reaction would be:&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input reaction equation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="SAS_user_save">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the currently input equation, if there is one.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Save</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="SAS_user_del">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes the currently selected equation, if there is one.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Delete</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page6">
              <layout class="QGridLayout" name="gridLayout_22">
               <item row="0" column="0" colspan="2">
                <widget class="QGroupBox" name="SAS_algorithm">
@@ -561,7 +729,7 @@ p, li { white-space: pre-wrap; }
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="SAS_page6">
+            <widget class="QWidget" name="SAS_page7">
              <layout class="QGridLayout" name="gridLayout_40">
               <item row="0" column="0">
                <layout class="QGridLayout" name="gridLayout_39">
@@ -798,7 +966,7 @@ p, li { white-space: pre-wrap; }
              <item row="5" column="0">
               <widget class="QCheckBox" name="three_in_one">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots all three plots above in a single image.&lt;/p&gt;&lt;p&gt;Will only plot the heat map if no specific delay &lt;/p&gt;&lt;p&gt;or wavelength values ar provided.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots all three plots above in a single image. Will only plot the heat map if no specific delay or wavelength values ar provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_all.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>all in one</string>
@@ -814,7 +982,7 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the concentration of each species against the delays.&lt;/p&gt;&lt;p&gt;Only enabled for if SAS is selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the concentration of each species against the delays.&lt;/p&gt;&lt;p&gt;Only enabled for if SAS is selected.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_kinetics.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>kinetics c / t</string>
@@ -824,17 +992,17 @@ p, li { white-space: pre-wrap; }
              <item row="3" column="0">
               <widget class="QCheckBox" name="heat">
                <property name="toolTip">
-                <string>Plots all data in a heatmap.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_heatmap.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>2D heatmap</string>
+                <string>heatmap</string>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
               <widget class="QCheckBox" name="residuals">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_residuals.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>residuals</string>
@@ -846,6 +1014,9 @@ p, li { white-space: pre-wrap; }
              </item>
              <item row="5" column="1">
               <widget class="QCheckBox" name="threeD_contour">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a 3D contour plot.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_3D.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
                <property name="text">
                 <string>3D contour</string>
                </property>
@@ -854,20 +1025,20 @@ p, li { white-space: pre-wrap; }
              <item row="1" column="0">
               <widget class="QCheckBox" name="A_wave">
                <property name="toolTip">
-                <string>Plots the change of absorbtion against the wavelengths.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the change of absorption against the wavelengths. Will only work, if specific wavelengths for data slicing are provided. (See after pressing &amp;quot;Next&amp;quot;.)&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_timeslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>ΔA / λ</string>
+                <string>time slices (ΔA / λ)</string>
                </property>
               </widget>
              </item>
              <item row="2" column="0">
               <widget class="QCheckBox" name="del_A">
                <property name="toolTip">
-                <string>Plots the delays against the change of absorbtion.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the delays against the change of absorption. Will only work, if specific delays for data slicing are provided. (See after pressing &amp;quot;Next&amp;quot;.)&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_waveslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>t / ΔA</string>
+                <string>wavelength slices (t / ΔA)</string>
                </property>
               </widget>
              </item>
@@ -889,7 +1060,7 @@ p, li { white-space: pre-wrap; }
                    <string>raw data</string>
                   </property>
                   <property name="checked">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -912,7 +1083,7 @@ p, li { white-space: pre-wrap; }
              <item row="2" column="1">
               <widget class="QCheckBox" name="reconstructed">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If DAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If SAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If DAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If SAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_DASSAS.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>DAS / SAS (ΔA / λ)</string>
@@ -1081,69 +1252,6 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="OK">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starts the program and saves the user input for future evaluations. Please make sure, that all necessary information is provided.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>OK</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="folderpath">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the selected folder directory. &lt;/p&gt;&lt;p&gt;Copy and paste the folder directory of the data or use the &amp;quot;Browse&amp;quot; button on the right (recommended).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="placeholderText">
-         <string>Select data folder</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="browse">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press to select the folderpath, where the measurement data is located.&lt;/p&gt;&lt;p&gt;There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt &lt;/span&gt;files with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra, delays &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda &lt;/span&gt;in the filename.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Browse</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QTextBrowser" name="TutorialText">
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption spectroscopy data, using a matrix reconstruction algorithm. For now the data analysed by this program needs to be prepared by correcting the group velocity dispersion. This program cannot do that.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;To use it select a folder where ONLY the three relevant .txt files, for &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; are saved. These three words NEED to be part of the name of the respective files. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;On the bottom left various parameters for plotting the data can be set. If left blank the program will use preset standard values. On the bottom right the method of analysis can be selected and to the method corresponding parameters can be set. Multiple inputs NEED to be separeted by a comma, so for decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/README.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-        <property name="openLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="clearCache">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clears the cached input values from the last evaluation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>Clear Cache</string>
-      </property>
-     </widget>
-    </item>
     <item row="3" column="0">
      <layout class="QGridLayout" name="gridLayout_26">
       <item row="0" column="1">
@@ -1172,6 +1280,8 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="Tooltip_images_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

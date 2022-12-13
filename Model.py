@@ -49,24 +49,12 @@ class Model:
         self.spectra = self.initSpectra(spectra_filename)
         self.lambdas = self.initLambdas(lambdas_filename)
         self.model = model
-        self.color = [
-            "tab:blue",
-            "tab:orange",
-            "tab:green",
-            "tab:red",
-            "tab:purple",
-            "tab:brown",
-            "tab:pink",
-            "tab:gray",
-            "tab:olive",
-            "tab:cyan",
-        ]
         self.opt_method = opt_method
         self.ivp_method = ivp_method
 
     def findBorders(self, limits, filename):
         """
-        Finds the indexes for the chosen limits in a set of values.
+        Finds the indices for the chosen limits in a set of values.
         If none are chosen, the borders will automatically be set.
 
         Parameters
@@ -90,12 +78,17 @@ class Model:
             limits[0] = min(values)
         if limits[1] == None:
             limits[1] = max(values)
-        for i in values:
-            if i < limits[0]:
-                borders[0] += 1
-                borders[1] += 1
-            elif i < limits[1]:
-                borders[1] += 1
+        borders[0] = np.absolute(values-limits[0]).argmin()
+        borders[1] = np.absolute(values-limits[1]).argmin()
+        #
+        # Better border finding?
+        #
+        # for i in values:
+        #     if i < limits[0]:
+        #         borders[0] += 1
+        #         borders[1] += 1
+        #     elif i < limits[1]:
+        #         borders[1] += 1
         return borders
 
     def findName(self, delays_filename):
@@ -303,6 +296,12 @@ class Model:
             ones = np.full(Tau.shape, 1)
             K = np.divide(ones, Tau, out=np.zeros_like(Tau),
                                 where=Tau!=0)
+        elif self.model == "user":
+            Tau = self.regenM(tau)
+            n = Tau.shape[0]
+            ones = np.full(Tau.shape, 1)
+            K = np.divide(ones, Tau, out=np.zeros_like(Tau),
+                                where=Tau!=0)
         else:
             ones = np.full(np.array(tau).shape, 1)
             k = np.divide(ones, tau, out=np.zeros_like(tau, dtype='float64'),
@@ -354,7 +353,7 @@ class Model:
         Parameters
         ----------
         tau_guess : list, np.array
-            The custom matrix for the SAS with the decay constants tau.
+            The fitted decay constants for the SAS.
 
         Returns
         -------
@@ -544,35 +543,33 @@ class Model:
         """
         params = Parameters()
         self.tau_fit = []
-        if self.model == "custom":
-            tau_guess = self.getM_lin(tau_guess)
-            for i in tau_guess:
-                params.add('tau_guess'+str(i), tau_guess[i])
         self.tau_fix = tau_fix
         bounds = self.getTauBounds(tau_guess)
         if tau_guess == []:
             self.x_fit = []
             tau_sum = tau_fix
-        else:
-            for i in range(len(tau_guess)):
-                params.add('tau_guess'+str(i), tau_guess[i],
+        if self.model == "custom":
+            tau_guess = self.getM_lin(tau_guess)
+        for i in range(len(tau_guess)):
+            params.add('tau_guess'+str(i), tau_guess[i],
                            min=bounds[i][0], max=bounds[i][1])
-            for i in range(len(tau_fix)):
-                params.add('tau_fix'+str(i), tau_fix[i],
+        for i in range(len(tau_fix)):
+            params.add('tau_fix'+str(i), tau_fix[i],
                             min=bounds[len(tau_guess)-1+i][0], 
                             max=bounds[len(tau_guess)-1+i][1],vary=False)
-            res_fit = minimize(self.getDifference, params, method=opt_method)
-            fit_rep = fit_report(res_fit)
-            if hasattr(res_fit, "success"):
-                if res_fit.success is False:
-                    print("Fitting unsuccesful!")
-            for name, param in res_fit.params.items():
-                tau_sig = round(param.value,2)
-                self.tau_fit.append(tau_sig)
-            if self.model == "custom":
-                tau_sum = self.regenM(self.tau_fit)
-            else:
-                tau_sum = self.tau_fit
+        res_fit = minimize(self.getDifference, params, method=opt_method)
+        fit_rep = fit_report(res_fit)
+        if hasattr(res_fit, "success"):
+            if res_fit.success is False:
+                print("Fitting unsuccesful!")
+        for name, param in res_fit.params.items():
+            tau_sig = round(param.value,2)
+            self.tau_fit.append(tau_sig)
+        if self.model == "custom":
+            print("richitges if: taus",self.tau_fit)
+            tau_sum = self.regenM(self.tau_fit)
+        else:
+            tau_sum = self.tau_fit
         return tau_sum, fit_rep
 
     def calcD_fit(self):
@@ -644,8 +641,8 @@ class Model:
             The minimal value for the colorbar.
 
         """
-        flat_A = [item for i in list(data) for item in i]
-        v_min = min(flat_A)*mul
+        flat_A = data.flatten()
+        v_min = min(flat_A) * mul
         return v_min
 
     def setv_max(self, data, mul):
@@ -666,16 +663,13 @@ class Model:
             The maximal value for the colorbar.
 
         """
-        flat_A = [item for i in list(data) for item in i]
-        v_max = max(flat_A)*mul
+        flat_A = data.flatten()
+        v_max = max(flat_A) * mul
         return v_max
-    
-        def log_tick_formatter(val, pos=None):
-            return r"$10^{{{:.0f}}}$".format(val)
 
     def findNearestIndex(self, x, data):
         """
-        Finds the nearest indexes for the elements in x in the data.
+        Finds the nearest indices for the elements in x in the data.
 
         Parameters
         ----------
@@ -688,7 +682,7 @@ class Model:
         Returns
         -------
         x : list
-            The nearest indixes for the given values.
+            The nearest indices for the given values.
 
         """
         x = list(x)
@@ -735,8 +729,7 @@ class Model:
             ax1.plot(
                 spectra[wave_index[i]],
                 self.delays,
-                label=str(wave[i]) + " nm",
-                color=self.color[i],
+                label=str(wave[i]) + " nm"
             )
 
         ax1.axvline(0, color="black")
@@ -814,10 +807,7 @@ class Model:
         ax2.clabel(contours, inline=False, fontsize=0)
 
         for i in range(len(wave)):
-            ax2.axvline(wave[i], linestyle="-.", color=self.color[i])
-        # ax2.axvline(wave[0], color="blue", linestyle="-.")
-        # ax2.axvline(wave[1], color="orange", linestyle="-.")
-        # ax2.axvline(wave[2], color="green", linestyle="-.")
+            ax2.axvline(wave[i], linestyle="-.")
 
         for i in time:
             ax2.axhline(i, color="black", linestyle="dotted")
@@ -831,7 +821,7 @@ class Model:
             ]
         )
         ax2.set_yticks(())
-        plt.title((self.name + add).replace("_", " "))
+        
         return ax2, cb
 
     def plot3(self, grid, time, time_index, spectra, mul):
@@ -871,9 +861,9 @@ class Model:
                 y[j] = temp[j] + hoehe
             if i == time_index[0]:
                 mini = min(y)
-            ax3.plot(self.lambdas, y, color="black", label=self.delays[i])
+            ax3.plot(self.lambdas, y, color="black")
             ax3.annotate(
-                self.delays[i], (0.5 * (min(self.lambdas) +
+                str(self.delays[i]) + " ps", (0.5 * (min(self.lambdas) +
                                  max(self.lambdas)), hoehe)
             )
             ax3.axhline(hoehe, color="black", linewidth=0.7)
@@ -1037,8 +1027,10 @@ class Model:
         if w3 != 0:
             self.plot3(grid, time, time_index, spectra*mul, mul)
 
-        if w2 == 0:
+        if (w1,w2,w3) != 0:
             plt.suptitle((self.name + add).replace("_", " "))
+        else:
+            plt.title((self.name + add).replace("_", " "))
         plt.tight_layout()
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")

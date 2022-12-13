@@ -81,8 +81,8 @@ class Controller():
             Matrix D with the fitted values for x.
 
         """
-        tau_fix = tau[0]
-        tau_guess = tau[1]
+        tau_fix = np.array(tau[0])
+        tau_guess = np.array(tau[1])
         self.DAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, 0, opt_method, None)
         self.DAS.M = self.DAS.getM(np.concatenate((tau_fix, tau_guess)))
@@ -141,10 +141,10 @@ class Controller():
         self.SAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, model, 
                          opt_method, ivp_method)
-        if model == "custom":
-            self.SAS.setTauBounds(tau_low, tau_high, tau)
+        if model == ("custom" or "user"):
             M_lin = self.SAS.getM_lin(tau)
             K,n = self.SAS.getK(M_lin)
+            self.SAS.setTauBounds(tau_low, tau_high, M_lin)
         else:
             self.SAS.setTauBounds(tau_low, tau_high, tau)
             K,n = self.SAS.getK(tau)
@@ -198,7 +198,7 @@ class Controller():
             The figure containing the plot.
 
         """
-        if len(list(wave)) <= 0 or len(wave) > 10:
+        if len(list(wave)) <= 0:
             if len(list(time)) <= 0:
                 custom = "2"
             else:

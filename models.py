@@ -7,11 +7,12 @@
 
 # Specific models for a certain amount of species
 
-# % Model 5: A -> B -> C -> D; B -> D
-# % Model 6: A -> B -> C -> D -> E; B -> E
-# % Model 7: A -> B -> C -> D -> E; C -> E
-# % Model 8: A -> B -> C -> D -> E -> F; C -> F
-# % Model 9: A -> B; A -> D
+# Model 5: A -> B -> C -> D; B -> D
+# Model 6: A -> B -> C -> D -> E; B -> E
+# Model 7: A -> B -> C -> D -> E; C -> E
+# Model 8: A -> B -> C -> D -> E -> F; C -> F
+# Model 9: A -> B; A -> C
+# Model 10: A -> B ; B -> C ; B -> D
 
 import numpy as np
 

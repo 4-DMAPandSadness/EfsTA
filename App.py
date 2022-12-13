@@ -16,7 +16,7 @@ import time as timee
 # Model 6: A -> B -> C -> D -> E; B -> E
 # Model 7: A -> B -> C -> D -> E; C -> E
 # Model 8: A -> B -> C -> D -> E -> F; C -> F
-# Model 9: A -> B; A -> D
+# Model 9: A -> B; A -> C
 # Model 10: A -> B ; B -> C ; B -> D
 
 # Model "custom"
@@ -30,7 +30,7 @@ import time as timee
 # The path that contains the data files.
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
 # Choose model: 0 for GLA, 1-10 for GTA and "custom" for a custom GTA model.
-model = 0
+model = "custom"
 # Lower and upper limits for the lambdas and delays.
 # [None, None] to use all data.
 l_limits = [350, 750]
@@ -42,7 +42,7 @@ orig = 0
 # Plotting the fitted data: 0 doesn't calculate a fit, 1 outputs the fitted
 # parameters, 2 shows the fitted 3-in-1 plot and 3 shows both.
 # 4 shows the fitted 3D contour plot and the fitted parameters
-fit = 2
+fit = 1
 # Plotting the residuals: 0 doesn't show the residuals, 1 and 2 create a 1D or
 # 2D image and 3 shows both. Only works if fit is not 0.
 resi = 0
@@ -77,10 +77,9 @@ tau_high_b = []
 C_0 = []
 # A custom matrix for the GTA which only works if model=="custom"
 # and the dimension of the matrix is (n,n).
-M = [[-0.5,  0  ,  0  , 0],
-      [ 0.5 , -11,  0.   , 0],
-      [ 0.0,  11, -9e5, 0],
-      [0,    0,  9e5, 0]]
+M = [[-4001, 300, 0],
+ [1, -320,  0],
+ [4000, 20, 0]]
 # M = np.genfromtxt("path")
 # Algorithm used for solving the ivp
 ivp_method = "BDF"
@@ -118,7 +117,6 @@ if model == "custom":
     M = np.array(M)
     ones = np.full(M.shape, 1)
     tau = np.divide(ones, M, out=np.zeros_like(M), where=M!=0)
-    # tau = np.array(M)
     
 
 # Calculation and Plotting
