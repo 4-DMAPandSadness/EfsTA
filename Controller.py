@@ -141,7 +141,7 @@ class Controller():
         self.SAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, model, 
                          opt_method, ivp_method)
-        if model == ("custom" or "user"):
+        if model == ("custom model" or model == "custom matrix"):
             M_lin = self.SAS.getM_lin(tau)
             K,n = self.SAS.getK(M_lin)
             self.SAS.setTauBounds(tau_low, tau_high, M_lin)
@@ -508,7 +508,7 @@ class Controller():
             fig = self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
                               "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_DAS",
                               label = tau)
-        elif model == "custom":
+        elif (model == "custom model" or model == "custom matrix"):
             fig = self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
                               "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
                               label=list(self.SAS.getM_lin(np.array(tau))))
@@ -561,7 +561,7 @@ class Controller():
         myfile.touch(exist_ok=True)
         f = open(myfile, "w")
         
-        if model != "custom":
+        if (model != "custom model" or model != "custom matrix"):
             k_fit = 1/np.array(tau_fit)
         else:
             ones = np.full(tau_fit.shape, 1)
@@ -617,7 +617,7 @@ class Controller():
             text = f.read()
         return text
     
-    def pickleData(self, **kwargs):
+    def pickleData(self, dict_):
         """
         This method saves the given data in the shelve. 
         Keyword arguments must be given as key=value.
@@ -659,10 +659,10 @@ class Controller():
         txt = name+"_pickle"
         s = shelve.open(path+txt, writeback=True)
         s.clear()
-        for key, value in kwargs.items():
+        for key, value in dict_.items():
             s[key] = value
         s.close()
-
+        
     def getPickle(self):
         """
         Transforms the shelve in a dictionary which can be accessed to obtain

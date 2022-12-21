@@ -1,0 +1,1362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>759</width>
+    <height>758</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>EfsTA</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_30">
+    <item row="3" column="1">
+     <widget class="QCheckBox" name="Theme">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes the design of the program between dark (default) and light.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Light Theme</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="OK">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starts the program and saves the user input for future evaluations. Please make sure, that all necessary information is provided.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="folderpath">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the selected folder directory. &lt;/p&gt;&lt;p&gt;Copy and paste the folder directory of the data or use the &amp;quot;Browse&amp;quot; button on the right (recommended).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Select data folder</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="browse">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Press to select the folderpath, where the measurement data is located.&lt;/p&gt;&lt;p&gt;There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt &lt;/span&gt;files with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra, delays &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda &lt;/span&gt;in the filename.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTextBrowser" name="TutorialText">
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption spectroscopy data, using a matrix reconstruction algorithm. For now the data analysed by this program needs to be prepared by correcting the group velocity dispersion. This program cannot do that.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;To use it select a folder where ONLY the three relevant .txt files, for &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; are saved. These three words NEED to be part of the name of the respective files. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;On the bottom left various parameters for plotting the data can be set. If left blank the program will use preset standard values. On the bottom right the method of analysis can be selected and to the method corresponding parameters can be set. Multiple inputs NEED to be separeted by a comma, so for decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/README.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+        <property name="openLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="clearCache">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clears the cached input values from the last evaluation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Clear Cache</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QGridLayout" name="gridLayout_29">
+      <item row="1" column="1">
+       <widget class="QStackedWidget" name="SASorDAS_stack">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="SASorDAS_page1"/>
+        <widget class="QWidget" name="SASorDAS_page2">
+         <layout class="QGridLayout" name="gridLayout_31">
+          <item row="0" column="0">
+           <widget class="QStackedWidget" name="SAS_stack">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="currentIndex">
+             <number>5</number>
+            </property>
+            <widget class="QWidget" name="SAS_page1">
+             <layout class="QGridLayout" name="gridLayout_6">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="SAS_modelSelect">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a kinetic model, through which the data will be analysed.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;General models for any amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 1: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 2: A -&amp;gt; B -&amp;gt; C ... -&amp;gt; Z&lt;/p&gt;&lt;p&gt;Model 3: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z -&amp;gt; 0&lt;/p&gt;&lt;p&gt;Model 4: A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C ... &amp;lt;=&amp;gt; Z&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Specific models for a certain amount of species:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Model 5: A -&amp;gt; B -&amp;gt; C -&amp;gt; D; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model 6: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; B -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 7: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E; C -&amp;gt; E&lt;/p&gt;&lt;p&gt;Model 8: A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; E -&amp;gt; F; C -&amp;gt; F&lt;/p&gt;&lt;p&gt;Model 9: A -&amp;gt; B; A -&amp;gt; C&lt;/p&gt;&lt;p&gt;Model 10: A -&amp;gt; B ; B -&amp;gt; C ; B -&amp;gt; D&lt;/p&gt;&lt;p&gt;Model Custom: Input your own kinetic model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Model 1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 5</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 6</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 7</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 8</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 9</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Model 10</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Custom Model</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>User Model</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="Concentrations">
+                <property name="title">
+                 <string>Concentrations</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_15">
+                 <item row="0" column="0">
+                  <widget class="QLineEdit" name="conc">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the initial concentration for each species manually. (optional)&lt;/p&gt;&lt;p&gt;If left blank, resorts to default [1,0,0....].&lt;/p&gt;&lt;p&gt;For the specific models:&lt;/p&gt;&lt;p&gt;Model 5: four concentrations needed.&lt;/p&gt;&lt;p&gt;Model 6: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 7: five concentrations needed.&lt;/p&gt;&lt;p&gt;Model 8: six concentrations needed.&lt;/p&gt;&lt;p&gt;Model 9: three concentrations needed.&lt;/p&gt;&lt;p&gt;Model 10: four concentrations needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Custom starting concentrations for each species.</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="SAS_next_model">
+                <property name="toolTip">
+                 <string>Moves to the next page, where guesses for the reaction rate constants can be put in.</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page2">
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0" colspan="2">
+               <widget class="QGroupBox" name="reaction_rate_constants_eq">
+                <property name="title">
+                 <string>Initial tau guesses</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_10">
+                 <item row="2" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_eq_high">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lower bounds for each lifetime of the forwards reactions.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two forwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; 	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1_upper_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2_upper_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input upper bounds for τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_eq">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lifetimes for the forwards reactions. &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(lifetime: τ = 1/&lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt;, with &lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt; as the &amp;quot;reaction rate constant&amp;quot;)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;         τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C 	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;,τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt;         τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="ks_backwards_eq">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the reaction rate constants for the backwards reactions.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(lifetime: τ = 1/&lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt;, with &lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt; as the &amp;quot;reaction rate constant&amp;quot;)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;         τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A &amp;lt;=&amp;gt; B &amp;lt;=&amp;gt; C 	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt;,τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt;         τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input τ_backwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLineEdit" name="ks_backwards_eq_high">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the upper bounds for each lifetime of the backwards reactions.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two backwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4&lt;/span&gt; 	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3_upper_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4_upper_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input upper bounds for τ_backwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_eq_low">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lower bounds for each lifetime of the forwards reactions.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; text-decoration: underline;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two forwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1_lower_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2_lower_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input lower bounds for τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLineEdit" name="ks_backwards_eq_low">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lower bounds for each lifetime of the backwards reactions.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two backwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4&lt;/span&gt; 	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3_lower_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;4_lower_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input lower bounds for τ_backwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_back_ks_eq">
+                <property name="toolTip">
+                 <string>Moves back to the model selection.</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="SAS_next_eq">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to the algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page3">
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="0" column="0" colspan="2">
+               <widget class="QGroupBox" name="reaction_rate_constants_li">
+                <property name="title">
+                 <string>Initital tau guesses</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="0" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_lin">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lifetimes for the forwards reactions.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(lifetime: τ = 1/&lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt;, with &lt;span style=&quot; font-style:italic;&quot;&gt;k&lt;/span&gt; as the &amp;quot;reaction rate constant&amp;quot;)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;   τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;     τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A -&amp;gt; B -&amp;gt; C 		Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;,τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_lin_high">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the upper bounds for each lifetime of the forwards reactions.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; text-decoration: underline;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two forwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1_upper_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2_upper_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input upper bounds for τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="ks_forwards_lin_low">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lower bounds for each lifetime of the forwards reactions.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; text-decoration: underline;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two forwards reactions: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1_lower_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2_lower_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input lower bounds for τ_forwards</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_back_ks_lin">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="SAS_next_lin">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to the algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page4">
+             <layout class="QGridLayout" name="gridLayout_27">
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_back_custom">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="SAS_table_custom">
+                <property name="toolTip">
+                 <string>Opens up the custom table to input the matrix values.</string>
+                </property>
+                <property name="text">
+                 <string>Table</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="SAS_next_custom">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to the algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="3">
+               <widget class="QGroupBox" name="customMatrixInput">
+                <property name="title">
+                 <string>Custom Lifetime Matrix</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_28">
+                 <item row="1" column="0">
+                  <widget class="QSpinBox" name="rows_and_columns">
+                   <property name="toolTip">
+                    <string>Input the number of rows and columns of the custom square matrix.</string>
+                   </property>
+                   <property name="specialValueText">
+                    <string>rows and columns</string>
+                   </property>
+                   <property name="minimum">
+                    <number>0</number>
+                   </property>
+                   <property name="maximum">
+                    <number>99</number>
+                   </property>
+                   <property name="value">
+                    <number>0</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page5">
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="2" column="0">
+               <widget class="QPushButton" name="SAS_back_user">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_next_user">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="groupBox">
+                <property name="title">
+                 <string>User Model</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_16">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QComboBox" name="SAS_user_saved_equations">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Displays the saved models from previous evaluations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="duplicatesEnabled">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau_lb">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Optional!&lt;/p&gt;&lt;p&gt;To restrict the optimization algorithm, you can input bounds which the lifetimes cannot break.&lt;/p&gt;&lt;p&gt;For the lifetime input of &amp;quot;k1,k2,k3,k4&amp;quot;, if k4 should never be lower then 8000, the input would look like this.&lt;/p&gt;&lt;p&gt;,,,8000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input lower bounds tau</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the kinetic model.&lt;/p&gt;&lt;p&gt;Lifetimes need to be input in the same order as the reaction arrows are in the equation.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;For this equation&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/user reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;with the input&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&amp;quot;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&amp;quot;,&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;the lifetime input would look like:&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;k1,k2,k3,k4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input tau values</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_tau_ub">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Optional!&lt;/p&gt;&lt;p&gt;To restrict the optimization algorithm, you can input bounds which the lifetimes cannot break.&lt;/p&gt;&lt;p&gt;For the lifetime input of &amp;quot;k1,k2,k3,k4&amp;quot;, if k4 should never be higher then 10000, the input would look like this.&lt;/p&gt;&lt;p&gt;,,,10000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input upper bounds tau</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" colspan="2">
+                  <widget class="QLineEdit" name="SAS_user_equation">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the reaction equation for the kinetic model.&lt;/p&gt;&lt;p&gt;Input has to be in the following form:&lt;/p&gt;&lt;p&gt;For species use letters from A to Z.&lt;/p&gt;&lt;p&gt;For arrows use &amp;quot;-&amp;gt;&amp;quot;.&lt;/p&gt;&lt;p&gt;If the reaction splits or goes backwards, write it after the linear reaction separated by &amp;quot;;&amp;quot;.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/user reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The input for this reaction would be:&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input reaction equation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="SAS_user_save">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the currently input equation, if there is one.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Save</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="SAS_user_del">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes the currently selected equation, if there is one.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Delete</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page6">
+             <layout class="QGridLayout" name="gridLayout_22">
+              <item row="0" column="0" colspan="2">
+               <widget class="QGroupBox" name="SAS_algorithm">
+                <property name="title">
+                 <string>Algorithm choices</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_21">
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="SAS_optmethod">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Nelder-Mead</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>least_squares</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Powell</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>CG</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>BFGS</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>L-BFGS-B</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>TNC</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>COBYLA</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>SLSQP</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>trust-constr</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>basinhopping</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ampgo</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QComboBox" name="SAS_ivpmethod">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the ivp solver.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>BDF</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>RK45</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>RK23</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>DOP853</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Radau</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>LSODA</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="SAS_alg_back">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="SAS_alg_done">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirms the input.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Done</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="SAS_page7">
+             <layout class="QGridLayout" name="gridLayout_40">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_39">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="Final_Message_SAS">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;To start the program, click OK.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;To change the model, the constants, the concentrations&lt;/p&gt;&lt;p align=&quot;center&quot;&gt; or the algorithms click Back.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;To change the analysis method,&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;toggle the radio button above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="SAS_back_fin">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the model selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Back</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="SASorDAS_page3">
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="0" column="0">
+           <widget class="QStackedWidget" name="DAS_stack">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="DAS_page1">
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="tau_guesses">
+                <property name="title">
+                 <string>Initial tau guesses</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="tau_var">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the lifetimes, which are to be fitted.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Three species with different lifetimes.&lt;/p&gt;&lt;p&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; = 1.2 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; = 106 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt; = 1 μs&lt;/p&gt;&lt;p&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3 &lt;/span&gt;is too long for fsTA.&lt;/p&gt;&lt;p&gt;Input: 1.2, 106&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input variable tau values</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLineEdit" name="tau_fix">
+                   <property name="toolTip">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input the lifetimes, which are not to be fitted.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Three species with different lifetimes.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; = 1.2 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; = 106 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt; = 1 μs&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3 &lt;/span&gt;is too long for fsTA.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Input: 100000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Input fixed tau values</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="DAS_next">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves to the algorithm selection.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Next</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="DAS_page2">
+             <layout class="QGridLayout" name="gridLayout_23">
+              <item row="0" column="0" colspan="2">
+               <widget class="QGroupBox" name="DAS_algorithm">
+                <property name="title">
+                 <string>Algorithm choices</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_33">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QComboBox" name="DAS_optmethod">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Nelder-Mead</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>least_squares</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Powell</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>CG</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>BFGS</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>L-BFGS-B</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>TNC</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>COBYLA</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>SLSQP</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>trust-constr</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>basinhopping</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ampgo</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="DAS_alg_back">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the tau guesses.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="DAS_alg_done">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirms the input.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Done</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="DAS_page3">
+             <layout class="QGridLayout" name="gridLayout_36">
+              <item row="0" column="0">
+               <widget class="QLabel" name="Final_Message_DAS">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;To start the program, click OK.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;To change the lifetimes, click Back.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;To change the analysis method,&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;toggle the radio button above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="DAS_back">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the tau guesses.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Back</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="0" rowspan="2">
+       <widget class="QStackedWidget" name="Plot_stack">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="plot_page1">
+         <layout class="QGridLayout" name="gridLayout_32">
+          <item row="0" column="0">
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;One this page, you can choose which data to plot. You can also choose which types of plots are to be created. At least one type of data and one type of plot have to be selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="title">
+             <string>Plot choices</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="three_in_one">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots all three plots above in a single image. Will only plot the heat map if no specific delay or wavelength values ar provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_all.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>all in one</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="kinetics">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the concentration of each species against the delays.&lt;/p&gt;&lt;p&gt;Only enabled for if SAS is selected.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_kinetics.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>kinetics c / t</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="heat">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_heatmap.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>heatmap</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="residuals">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_residuals.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>residuals</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QCheckBox" name="threeD_contour">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a 3D contour plot.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_3D.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>3D contour</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="A_wave">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the change of absorption against the wavelengths. Will only work, if specific wavelengths for data slicing are provided. (See after pressing &amp;quot;Next&amp;quot;.)&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_timeslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>time slices (ΔA / λ)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="del_A">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the delays against the change of absorption. Will only work, if specific delays for data slicing are provided. (See after pressing &amp;quot;Next&amp;quot;.)&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_waveslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>wavelength slices (t / ΔA)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QFrame" name="frame">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_14">
+                <item row="0" column="0">
+                 <widget class="QCheckBox" name="raw">
+                  <property name="toolTip">
+                   <string>If selected, plots the raw unanalysed data.</string>
+                  </property>
+                  <property name="text">
+                   <string>raw data</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QCheckBox" name="fitted">
+                  <property name="toolTip">
+                   <string>If selected, plots the analysed data.</string>
+                  </property>
+                  <property name="text">
+                   <string>fitted data</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QCheckBox" name="reconstructed">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If DAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If SAS is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/pictures/example plots/ex_DASSAS.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>DAS / SAS (ΔA / λ)</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="plot_next">
+            <property name="toolTip">
+             <string>Moves to the next page, where additional plot details can be set.</string>
+            </property>
+            <property name="text">
+             <string>Next</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="plot_page2">
+         <layout class="QGridLayout" name="gridLayout_35">
+          <item row="0" column="0">
+           <widget class="QGroupBox" name="Plotting_details">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;On this page further plotting details can be set. All of these are optional. If left empty, arbitrary default values will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="title">
+             <string>Plotting details</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_34">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="2" column="0">
+                <widget class="QLineEdit" name="wavelengthsinput">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific wavelengths to plot. Only effects the &amp;quot;t / ΔA&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;If left empty resorts to default values. [Default: 360, 560, 700 nm]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>specific wavelengths</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QSpinBox" name="contour">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the amount of contour lines in the heatmap. Only effects the &amp;quot;2D heatmap&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;If left empty / at 0, resorts to a default value. [Default: 20]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="specialValueText">
+                  <string>Contour lines</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLineEdit" name="delaysinput">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific delay times to plot. Only effects the &amp;quot;ΔA / λ&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;If left empty resorts to default values. [Default: 4, 67, 130 ps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>specific delays</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLineEdit" name="updelay">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set an upper bound for the time frame to analyse. &lt;/p&gt;&lt;p&gt;If left empty resorts to a default value. [Default: 3000 ps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>upper delay bound</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLineEdit" name="lowdelay">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the time frame to analyse. &lt;/p&gt;&lt;p&gt;If left empty resorts to a default value. [Default: 0.3 ps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>lower delay bound</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLineEdit" name="upwave">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength spectrum to analyse. &lt;/p&gt;&lt;p&gt;If left empty resorts to a default value. [Default: 800 nm]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>upper lambda bound</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLineEdit" name="lowwave">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength spectrum to analyse. &lt;/p&gt;&lt;p&gt;If left empty resorts to a default value. [Default: 355 nm]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>lower lambda bound</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLineEdit" name="multiplier">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a multiplier for the absorption data.&lt;/p&gt;&lt;p&gt;If left empty, resorts to a default value. [Default: 1]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>ΔA data multiplier</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="plot_back">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Moves back to the plot choices.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Back</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="DAS_radio">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If selected, the data will be analysed using Global Lifetime Analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>GLA</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="SAS_radio">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If selected, the data will be analysed using Global Target Analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>GTA</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <layout class="QGridLayout" name="gridLayout_26">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="cancel">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Closes the program and saves the user input for future evaluations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Cancel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>759</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>folderpath</tabstop>
+  <tabstop>browse</tabstop>
+  <tabstop>TutorialText</tabstop>
+  <tabstop>SAS_radio</tabstop>
+  <tabstop>DAS_radio</tabstop>
+  <tabstop>raw</tabstop>
+  <tabstop>fitted</tabstop>
+  <tabstop>A_wave</tabstop>
+  <tabstop>kinetics</tabstop>
+  <tabstop>del_A</tabstop>
+  <tabstop>reconstructed</tabstop>
+  <tabstop>heat</tabstop>
+  <tabstop>residuals</tabstop>
+  <tabstop>three_in_one</tabstop>
+  <tabstop>threeD_contour</tabstop>
+  <tabstop>delaysinput</tabstop>
+  <tabstop>wavelengthsinput</tabstop>
+  <tabstop>lowdelay</tabstop>
+  <tabstop>updelay</tabstop>
+  <tabstop>lowwave</tabstop>
+  <tabstop>upwave</tabstop>
+  <tabstop>contour</tabstop>
+  <tabstop>multiplier</tabstop>
+  <tabstop>SAS_modelSelect</tabstop>
+  <tabstop>conc</tabstop>
+  <tabstop>SAS_next_model</tabstop>
+  <tabstop>ks_forwards_eq</tabstop>
+  <tabstop>ks_forwards_eq_low</tabstop>
+  <tabstop>ks_forwards_eq_high</tabstop>
+  <tabstop>ks_backwards_eq</tabstop>
+  <tabstop>ks_backwards_eq_low</tabstop>
+  <tabstop>ks_backwards_eq_high</tabstop>
+  <tabstop>ks_forwards_lin</tabstop>
+  <tabstop>ks_forwards_lin_low</tabstop>
+  <tabstop>ks_forwards_lin_high</tabstop>
+  <tabstop>rows_and_columns</tabstop>
+  <tabstop>SAS_table_custom</tabstop>
+  <tabstop>SAS_user_saved_equations</tabstop>
+  <tabstop>SAS_user_equation</tabstop>
+  <tabstop>SAS_user_save</tabstop>
+  <tabstop>SAS_user_del</tabstop>
+  <tabstop>SAS_user_tau</tabstop>
+  <tabstop>SAS_user_tau_lb</tabstop>
+  <tabstop>SAS_user_tau_ub</tabstop>
+  <tabstop>DAS_alg_back</tabstop>
+  <tabstop>DAS_alg_done</tabstop>
+  <tabstop>DAS_back</tabstop>
+  <tabstop>SAS_next_user</tabstop>
+  <tabstop>DAS_optmethod</tabstop>
+  <tabstop>SAS_optmethod</tabstop>
+  <tabstop>SAS_ivpmethod</tabstop>
+  <tabstop>SAS_next_custom</tabstop>
+  <tabstop>SAS_alg_back</tabstop>
+  <tabstop>clearCache</tabstop>
+  <tabstop>DAS_next</tabstop>
+  <tabstop>SAS_back_user</tabstop>
+  <tabstop>plot_next</tabstop>
+  <tabstop>SAS_next_eq</tabstop>
+  <tabstop>SAS_next_lin</tabstop>
+  <tabstop>SAS_back_ks_eq</tabstop>
+  <tabstop>tau_var</tabstop>
+  <tabstop>tau_fix</tabstop>
+  <tabstop>SAS_alg_done</tabstop>
+  <tabstop>SAS_back_ks_lin</tabstop>
+  <tabstop>SAS_back_fin</tabstop>
+  <tabstop>SAS_back_custom</tabstop>
+  <tabstop>plot_back</tabstop>
+  <tabstop>Theme</tabstop>
+  <tabstop>OK</tabstop>
+  <tabstop>cancel</tabstop>
+ </tabstops>
+ <resources>
+  <include location="Tooltip_images_resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

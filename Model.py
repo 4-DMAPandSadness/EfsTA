@@ -290,13 +290,7 @@ class Model:
             The number of species.
 
         """
-        if self.model == "custom":
-            Tau = self.regenM(tau)
-            n = Tau.shape[0]
-            ones = np.full(Tau.shape, 1)
-            K = np.divide(ones, Tau, out=np.zeros_like(Tau),
-                                where=Tau!=0)
-        elif self.model == "user":
+        if (self.model == "custom model" or self.model == "custom matrix"):
             Tau = self.regenM(tau)
             n = Tau.shape[0]
             ones = np.full(Tau.shape, 1)
@@ -511,10 +505,7 @@ class Model:
             Difference between the modeled data and the experimental data.
 
         """
-        tau_dict = tau.valuesdict()
-        tau_sum = []
-        for x in tau_dict:
-            tau_sum.append(tau_dict[x])
+        tau_sum = list(tau.valuesdict().values())
         self.M = self.getM(tau_sum)
         difference = self.calcA_tau(tau_sum) - self.spectra
         return difference
@@ -548,7 +539,7 @@ class Model:
         if tau_guess == []:
             self.x_fit = []
             tau_sum = tau_fix
-        if self.model == "custom":
+        if (self.model == "custom model" or self.model == "custom matrix"):
             tau_guess = self.getM_lin(tau_guess)
         for i in range(len(tau_guess)):
             params.add('tau_guess'+str(i), tau_guess[i],
@@ -565,8 +556,7 @@ class Model:
         for name, param in res_fit.params.items():
             tau_sig = round(param.value,2)
             self.tau_fit.append(tau_sig)
-        if self.model == "custom":
-            print("richitges if: taus",self.tau_fit)
+        if (self.model == "custom model" or self.model == "custom matrix"):
             tau_sum = self.regenM(self.tau_fit)
         else:
             tau_sum = self.tau_fit
@@ -1067,6 +1057,8 @@ class Model:
         plt.title((str(self.name) + str(add)).replace("_", " "))
         plt.xlabel(x_label)
         plt.ylabel(y_label)
+        if add == "_GTA_kin" or add == "_GLA_kin":
+            plt.xscale("log")
         if label != None:
             plt.legend(label, frameon=False, labelcolor="linecolor",
                        handlelength=0)
