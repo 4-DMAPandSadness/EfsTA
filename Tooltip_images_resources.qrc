@@ -4,10 +4,10 @@
     <file>pictures/matrix example.png</file>
   </qresource>
   <qresource prefix="User">
-    <file>pictures/user reaction example.png</file>
+    <file>pictures/preset tau example.png</file>
+    <file>pictures/custom tau example.png</file>
   </qresource>
   <qresource prefix="Plots">
-    <file>pictures/example plots/ex_3D.png</file>
     <file>pictures/example plots/ex_all.png</file>
     <file>pictures/example plots/ex_DASSAS.png</file>
     <file>pictures/example plots/ex_heatmap.png</file>
@@ -15,5 +15,6 @@
     <file>pictures/example plots/ex_residuals.png</file>
     <file>pictures/example plots/ex_timeslice.png</file>
     <file>pictures/example plots/ex_waveslice.png</file>
+    <file>pictures/example plots/ex_3D.png</file>
   </qresource>
 </RCC>

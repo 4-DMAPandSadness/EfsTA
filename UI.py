@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLineEdit, 
                              QSpinBox, QComboBox, QTreeWidgetItemIterator,
-                             QButtonGroup, QRadioButton)
+                             QButtonGroup)
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
@@ -169,34 +169,9 @@ class MainWindow(QMainWindow):
     def __init__(self): 
         super(MainWindow,self).__init__()
         self.ui = loadUi("gui.ui",self)
-        self.default_palette = QGuiApplication.palette()
         self.startUp()
-        self.ui.stack.setCurrentIndex(0)
-
-        self.ui.stack.currentChanged.connect(self.presentInputs)
-        self.ui.Data_browse.clicked.connect(self.selectFolderPath)
-        self.ui.user_input_tree.resizeColumnToContents(1)
-
-        self.ui.user_input_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        self.finalInputs = {}
-        self.PltView = []
-        
-        self.radios = QButtonGroup(self)
-        self.radios.addButton(self.ui.GLA_radio)
-        self.radios.addButton(self.ui.GTA_radio_preset_model)
-        self.radios.addButton(self.ui.GTA_radio_custom_model)
-        self.radios.addButton(self.ui.GTA_radio_custom_matrix)
-        
-        self.ui.Theme.stateChanged.connect(self.changeTheme)
-        
-        self.ui.user_confirm.clicked.connect(self.finalCheck)
-        
-        self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
-        
-        self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
-        
-        EfsTA.aboutToQuit.connect(self.onQuit)
-        
+        self.functionality()
+  
     def startUp(self):
         """
         Ensures that upon startup everything is shown correctly. Sets the 
@@ -207,6 +182,16 @@ class MainWindow(QMainWindow):
         None.
 
         """
+        self.default_palette = QGuiApplication.palette()
+        self.finalInputs = {}
+        self.PltView = []
+        self.ui.user_input_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        self.radios = QButtonGroup(self)
+        self.radios.addButton(self.ui.GLA_radio)
+        self.radios.addButton(self.ui.GTA_radio_preset_model)
+        self.radios.addButton(self.ui.GTA_radio_custom_model)
+        self.radios.addButton(self.ui.GTA_radio_custom_matrix)
+        self.ui.stack.setCurrentIndex(0)
         self.ui.Theme.setChecked(False)
         self.changeTheme()
         
@@ -214,6 +199,16 @@ class MainWindow(QMainWindow):
     def onQuit(self):
         EfsTA.setPalette(self.default_palette)
         self.savePickle()
+        
+    def functionality(self):
+        self.ui.stack.currentChanged.connect(self.presentInputs)
+        self.ui.Data_browse.clicked.connect(self.selectFolderPath)
+        self.ui.Theme.stateChanged.connect(self.changeTheme)
+        self.ui.user_confirm.clicked.connect(self.finalCheck)      
+        self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
+        self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
+        self.ui.GTA_open_table.clicked.connect(self.checkIfCustomMatrixSizeEmpty)
+        EfsTA.aboutToQuit.connect(self.onQuit)      
         
     def checkIfWavelengthSlicesEmpty(self):
         """
@@ -743,7 +738,8 @@ class MainWindow(QMainWindow):
             The multiplier for the ΔA data input by the user.
 
         """
-        if self.ui.Data_input_multiplier.text() == "":
+        if (self.ui.Data_input_multiplier.text() == "" or 
+            int(self.ui.Data_input_multiplier.text()) <=0):
             mul = 1
         else:
             mul = int(self.ui.Data_input_multiplier.text())
@@ -1017,7 +1013,7 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        self.custom_matrix = popup.CM
+        self.custom_matrix = popup.custom_matrix
         popup.close()
     
     def openPopUpMatrixInput(self,size):
@@ -1170,7 +1166,7 @@ class MainWindow(QMainWindow):
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
-            self.finalInputs['Matrix'] = self.custom_matrix
+            self.finalInputs['Matrix'] = str(self.custom_matrix)
         if self.ui.plot_raw.isChecked() == True:
             self.finalInputs['Selected Data'] = ', Raw Data'
         if self.ui.plot_fitted.isChecked() == True:
@@ -1191,7 +1187,10 @@ class MainWindow(QMainWindow):
             self.finalInputs['Selected Plots'] += ', Three In One'
         if self.ui.plot_threed_contour.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', 3D Contour'
-        self.finalInputs['Contour Lines'] = str(self.ui.plot_input_contour.value())
+        if self.ui.plot_input_contour.value() !=0:
+            self.finalInputs['Contour Lines'] = str(self.ui.plot_input_contour.value())
+        else:
+            self.finalInputs['Contour Lines'] = str(20)
         self.finalInputs['Delay Slices'] = self.ui.plot_input_delay_slices.text()      
         self.finalInputs['Wavelength Slices'] = self.ui.plot_input_wavelength_slices.text()
         self.finalInputs['Selected Data'] = self.finalInputs['Selected Data'][2:]

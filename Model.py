@@ -1029,7 +1029,7 @@ class Model:
 
     def plotData(self, x, y, x_label, y_label, add="", label=None):
         """
-        Allows for the plotting of 1D data.
+        Allows for the plotting of any 2D data.
 
         Parameters
         ----------
