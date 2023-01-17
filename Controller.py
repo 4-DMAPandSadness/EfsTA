@@ -159,7 +159,7 @@ class Controller():
                          self.SAS.delays, self.SAS.spectra)
         return tau_fit, spec, res, D_fit, fit_report
 
-    def plot3OrigData(self, wave, time, v_min, v_max, d_limits, l_limits,
+    def plot3OrigData(self, wave, time, v_min, v_max,
                       cont, mul, opt_method, ivp_method):
         """
         Allows the plotting of the original data in a 3-in-1 plot.
@@ -178,10 +178,6 @@ class Controller():
             Lower limit for the colorbar.
         v_max : float
             Upper limit for the colorbar.
-        d_limits : list with two int/float elements
-            Lower and upper limits for the delay values.
-        l_limits : list with two int/float elements
-            Lower and upper limits for the lambda values.
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -211,7 +207,7 @@ class Controller():
                             v_min, v_max, custom, cont, mul)
         return fig
     
-    def plot3DOrigData(self, v_min, v_max, d_limits, l_limits,
+    def plot3DOrigData(self, v_min, v_max,
                       mul, opt_method, ivp_method):
         """
         Allows the plotting of the original data in a 3D contour plot.
@@ -222,10 +218,6 @@ class Controller():
             Lower limit for the colorbar.
         v_max : float
             Upper limit for the colorbar.
-        d_limits : list with two int/float elements
-            Lower and upper limits for the delay values.
-        l_limits : list with two int/float elements
-            Lower and upper limits for the lambda values.
         mul : float
             The value by which data will be multiplied.
         opt_method : string
@@ -330,7 +322,10 @@ class Controller():
             The upper and lower bound for the delay values.
         l_limits : list
             The upper and lower value for the wavelenght bounds.
-
+        opt_method: str
+            The name of the optimizer algorithm.
+        ivp_method: str
+            The name of the ivp solver algorithm.
         Returns
         -------
         None.

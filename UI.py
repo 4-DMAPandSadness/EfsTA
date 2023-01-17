@@ -197,10 +197,26 @@ class MainWindow(QMainWindow):
         
         
     def onQuit(self):
+        """
+        Resets the color theme of the application and saves input values.
+
+        Returns
+        -------
+        None.
+
+        """
         EfsTA.setPalette(self.default_palette)
         self.savePickle()
         
     def functionality(self):
+        """
+        Adds functionality to the respective UI element.
+
+        Returns
+        -------
+        None.
+
+        """
         self.ui.stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(self.selectFolderPath)
         self.ui.Theme.stateChanged.connect(self.changeTheme)
@@ -208,6 +224,10 @@ class MainWindow(QMainWindow):
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
         self.ui.GTA_open_table.clicked.connect(self.checkIfCustomMatrixSizeEmpty)
+        self.ui.Plotting_plot.clicked.connect(self.onlyPlotting)
+        self.ui.plot_fitted.stateChanged.connect(self.disableFitted)
+        self.ui.GTA_custom_model_save.clicked.connect(self.saveCustomModel)
+        self.ui.GTA_custom_model_del.clicked.connect(self.deleteCustomModel)
         EfsTA.aboutToQuit.connect(self.onQuit)      
         
     def checkIfWavelengthSlicesEmpty(self):
@@ -403,42 +423,88 @@ class MainWindow(QMainWindow):
         """
         self.Controller = Cont.Controller(self.getFolderPath())
         self.savePickle()
-        ud = sorted(self.getDelaySlices())
-        uw = sorted(self.getWavelengthSlices())
+        ds = sorted(self.getDelaySlices())
+        ws = sorted(self.getWavelengthSlices())
         db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
         wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+        
         if self.GLA_radio.isChecked() == True:
             model = 0
-            self.plottingDAS(self.Controller,ud,uw,db,wb)
+            self.calculationGLA(db, wb)
+            self.plottingDAS(ds,ws)
+        
         elif self.GTA_radio_preset_model.isChecked() == True:
-                model = self.getPresetModel()+1
-                self.plottingSAS(self.Controller, ud, uw, db, wb, model, np.array(self.getGTAPresetModelTaus()))
+            model = self.getPresetModel()+1
+            K = np.array(self.getGTAPresetModelTaus())
+            self.calculationGTA(db,wb,model,K)
+            self.plottingSAS(db, wb, self.tau_fit)
+        
         elif self.GTA_radio_custom_model.isChecked() == True:
-                model = "custom model"
-                self.plottingSAS(self.Controller, ud, uw, db, wb, model, self.getUserModel())
+            model = "custom model"
+            K = self.getUserModel()
+            self.calculationGTA(db,wb,model,K)
+            self.plottingSAS(db, wb, self.tau_fit)
+        
         elif self.GTA_radio_custom_matrix.isChecked() == True:
-                model = "custom matrix"
-                self.plottingSAS(self.Controller, ud, uw, db, wb, model,self.custom_matrix)   
-        if self.ui.plot_fitted.isChecked() == True:
-            self.openPopUpResults(model, self.Controller, self.fit_report)
+            model = "custom matrix"
+            K = self.custom_matrix
+            self.calculationGTA(db,wb,model,K)
+            self.plottingSAS(db, wb, self.tau_fit)
 
-    def plottingDAS(self, Controller,ud,uw,db,wb):
+    def onlyPlotting(self):
+        ds = sorted(self.getDelaySlices())
+        ws = sorted(self.getWavelengthSlices())
+        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+        
+        if self.GLA_radio.isChecked() == True:
+            model = 0
+            self.plottingDAS(ds,ws)
+        
+        elif self.GTA_radio_preset_model.isChecked() == True:
+            model = self.getPresetModel()+1
+            K = np.array(self.getGTAPresetModelTaus())
+            self.plottingSAS(db, wb, model)
+        
+        elif self.GTA_radio_custom_model.isChecked() == True:
+            model = "custom model"
+            K = self.getUserModel()
+            self.plottingSAS(db, wb, model)
+        
+        elif self.GTA_radio_custom_matrix.isChecked() == True:
+            model = "custom matrix"
+            K = self.custom_matrix
+            self.plottingSAS(db, wb, model)
+
+    def calculationGLA(self,db,wb):
+        
+        #raw
+        self.Controller.createOrigData(db,wb, self.getGTAOptMethod(), None) 
+        #fit
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.getGLATaus(), db, wb, self.getGLAOptMethod())
+        self.openPopUpResults(0, self.Controller, fit_report)
+        
+    def calculationGTA(self,db,wb,model,K):
+        K =  np.array(K)
+        
+        #raw
+        self.Controller.createOrigData(db,wb, self.getGTAOptMethod(), self.getGTAIvpMethod())
+        #fit
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
+                    model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
+        self.openPopUpResults(model, self.Controller, fit_report)
+        
+    def plottingDAS(self,ds,ws):
         """
         Creates the plots selected by the user and opens them in popup windows
         for inspection/modification.
         
         Parameters
         ----------
-        Controller : Controller
-            DESCRIPTION.
-        ud : list
+        ds : list
             The specific delay values the user wants to examine.
-        uw : list
+        ws : list
             The specific wavelenght values the user wants to examine..
-        db : list
-            The lower and upper bound for the delay data.
-        wb : list
-            The lower and upper bound for the wavelength data.
 
         Returns
         -------
@@ -447,67 +513,59 @@ class MainWindow(QMainWindow):
         """
     
         if self.ui.plot_raw.isChecked() == True:
-            Controller.createOrigData(db,wb, self.getGTAOptMethod(), None) 
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier(), add="3")
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier(), add="3")
                 self.openPlotViewer(plot)
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1", self.getMultiplier(), add="1")
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier(), add="1")
                 self.openPlotViewer(plot)
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2", self.getMultiplier(), add="2")
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier(), add="2")
                 self.openPlotViewer(plot)
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
                 self.openPlotViewer(plot)
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
                 self.openPlotViewer(plot)
         
         if self.ui.plot_fitted.isChecked() == True:
-            tau_fit, spec, res, D_fit, self.fit_report = Controller.calcDAS(self.getGLATaus(), db, wb, self.getGLAOptMethod())
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
+                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
                 self.openPlotViewer(plot)
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "1", self.getMultiplier(), add="1")
+                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "1", self.getMultiplier(), add="1")
                 self.openPlotViewer(plot)
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = Controller.plotCustom(uw, ud, None, None, 0, self.getUserContour(), "2", self.getMultiplier(), add="2")
+                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "2", self.getMultiplier(), add="2")
                 self.openPlotViewer(plot)
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = Controller.plot3FittedData(uw, ud, None, None, 0, self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot3FittedData(ws, ds, None, None, 0, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = Controller.plot3DFittedData(None, None, 0, self.getMultiplier())
+                plot = self.Controller.plot3DFittedData(None, None, 0, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_residuals.isChecked() == True:
-                plot = Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_das_sas.isChecked() == True:
-                plot = Controller.plotDAS(0, tau_fit, self.getMultiplier())
+                plot = self.Controller.plotDAS(0, self.tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_kinetics.isChecked() == True:
-                plot = Controller.plotKinetics(0)
+                plot = self.Controller.plotKinetics(0)
                 self.openPlotViewer(plot)
             
-    def plottingSAS(self,Controller,ud,uw,db,wb,model,K):
+    def plottingSAS(self,ds,ws,model):
         """
         Creates the plots selected by the user and opens them in popup windows
         for inspection/modification.
         
         Parameters
         ----------
-        Controller : Controller
-            DESCRIPTION.
-        ud : list
+        ds : list
             The specific delay values the user wants to examine.
-        uw : list
-            The specific wavelenght values the user wants to examine..
-        db : list
-            The lower and upper bound for the delay data.
-        wb : list
-            The lower and upper bound for the wavelength data.
+        ws : list
+            The specific wavelenght values the user wants to examine.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
             number 1-10 or "custom" for a custom model.
@@ -520,50 +578,46 @@ class MainWindow(QMainWindow):
         """
         
         if self.ui.plot_raw.isChecked() == True:
-            self.Controller.createOrigData(db,wb, self.getGTAOptMethod(), self.getGTAIvpMethod())
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "3", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "1", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, None, self.getUserContour(), "2", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3OrigData(uw, ud, None, None, db, wb, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
                 self.openPlotViewer(plot)
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = Controller.plot3DOrigData(None, None, db, wb, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
                 self.openPlotViewer(plot)
                 
         if self.ui.plot_fitted.isChecked() == True:
-            K =  np.array(K)
-            tau_fit, spec, res, D_fit, self.fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
-                    model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod()) 
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "3", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "1", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "1", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(uw, ud, None, None, model, self.getUserContour(), "2", self.getMultiplier())
+                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "2", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3FittedData(uw, ud, None, None, model, self.getUserContour(), self.getMultiplier())
+                plot = self.Controller.plot3FittedData(ws, ds, None, None, model, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = Controller.plot3DFittedData(None, None, model, self.getMultiplier())
+                plot = self.Controller.plot3DFittedData(None, None, model, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_residuals.isChecked() == True:
                 plot = self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_das_sas.isChecked() == True:
-                plot = Controller.plotDAS(model, tau_fit, self.getMultiplier())
+                plot = self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_kinetics.isChecked() == True:
-                plot = Controller.plotKinetics(model)
+                plot = self.Controller.plotKinetics(model)
                 self.openPlotViewer(plot)
                 
     def disableFitted(self):
@@ -583,7 +637,11 @@ class MainWindow(QMainWindow):
             self.ui.plot_das_sas.setEnabled(False)
             self.ui.plot_residuals.setChecked(False)
             self.ui.plot_residuals.setEnabled(False)
-
+        else:
+            self.ui.plot_kinetics.setEnabled(True)
+            self.ui.plot_das_sas.setEnabled(True)
+            self.ui.plot_residuals.setEnabled(True)
+            
     def getFolderPath(self):
         """
         Checks if a folder directory was selected and returns it.
@@ -893,7 +951,8 @@ class MainWindow(QMainWindow):
         return self.ui.GLA_algorithm_optimize.currentText()
 
     def getUserModel(self):
-        letterstonumbers = { "A":0,
+        #dictionary used to convert species names to corresponding matrix coordinates
+        letterstonumbers = {"A":0,
                             "B":1,
                             "C":2,
                             "D":3,
@@ -918,49 +977,71 @@ class MainWindow(QMainWindow):
                             "W":22,
                             "X":23,
                             "Y":24,
-                            "Z":25
+                            "Z":25,
+                            "v":-1
                             }
-
+        #GUI input 
         eq = self.ui.GTA_input_custom_model_equation.text()
 
         tau = self.ui.GTA_user_input_custom_model_tau.text().split(',')
-        for i in range(len(tau)):
-                tau[i] = float(tau[i])
 
+        #checks if the equation used arrows
+        arrow = False
+        if "->" in eq:
+            arrow = True
+        #checks if there are any void reactions
+        void = False
+        if "v" in eq:
+            void = True
+        #splitting different decay paths
         eq_split = eq.split(";")
-        
-        eq_no_arrows = []
-
-        for string in eq_split:
-            temp = string.split("->")
-            eq_no_arrows.append(temp)
-
-        pairs = []
-        for list_ in eq_no_arrows:
+        #splitting each path into involved species     
+        separated_species = []
+        if arrow == True:
+            for string in eq_split:
+                temp = string.split("->")
+                separated_species.append(temp)
+        else:
+            for string in eq_split:
+                temp = list(string)
+                separated_species.append(temp)
+        #forming pairs of two to set up matrix input
+        paired_species = []
+        for list_ in separated_species:
             for i in range(len(list_)-1):
-                pairs.append([list_[i],list_[i+1]])
-
-        for list_ in pairs:
+                paired_species.append([list_[i],list_[i+1]])
+        #converting species names to numbers for matrix coordinates
+        for list_ in paired_species:
             for i in range(len(list_)):
                 list_[i] = letterstonumbers[list_[i]]
-                
-        all_letters = np.array(pairs).flatten()
-        species = len(np.unique(all_letters))
-
+        #determining and creating the matrix dimensions by unique species
+        all_letters = np.array(paired_species).flatten()
+        if void == False:
+            species = len(np.unique(all_letters))
+        else:
+            species = len(np.unique(all_letters)) - 1
         M = np.zeros((species,species))
-
-        list_index = 0
-        for list_ in pairs:
-            if list_[0] < list_[1]:
-                M[list_[0]][list_[0]] += tau[list_index]
-                M[list_[1]][list_[0]] += tau[list_index]
+        #filling the matrix with the lifetimes using the determined coordinates
+        tau_index = 0
+        for list_ in paired_species:
+            if list_[1] == -1:
+                M[list_[0]][list_[0]] += tau[tau_index]
             else:
-                M[list_[0]][list_[0]] += tau[list_index]
-                M[list_[1]][list_[0]] += tau[list_index]
-            list_index += 1
+                if list_[0] < list_[1]:
+                    M[list_[0]][list_[0]] += tau[tau_index]
+                    M[list_[1]][list_[0]] += tau[tau_index]
+                elif list_[0] > list_[1]:
+                    M[list_[0]][list_[0]] += tau[tau_index]
+                    M[list_[1]][list_[0]] += tau[tau_index]
+                else:
+                    M[list_[0]][list_[0]] += tau[tau_index]
+            tau_index += 1        
+        #adjusting the signs for the main diagonal to be negative
         N = np.ones((species,species))
         np.fill_diagonal(N,-1)
-        M *= N
+        M = M*N
+        if M[-1][-1] == -0:
+           M[-1][-1] *= -1 
         return M
     
     def saveCustomModel(self):

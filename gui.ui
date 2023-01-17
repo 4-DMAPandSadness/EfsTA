@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="stack">
       <property name="currentIndex">
-       <number>6</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="Introduction">
        <attribute name="title">
@@ -478,7 +478,7 @@ p, li { white-space: pre-wrap; }
            <item row="2" column="0" colspan="2">
             <widget class="QLineEdit" name="GTA_input_custom_model_equation">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the reaction equation for the kinetic model.&lt;/p&gt;&lt;p&gt;Input has to be in the following form:&lt;/p&gt;&lt;p&gt;For species use letters from A to Z.&lt;/p&gt;&lt;p&gt;For arrows use &amp;quot;-&amp;gt;&amp;quot;.&lt;/p&gt;&lt;p&gt;If the reaction splits or goes backwards, write it after the linear reaction separated by &amp;quot;;&amp;quot;.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/custom tau example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;The input for this reaction would be:&lt;/p&gt;&lt;p&gt;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the reaction equation for the kinetic model.&lt;/p&gt;&lt;p&gt;Input has to be in the following form:&lt;/p&gt;&lt;p&gt;For species only use capital letters from &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;A&lt;/span&gt; to &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Z &lt;/span&gt;in alphabetical order, if there are only 3 species only the letters A,B and C should be used not something like A,Q and F. For decays into the &amp;quot;void&amp;quot; (e.q. a species decays back to the ground state) use a non-capital &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;v&lt;/span&gt;. These decay only have to be declared once per species.&lt;/p&gt;&lt;p&gt;For arrows use &amp;quot;-&amp;gt;&amp;quot; or nothing. But the input must be consistent either everything is denoted by an arrow or nothing.&lt;/p&gt;&lt;p&gt;If the reaction splits or goes backwards, write it after the linear reaction separated by &amp;quot;;&amp;quot;.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/User/pictures/custom tau example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;The input for this reaction would be:&lt;/p&gt;&lt;p&gt;A-&amp;gt;B-&amp;gt;C;B-&amp;gt;A;A-&amp;gt;C&lt;/p&gt;&lt;p&gt;or to make input a bit easier:&lt;/p&gt;&lt;p&gt;ABC;BA;AC&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
               <string>Reaction Equation</string>
@@ -528,7 +528,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Two lifetimes: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;	Input: τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1_upper_bound&lt;/span&gt;, τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2_upper_bound&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower τ Bounds (Optional)</string>
+              <string>Upper τ Bounds (Optional)</string>
              </property>
             </widget>
            </item>
