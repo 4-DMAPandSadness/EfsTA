@@ -81,7 +81,7 @@ class Model:
         borders[0] = np.absolute(values-limits[0]).argmin()
         borders[1] = np.absolute(values-limits[1]).argmin()
         #
-        # Better border finding?
+        # always higher than lower limit und lower than upper limit
         #
         # for i in values:
         #     if i < limits[0]:
@@ -554,7 +554,7 @@ class Model:
             if res_fit.success is False:
                 print("Fitting unsuccesful!")
         for name, param in res_fit.params.items():
-            tau_sig = round(param.value,2)
+            tau_sig = round(param.value)
             self.tau_fit.append(tau_sig)
         if (self.model == "custom model" or self.model == "custom matrix"):
             tau_sum = self.regenM(self.tau_fit)
@@ -682,6 +682,20 @@ class Model:
         return x
     
     def log_tick_formatter(self, val, pos=None):
+        '''
+        A logarithmic tick formatter for the 3D contour plot.
+
+        Parameters
+        ----------
+        val : float
+            The value to be put into log scaling.
+
+        Returns
+        -------
+        string
+            The formated axis tick.
+
+        '''
         return r"$10^{{{:.0f}}}$".format(val)
     
     def plot1(self, grid, wave, wave_index, spectra, mul):

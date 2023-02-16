@@ -19,14 +19,13 @@ import time as stopwatch
 
 # Model "custom matrix"
 
-
 """General Settings"""
 
 # for an interactive plot overlay type "%matplotlib qt5" into the console
 # to revert this type "%matplotlib inline"
 
-# The path that contains the data files.
-# Must be three files ending with "delays.txt" "lambda.txt" "spectra.txt".
+# The directory that contains the data files.
+# Must be a folder with three files ending with "delays.txt" "lambda.txt" "spectra.txt".
 path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
 # Choose model: 0 for GLA, 1-8 for GTA and "custom matrix" for a custom GTA model.
 model = "custom matrix"

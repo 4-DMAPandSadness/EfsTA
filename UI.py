@@ -363,7 +363,7 @@ class MainWindow(QMainWindow):
                 self.ui.plot_heatmap.isChecked() == False and
                 self.ui.plot_three_in_one.isChecked() == False and
                 self.ui.plot_residuals.isChecked() == False and 
-                self.ui.plot_kinetics.isChecked() == False and 
+                self.ui.plot_concentrations.isChecked() == False and 
                 self.ui.plot_das_sas.isChecked() == False and
                 self.ui.plot_threed_contour.isChecked() == False):
                 self.openFailSafe("Please choose which data to plot.")
@@ -437,25 +437,25 @@ class MainWindow(QMainWindow):
             model = self.getPresetModel()+1
             K = np.array(self.getGTAPresetModelTaus())
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(db, wb, self.tau_fit)
+            self.plottingSAS(ds,ws, self.tau_fit)
         
         elif self.GTA_radio_custom_model.isChecked() == True:
             model = "custom model"
             K = self.getUserModel()
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(db, wb, self.tau_fit)
+            self.plottingSAS(ds,ws, self.tau_fit)
         
         elif self.GTA_radio_custom_matrix.isChecked() == True:
             model = "custom matrix"
             K = self.custom_matrix
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(db, wb, self.tau_fit)
+            self.plottingSAS(ds,ws, self.tau_fit)
 
     def onlyPlotting(self):
         ds = sorted(self.getDelaySlices())
         ws = sorted(self.getWavelengthSlices())
-        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+        # db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+        # wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
         
         if self.GLA_radio.isChecked() == True:
             model = 0
@@ -463,18 +463,15 @@ class MainWindow(QMainWindow):
         
         elif self.GTA_radio_preset_model.isChecked() == True:
             model = self.getPresetModel()+1
-            K = np.array(self.getGTAPresetModelTaus())
-            self.plottingSAS(db, wb, model)
+            self.plottingSAS(ds,ws, model)
         
         elif self.GTA_radio_custom_model.isChecked() == True:
             model = "custom model"
-            K = self.getUserModel()
-            self.plottingSAS(db, wb, model)
+            self.plottingSAS(ds,ws, model)
         
         elif self.GTA_radio_custom_matrix.isChecked() == True:
             model = "custom matrix"
-            K = self.custom_matrix
-            self.plottingSAS(db, wb, model)
+            self.plottingSAS(ds,ws, model)
 
     def calculationGLA(self,db,wb):
         
@@ -551,7 +548,7 @@ class MainWindow(QMainWindow):
             if self.ui.plot_das_sas.isChecked() == True:
                 plot = self.Controller.plotDAS(0, self.tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
-            if self.ui.plot_kinetics.isChecked() == True:
+            if self.ui.plot_concentrations.isChecked() == True:
                 plot = self.Controller.plotKinetics(0)
                 self.openPlotViewer(plot)
             
@@ -616,7 +613,7 @@ class MainWindow(QMainWindow):
             if self.ui.plot_das_sas.isChecked() == True:
                 plot = self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
                 self.openPlotViewer(plot)
-            if self.ui.plot_kinetics.isChecked() == True:
+            if self.ui.plot_concentrations.isChecked() == True:
                 plot = self.Controller.plotKinetics(model)
                 self.openPlotViewer(plot)
                 
@@ -631,14 +628,14 @@ class MainWindow(QMainWindow):
 
         """
         if self.ui.plot_fitted.isChecked() == False:
-            self.ui.plot_kinetics.setChecked(False)
-            self.ui.plot_kinetics.setEnabled(False)
+            self.ui.plot_concentrations.setChecked(False)
+            self.ui.plot_concentrations.setEnabled(False)
             self.ui.plot_das_sas.setChecked(False)
             self.ui.plot_das_sas.setEnabled(False)
             self.ui.plot_residuals.setChecked(False)
             self.ui.plot_residuals.setEnabled(False)
         else:
-            self.ui.plot_kinetics.setEnabled(True)
+            self.ui.plot_concentrations.setEnabled(True)
             self.ui.plot_das_sas.setEnabled(True)
             self.ui.plot_residuals.setEnabled(True)
             
@@ -951,6 +948,15 @@ class MainWindow(QMainWindow):
         return self.ui.GLA_algorithm_optimize.currentText()
 
     def getUserModel(self):
+        '''
+        Transforms the custom model input by the user as a reaction equation into the corresponding reaction matrix with the input lifetimes.
+
+        Returns
+        -------
+        M : TYPE
+            DESCRIPTION.
+
+        '''
         #dictionary used to convert species names to corresponding matrix coordinates
         letterstonumbers = {"A":0,
                             "B":1,
@@ -978,7 +984,7 @@ class MainWindow(QMainWindow):
                             "X":23,
                             "Y":24,
                             "Z":25,
-                            "v":-1
+                            "v":-1 #not a coordinate just a mean to identify void decays
                             }
         #GUI input 
         eq = self.ui.GTA_input_custom_model_equation.text()
@@ -1075,6 +1081,19 @@ class MainWindow(QMainWindow):
             self.ui.GTA_input_custom_model_saved_equations.removeItem(self.ui.GTA_input_custom_model_saved_equations.currentIndex())
  
     def setCustomModel(self,ind):
+        '''
+        Sets the custom model to the previously selected model.
+
+        Parameters
+        ----------
+        ind : int
+            The index of the selected custom model.
+
+        Returns
+        -------
+        None.
+
+        '''
         self.ui.GTA_input_custom_model_saved_equations.setCurrentIndex(ind)
         model = self.ui.GTA_input_custom_model_saved_equations.currentText()
         self.ui.GTA_input_custom_model_equation.setText(model)
@@ -1179,7 +1198,20 @@ class MainWindow(QMainWindow):
         self.pltView.append(popup)
 
     def presentInputs(self,ind):
-        if ind == 6:
+        '''
+        Presents all relevant user inputs in a treewidget.
+
+        Parameters
+        ----------
+        ind : int
+            The index of the user input display tab widget.
+
+        Returns
+        -------
+        None.
+
+        '''
+        if ind == 5:
             self.saveAllInputs()
             iterator = QTreeWidgetItemIterator(self.ui.user_input_tree)
             while iterator.value():
@@ -1210,6 +1242,14 @@ class MainWindow(QMainWindow):
     
         
     def saveAllInputs(self):
+        '''
+        Saves all user inputs in a dictionary to pickle and display them.
+
+        Returns
+        -------
+        None.
+
+        '''
         self.finalInputs.clear()
         self.finalInputs['Lower Delay Bound'] = self.ui.Data_delay_input_lb.text()
         self.finalInputs['Upper Delay Bound'] = self.ui.Data_delay_input_ub.text()
@@ -1217,6 +1257,7 @@ class MainWindow(QMainWindow):
         self.finalInputs['Upper Wavelength Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
         self.finalInputs['Selected Data'] = ''
+        self.finalInputs['Directory'] = self.getFolderPath()
         if self.ui.GLA_radio.isChecked() == True:
             self.finalInputs['GLA'] = "Selected"
             self.finalInputs['Optimizer'] = self.ui.GLA_algorithm_optimize.currentText()
@@ -1260,7 +1301,7 @@ class MainWindow(QMainWindow):
             self.finalInputs['Selected Plots'] += ', Heatmap'
         if self.ui.plot_wavelength_slices.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Wavelength Slices'
-        if self.ui.plot_kinetics.isChecked() == True:
+        if self.ui.plot_concentrations.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Kinetics'
         if self.ui.plot_residuals.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Residuals'
@@ -1279,6 +1320,14 @@ class MainWindow(QMainWindow):
         
 
     def selectFolderPath(self):
+        '''
+        Opens a filedialog window for the user to select the folder directory, where the data is stored.
+
+        Returns
+        -------
+        None.
+
+        '''
         directory = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
         self.ui.Data_directory.setText(directory)
         self.finalInputs['Directory'] = directory 
@@ -1329,6 +1378,14 @@ class MainWindow(QMainWindow):
             EfsTA.setPalette(darkmode)
             
     def savePickle(self):
+        '''
+        Pickles the data, if a path was selected and therefore the controller object generated.
+
+        Returns
+        -------
+        None.
+
+        '''
         if hasattr(self, 'Controller') == True:
             self.Controller.pickleData(self.finalInputs)
 
