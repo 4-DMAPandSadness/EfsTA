@@ -2,11 +2,9 @@
 
 In this user guide the evaluation of femtosecond transient absorption spectra data using the program EfsTA will be explained.
 
-This TA-Evaluation program allows the optimizing of the decay constants based on the values given. These values should be derived of the 2D-data and previous knowledge of the photophysics of the molecule.
+This TA-Evaluation program allows the optimizing of the decay constants based on given values. These values should be derived of the 2D-data and previous knowledge of the photophysics of the molecule.
 
-
-
-You can decide between using the grafical user-interface *EfsTA.exe* or the script form *App.py* in Python. They both have the features for the evaluation (GLA -> DAS and GTA -> SAS), as well as the plotting. However the UI checks for the completeness of the user inputs, whereas the script allows more customization.
+You can decide between using the graphical user-interface or the script form *App.py* in Python. They both have the features for the evaluation (GLA -> DAS and GTA -> SAS), as well as the plotting. However the UI checks for the completeness of the user inputs, whereas the script allows more customization.
 
 ## GUI
 
@@ -40,7 +38,7 @@ Going to the GLA-tab the following will be seen.
 
 <img src="/images/GUI/GLA.png" width="50%"/>
 
-Utilizing this model the spectrum will be treated as a collection of multiple paralell expoential decays.
+Utilizing this model the spectrum will be treated as a collection of multiple parallel expoential decays.
 
 First of the GLA-Button needs to be clicked, so that the program knows to use this model for the evaluation.
 After that lifetimes for the different species need to be set, since this program relies on initial guesses by the user. A priori knowlegde or guesses about the amount of forming species during the irradiation and an approximate lifetime for each species is necessary. All lifetimes input need to be separated by a comma and depending on if they are to be optimized need to be input in the variable or fixed text fields respectively.
@@ -157,7 +155,7 @@ With the selection of the analysis method the last thing left to do is to select
 
 - *3D Contour*: Displays the data as an interactive 3D contour plot.
 
-<img src="/images/example plots/ex_§D.png" width="30%"/>
+<img src="/images/example plots/ex_3D.png" width="30%"/>
 
 **Plot Settings**
 
@@ -179,11 +177,7 @@ On the Input Confirmation-tab all inputs given by the user will be displayed, so
 
 ### Results
 
-
-
-
-
-
+The resulting plots and the evalutaion results and other fit statistics will be displayed in different popup windows after the evalutaions. In addition to that all plots and results will be saved in a new folder in the data directory called "evaluation". After closing the program the inputs will also be saved in the data directory and reloaded if the directory will be selected another time.
 
 ## Script
 
@@ -191,82 +185,78 @@ The general features of the GUI are also included in the script, although there 
 
 ### General settings
 
-<img src="/pictures/skript_gen.png" width="50%"/>
+At the top of the script, the general settings will be found.
 
-First, you have to specify the `path` to the folder with your files. Files with the following names will be recognized:
-> `folder/...lambda.txt` contains the wavelengths/nm,  
-> `folder/...delays.txt` contains the delays/ps,  
-> `folder/...spectra.txt` contains the absorption change.
+<img src="/images/script/settings.png" width="50%"/>
 
-On the top of the script, the general settings will be found.
+First, the `directory` to the folder containing the data needs to be provided. Files with the following names will be recognized:
+> `/...lambda.txt` contains the wavelengths/nm,
+> `/...delays.txt` contains the delays/ps,
+> `/...spectra.txt` contains the absorption change.
 
-There you can choose the `model`. The DAS will be calculated with a `0`, for the SAS you can set the models `1`-`9` (explained below) or `"custom"` for a custom matrix.
+Then the evaluation `model` can be selected. GLA will be used for `0`, for the GTA one of the eight preimplemented models `1`-`8` can be selected or `"custom"` for a custom matrix.
 
-<img src="/pictures/models.png" width="50%"/>
+<img src="/images/script/models.png" width="50%"/>
 
-The next settings are `l_limits` and `d_limits` which are the `[lower, upper]` bound for the `lambda` and `delays` where the original data will be cut off. Should you not want to set a lower and/or upper bound, you can simply take `None` as an element of the list. 
+The next settings are `w_bounds` and `d_bounds` which are the `[lower, upper]` bound for the `wavelengths` and `delays` where the original data will be cut off. If the data should not be cut the bounds can be set as 'None'.
 
 The variables `orig`, `fit` and `resi` affect which plots of the original and fitted data will be plotted.
 
-For `orig` you can choose:
+Options for `orig`:
 
 - `0`: no plot will be generated
 
-- `3`: this will show the *all-in-one* plot of the original data
+- `3`: this will show the *All-In-One*-plot of the original data
 
-For `fit` you can choose:
+- `4`: this will show the *3D Contour*-plot of the original data
+
+Options for `fit`:
 
 - `0`: no plot will be generated
 
 - `1`: the fitted values will be printed in the console and the results will be saved
 
-<img src="/pictures/skript_fit1.png" width="50%"/>
+- `2`: this will show the *All-In-One*-plot of the fitted data and the results will be saved
 
-- `2`: this will show the *all-in-one* plot of the fitted data and the results will be saved
+- `3`: with this option the values will be printed, the *All-In-One*-plot will be generated and the results will be saved
 
-<img src="/pictures/3-in-1-SAS.png" width="70%"/>
+- `3`: with this option the values will be printed, the *3D Contour*-plot will be generated and the results will be saved
 
-- `3`: with this option the values will be printed, the plot will be generated and the results will be saved
-
-For `resi` you can choose:
+Options for `resi`:
 
 - `0`: no plot will be generated
 
 - `1`: the residuals will be plotted in a 1D plot of the residuals against the delays
 
-<img src="/pictures/res_1D.png" width="30%"/>
-
-- `2`: this will generate a 2D heatmap of the residuals
-
-<img src="/pictures/res_2D.png" width="50%"/>
+- `2`: this will generate a heatmap of the residuals
 
 - `3`: with this option both images will be shown
 
 This option only works, if fit is not 0.
 
+Lastly an optimizer algorithm needs to be set.
+
 ### Settings for the Decay Associated Spectra
 
-In the next section if you choose DAS, you have to set `0`-`a` fixed and `0`-`b` variable values for the decay constants `tau`. The fixed values won't be optimized, whereas the variable ones will be incuded in the fit. The total number of tau values `a`+`b` has to be at least `1`.
+In the next section if GLA (model = 0) was selected, `0`-`a` fixed and `0`-`b` variable values for the decay constants `tau`  need to be set. The fixed values won't be optimized, whereas the variable ones will be incuded in the fit. The total number of tau values `a`+`b` has to be at least `1`.
 
-<img src="/pictures/skript_DAS.png" width="50%"/>
+<img src="/images/script/gla.png" width="50%"/>
 
 ### Settings for the Species Associated Spectra
 
-The settings for the SAS contain the lifetimes `tau_forwards` for the forward reactions and `tau_backwards`for the backward reactions in models `3` and `4`. The have to be entered in a list of lifetimes separated by commatas.
-
-For each lifetime you can define an upper and lower limits for the forward (`tau_low_f`, `tau_high_f`) and backward reactions (`tau_low_b`, `tau_high_b`). They define the regions where the optimized lifetimes should be found. Should you not want to set a lower and/or upper limit for a certain lifetime, you can simply take `None` as an element of the list. If you wish not to set any bounds, write None instead of the list.
+For each lifetime an upper and a lower bound can be set (`GTA_tau_lb`, `GTA_tau_ub`). They define the regions where the optimized lifetimes should be found. Should you not want to set a lower and/or upper limit for a certain lifetime, you can simply take `None` as an element of the list. If you wish not to set any bounds, write None instead of the list.
 
 For the initial concentrations `C_0`, you will be asked to set `0` or `n` values with *n* corresponding to the number of species separated by commatas. If you leave the list empty, the concentration of species `1` will be set to `1` and the concentration of the other species to `0`.
 
 Should you choose the model `"custom"` you can specify the matrix `M` at the end. It can be a list or an array either handwritten or imported from a file.
 
-<img src="/pictures/skript_SAS.png" width="50%"/>
+<img src="/images/script/gta.png" width="50%"/>
 
 ### Settings for the *all-in-one* plots
 
 In the next section you can configure the settings for the *all-in-one* plots.
 
-<img src="/pictures/skript_plot.png" width="50%"/>
+<img src="/images/script/plotting.png" width="50%"/>
 
 You are offered the following possibilities:
 
@@ -292,21 +282,15 @@ The methdod you will want to use to generate custom images is `Controller.plotCu
 
 - `"1"`: chosen wavelength values will be plotted in a plot of the delays against the absorption change
 
-<img src="/pictures/plot1.png" width="30%"/>
-
 - `"2"`: the absorption change will be plotted as a heatmap of the delays against the wavelenghts
 
-<img src="/pictures/plot2.png" width="50%"/>
-
 - `"3"`: chosen delay values will be plotted in a plot of the absorption change against the wavelenghts
-
-<img src="/pictures/plot3.png" width="30%"/>
 
 - `"1+2"`, `"1+3"`, `"2+3"`, `"1+2+3"`: this is an image of the two or three plots mentioned above combined
 
 The title of the plot corresponds to the name of the image. Be careful not to overwrite images and instead use `add` to give your plots different titles.
 
-Another plot can be plotted with `Controller.plotKinetics(model)`. It shows the concentration of each species against the delays.
+Another plot can be plotted with `Controller.plotConcentrations(model)`. It shows the concentration of each species against the delays.
 
 Furthermore the DAS or SAS can be plotted with `Controller.plotDAS(model, tau_fit)`. It is a plot of the absorption change against the wavelengths.
 

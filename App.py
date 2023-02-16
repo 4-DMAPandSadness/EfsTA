@@ -26,9 +26,9 @@ import time as stopwatch
 
 # The directory that contains the data files.
 # Must be a folder with three files ending with "delays.txt" "lambda.txt" "spectra.txt".
-path = "/home/hackerman/Documents/fsTA Daten/c_PDI_t"
+path = "/home/user/Documents/data"
 # Choose model: 0 for GLA, 1-8 for GTA and "custom matrix" for a custom GTA model.
-model = "custom matrix"
+model = 0
 # Lower and upper limits for the wavelengths and delays.
 # [None, None] to use all data.
 w_bounds = [350, 750]
