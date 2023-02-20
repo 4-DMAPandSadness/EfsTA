@@ -89,7 +89,7 @@ Should the eight provided models not suffice the option "Custom Model" can be se
 
 The custom models are limited to a maximum of 26 species. Each species needs to be denoted with a capital letter from A to Z. If one species decays back to the ground state the non capital letter v (for void) may be used. A decay into the ground state only has to be declared once per species. The equation can be written with arrows (A->B->C->v) or for faster input without the arrows (ABCv). The important thing is to keep them in the order of the transitions. The letters need to be selected in alphabetical order. For example if there are only the species the letters used need to be A,B and C **not** F,X and Q. For branching or transitions back to previos species start a new subequation by separation with a ";". For example given the following transitions:
 
-<img src="/images/reaction example.png" width="30%"/>
+<img src="/images/tooltips/reaction example.png" width="30%"/>
 
 the input for the eqaution would be:
 
@@ -103,15 +103,15 @@ The input of the lifetimes and their bounds work in the same way they work for t
 
 Lastly for more advanced users it is also possible to input a transition matrix directly. For this select the "Custom Matrix" option and enter the size of the matrix. The size corresponds to the amount of species. After that click the Open Table-Button. A new window will pop up with a table where the lifetimes can be input directly.
 
-<img src="/images/Table.png" width="30%"/>
+<img src="/images/GUI/Table.png" width="30%"/>
 
 Given the following transitions:
 
-<img src="/images/reaction example.png" width="30%"/>
+<img src="/images/tooltips/reaction example.png" width="30%"/>
 
 the input for the matrix should look like this:
 
-<img src="/images/matrix example.png" width="30%"/>
+<img src="/images/tooltips/matrix example.png" width="30%"/>
 
 The matrix can be divided in three major parts. The main diagonal, the triangle above the main diagonal and the triangle below it. On the main diagonal the loss or decay of the corresponding species is described. The upper triangle describes the regain or repopulation of previous species. The lower triangle describes the gain or population of following species.
 

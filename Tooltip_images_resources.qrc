@@ -1,18 +1,17 @@
 <RCC>
-  <qresource prefix="Matrix">
-    <file>images/matrix example.png</file>
-  </qresource>
-  <qresource prefix="User">
-    <file>images/reaction example.png</file>
-  </qresource>
   <qresource prefix="Plots">
     <file>images/example plots/ex_3D.png</file>
     <file>images/example plots/ex_all.png</file>
     <file>images/example plots/ex_DASSAS.png</file>
     <file>images/example plots/ex_heatmap.png</file>
-    <file>images/example plots/ex_kinetics.png</file>
     <file>images/example plots/ex_residuals.png</file>
+    <file>images/example plots/ex_concentrations.png</file>
     <file>images/example plots/ex_timeslice.png</file>
     <file>images/example plots/ex_waveslice.png</file>
+  </qresource>
+  <qresource prefix="Tooltips">
+    <file>images/tooltips/matrix example.png</file>
+    <file>images/tooltips/preset tau example.png</file>
+    <file>images/tooltips/reaction example.png</file>
   </qresource>
 </RCC>
