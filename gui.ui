@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="stack">
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="Introduction">
        <attribute name="title">
@@ -817,50 +817,20 @@ p, li { white-space: pre-wrap; }
            <string>Plot Choices</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="plot_raw">
+           <item row="3" column="1">
+            <widget class="QCheckBox" name="plot_residuals">
              <property name="toolTip">
-              <string>If selected, plots the raw unanalysed data.</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_residuals.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>Raw Data</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="plot_fitted">
-             <property name="toolTip">
-              <string>If selected, plots the analysed data.</string>
-             </property>
-             <property name="text">
-              <string>Fitted Data</string>
+              <string>Residuals</string>
              </property>
              <property name="checked">
               <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="Line" name="sepatation_data_plot">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QCheckBox" name="plot_delay_slices">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the change of absorption against the wavelengths for delay slices. Will only work, if specific delays for data slicing are provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_timeslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Delay Slices (ΔA / λ)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
+           <item row="1" column="1">
             <widget class="QCheckBox" name="plot_concentrations">
              <property name="enabled">
               <bool>true</bool>
@@ -873,7 +843,17 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="plot_delay_slices">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the change of absorption against the wavelengths for delay slices. Will only work, if specific delays for data slicing are provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_timeslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Delay Slices (ΔA / λ)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
             <widget class="QCheckBox" name="plot_wavelength_slices">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the delays against the change of absorption for wavelength slices. Will only work, if specific wavelengths for data slicing are provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_waveslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -883,7 +863,27 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="plot_heatmap">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_heatmap.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Heatmap</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QCheckBox" name="plot_threed_contour">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a 3D contour plot.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_3D.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>3D Contour</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
             <widget class="QCheckBox" name="plot_das_sas">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If GLA is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If GTA is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_DASSAS.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -897,29 +897,6 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item row="4" column="0">
-            <widget class="QCheckBox" name="plot_heatmap">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_heatmap.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Heatmap</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QCheckBox" name="plot_residuals">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the residuals as a heatmap.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_residuals.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Residuals</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
             <widget class="QCheckBox" name="plot_three_in_one">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots all three plots above in a single image. Will only plot the heatmap if no specific delay or wavelength values ar provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_all.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -932,38 +909,18 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
-            <widget class="QCheckBox" name="plot_threed_contour">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="Plotting_raw">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the data in a 3D contour plot.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_3D.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to plot the selected plots of the raw unanalysed data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>3D Contour</string>
+              <string>Plot Raw Data</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="Plotting_plot">
-          <property name="text">
-           <string>Plot Raw Data</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" colspan="2">
-         <spacer name="spacer_plot">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>731</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -1151,14 +1108,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <item>
             <property name="text">
-             <string>Selected Data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Selected Plots</string>
             </property>
             <property name="text">
@@ -1267,8 +1216,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>GTA_input_preset_model_tau_ub</tabstop>
   <tabstop>GTA_algorithm_optimize</tabstop>
   <tabstop>GTA_algorithm_initial_value_problem</tabstop>
-  <tabstop>plot_raw</tabstop>
-  <tabstop>plot_fitted</tabstop>
   <tabstop>plot_delay_slices</tabstop>
   <tabstop>plot_concentrations</tabstop>
   <tabstop>plot_wavelength_slices</tabstop>
@@ -1280,7 +1227,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>plot_input_delay_slices</tabstop>
   <tabstop>plot_input_wavelength_slices</tabstop>
   <tabstop>plot_input_contour</tabstop>
-  <tabstop>Plotting_plot</tabstop>
   <tabstop>user_input_tree</tabstop>
   <tabstop>user_confirm</tabstop>
  </tabstops>

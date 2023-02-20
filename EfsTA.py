@@ -224,10 +224,9 @@ class MainWindow(QMainWindow):
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
         self.ui.GTA_open_table.clicked.connect(self.checkIfCustomMatrixSizeEmpty)
-        self.ui.Plotting_plot.clicked.connect(self.onlyPlotting)
-        self.ui.plot_fitted.stateChanged.connect(self.disableFitted)
         self.ui.GTA_custom_model_save.clicked.connect(self.saveCustomModel)
         self.ui.GTA_custom_model_del.clicked.connect(self.deleteCustomModel)
+        self.ui.Plotting_raw.clicked.connect(self.rawPlotting)
         EfsTA.aboutToQuit.connect(self.onQuit)      
         
     def checkIfWavelengthSlicesEmpty(self):
@@ -326,6 +325,39 @@ class MainWindow(QMainWindow):
         if (self.ui.GLA_user_input_tau_fix.text() == "" and self.ui.GLA_user_input_tau_var.text() == ""):
             self.openFailSafe("Please input guessed decay times.")
             return True
+        
+    def checkIfBoundsMatch(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
+
+        """
+        if self.ui.GTA_input_preset_model_tau_lb.text() != "":
+            if (self.ui.GTA_input_preset_model_tau_lb.text().count(",") != 
+                self.ui.GTA_input_preset_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return True
+        if self.ui.GTA_input_preset_model_tau_ub.text() != "":
+            if (self.ui.GTA_input_preset_model_tau_ub.text().count(",") != 
+                self.ui.GTA_input_preset_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return True
+        if self.ui.GTA_input_custom_model_tau_lb.text() != "":
+            if (self.ui.GTA_custom_preset_model_tau_lb.text().count(",") != 
+                self.ui.GTA_custom_preset_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return True
+        if self.ui.GTA_input_custom_model_tau_ub.text() != "":
+            if (self.ui.GTA_input_custom_model_tau_ub.text().count(",") != 
+                self.ui.GTA_input_custom_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return True
+            
 
     def checkIfBrowseEmpty(self):
         """
@@ -353,29 +385,34 @@ class MainWindow(QMainWindow):
             True if empty.
 
         """
-        if (self.ui.plot_raw.isChecked() == False 
-            and self.ui.plot_fitted.isChecked() == False):
+        if (self.ui.plot_wavelength_slices.isChecked() == False and
+            self.ui.plot_delay_slices.isChecked() == False and
+            self.ui.plot_heatmap.isChecked() == False and
+            self.ui.plot_three_in_one.isChecked() == False and
+            self.ui.plot_residuals.isChecked() == False and 
+            self.ui.plot_concentrations.isChecked() == False and 
+            self.ui.plot_das_sas.isChecked() == False and
+            self.ui.plot_threed_contour.isChecked() == False):
             self.openFailSafe("Please choose which data to plot.")
             return True
-        else:
-            if (self.ui.plot_wavelength_slices.isChecked() == False and
-                self.ui.plot_delay_slices.isChecked() == False and
-                self.ui.plot_heatmap.isChecked() == False and
-                self.ui.plot_three_in_one.isChecked() == False and
-                self.ui.plot_residuals.isChecked() == False and 
-                self.ui.plot_concentrations.isChecked() == False and 
-                self.ui.plot_das_sas.isChecked() == False and
-                self.ui.plot_threed_contour.isChecked() == False):
-                self.openFailSafe("Please choose which data to plot.")
-                return True
             
-        def checkIfCustomModelEmpty(self):
-            if self.ui.GTA_input_custom_model_equation.text() == "":
-               self.openFailSafe("Please input a reaction equation.")
-               return True
-            elif self.ui.GTA_user_input_custom_model_tau.text() == "":
-                self.openFailSafe("Please input lifetimes.")
-                return True
+    def checkIfCustomModelEmpty(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
+
+        """
+        if self.ui.GTA_input_custom_model_equation.text() == "":
+           self.openFailSafe("Please input a reaction equation.")
+           return True
+        elif self.ui.GTA_user_input_custom_model_tau.text() == "":
+            self.openFailSafe("Please input lifetimes.")
+            return True
             
     def finalCheck(self):
         """
@@ -390,9 +427,9 @@ class MainWindow(QMainWindow):
         self.checkIfDelaySlicesEmpty()
         if (self.checkIfPlotChoicesEmpty() == True or self.checkIfBrowseEmpty() == True):
             pass
-        if (self.ui.plot_fitted.isChecked() == False):
-            self.programStart()
         if (self.checkIfMethodSelected() == False):
+            pass
+        if self.checkIfBoundsMatch() == True:
             pass
         if (self.ui.GLA_radio.isChecked() == True and 
             self.checkIfGLATauEmpty() == True):
@@ -429,130 +466,91 @@ class MainWindow(QMainWindow):
         wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
         
         if self.GLA_radio.isChecked() == True:
-            model = 0
             self.calculationGLA(db, wb)
-            self.plottingDAS(ds,ws)
+            self.plotting(ds,ws,0,False)
         
         elif self.GTA_radio_preset_model.isChecked() == True:
             model = self.getPresetModel()+1
             K = np.array(self.getGTAPresetModelTaus())
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(ds,ws, self.tau_fit)
+            self.plotting(ds,ws,model,False)
         
         elif self.GTA_radio_custom_model.isChecked() == True:
             model = "custom model"
             K = self.getUserModel()
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(ds,ws, self.tau_fit)
+            self.plotting(ds,ws,model,False)
         
         elif self.GTA_radio_custom_matrix.isChecked() == True:
             model = "custom matrix"
             K = self.custom_matrix
             self.calculationGTA(db,wb,model,K)
-            self.plottingSAS(ds,ws, self.tau_fit)
+            self.plotting(ds,ws,model,False)
 
-    def onlyPlotting(self):
-        ds = sorted(self.getDelaySlices())
-        ws = sorted(self.getWavelengthSlices())
-        # db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-        # wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-        
-        if self.GLA_radio.isChecked() == True:
-            model = 0
-            self.plottingDAS(ds,ws)
-        
-        elif self.GTA_radio_preset_model.isChecked() == True:
-            model = self.getPresetModel()+1
-            self.plottingSAS(ds,ws, model)
-        
-        elif self.GTA_radio_custom_model.isChecked() == True:
-            model = "custom model"
-            self.plottingSAS(ds,ws, model)
-        
-        elif self.GTA_radio_custom_matrix.isChecked() == True:
-            model = "custom matrix"
-            self.plottingSAS(ds,ws, model)
-
-    def calculationGLA(self,db,wb):
-        
-        #raw
-        self.Controller.createOrigData(db,wb, self.getGTAOptMethod(), None) 
-        #fit
-        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.getGLATaus(), db, wb, self.getGLAOptMethod())
-        self.openPopUpResults(0, self.Controller, fit_report)
-        
-    def calculationGTA(self,db,wb,model,K):
-        K =  np.array(K)
-        
-        #raw
-        self.Controller.createOrigData(db,wb, self.getGTAOptMethod(), self.getGTAIvpMethod())
-        #fit
-        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
-                    model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
-        self.openPopUpResults(model, self.Controller, fit_report)
-        
-    def plottingDAS(self,ds,ws):
-        """
-        Creates the plots selected by the user and opens them in popup windows
-        for inspection/modification.
-        
-        Parameters
-        ----------
-        ds : list
-            The specific delay values the user wants to examine.
-        ws : list
-            The specific wavelenght values the user wants to examine..
+    def rawPlotting(self):
+        '''
+        Plots only the raw unanalysed data.
 
         Returns
         -------
         None.
 
-        """
-    
-        if self.ui.plot_raw.isChecked() == True:
-            if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier(), add="3")
-                self.openPlotViewer(plot)
-            if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier(), add="1")
-                self.openPlotViewer(plot)
-            if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier(), add="2")
-                self.openPlotViewer(plot)
-            if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
-                self.openPlotViewer(plot)
-            if self.ui.plot_threed_contour.isChecked() == True:
-                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
-                self.openPlotViewer(plot)
+        '''
+        ds = sorted(self.getDelaySlices())
+        ws = sorted(self.getWavelengthSlices())
+        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+        self.Controller.createOrigData(db,wb, None, None)
+        self.ui.plot_concentrations.setChecked(False)
+        self.ui.plot_das_sas.setChecked(False)
+        self.ui.plot_residuals.setChecked(False)
+        self.plotting(ds, ws, 0, True)
+
+    def calculationGLA(self,db,wb):
+        '''
+        Starts the calculation for the global lifetime analysis.
+
+        Parameters
+        ----------
+        db : list
+            Lower and upper bound for the delays.
+        wb : list
+            Lower and upper bound for the wavelengths.
+
+        Returns
+        -------
+        None.
+
+        '''
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.getGLATaus(), db, wb, self.getGLAOptMethod())
+        self.openPopUpResults(0, self.Controller, fit_report)
         
-        if self.ui.plot_fitted.isChecked() == True:
-            if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "3", self.getMultiplier(), add="3")
-                self.openPlotViewer(plot)
-            if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "1", self.getMultiplier(), add="1")
-                self.openPlotViewer(plot)
-            if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, 0, self.getUserContour(), "2", self.getMultiplier(), add="2")
-                self.openPlotViewer(plot)
-            if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3FittedData(ws, ds, None, None, 0, self.getUserContour(), self.getMultiplier())
-                self.openPlotViewer(plot)
-            if self.ui.plot_threed_contour.isChecked() == True:
-                plot = self.Controller.plot3DFittedData(None, None, 0, self.getMultiplier())
-                self.openPlotViewer(plot)
-            if self.ui.plot_residuals.isChecked() == True:
-                plot = self.Controller.plot2Dresiduals(None,None,0,self.getUserContour(), self.getMultiplier())
-                self.openPlotViewer(plot)
-            if self.ui.plot_das_sas.isChecked() == True:
-                plot = self.Controller.plotDAS(0, self.tau_fit, self.getMultiplier())
-                self.openPlotViewer(plot)
-            if self.ui.plot_concentrations.isChecked() == True:
-                plot = self.Controller.plotKinetics(0)
-                self.openPlotViewer(plot)
+    def calculationGTA(self,db,wb,model,K):
+        '''
+        Starts the calculation for the global target analysis.
+
+        Parameters
+        ----------
+        db : list
+            Lower and upper bound for the delays.
+        wb : list
+            Lower and upper bound for the wavelengths.
+        model : int/string
+            The chosen kinetic model.
+        K : np.ndarray
+            The kinetic matrix.
+
+        Returns
+        -------
+        None.
+
+        '''
+        K =  np.array(K)
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
+                    model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
+        self.openPopUpResults(model, self.Controller, fit_report)
             
-    def plottingSAS(self,ds,ws,model):
+    def plotting(self,ds,ws,model,raw):
         """
         Creates the plots selected by the user and opens them in popup windows
         for inspection/modification.
@@ -566,15 +564,15 @@ class MainWindow(QMainWindow):
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
             number 1-10 or "custom" for a custom model.
-        K : np.ndarray
-            The reaction rate matrix.
+        raw : bool
+            Dictates if raw or analysed data will be plotted.
         Returns
         -------
         None.
 
         """
         
-        if self.ui.plot_raw.isChecked() == True:
+        if raw == True:
             if self.ui.plot_wavelength_slices.isChecked() == True:
                 plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
@@ -591,7 +589,7 @@ class MainWindow(QMainWindow):
                 plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
                 self.openPlotViewer(plot)
                 
-        if self.ui.plot_fitted.isChecked() == True:
+        if raw == False:
             if self.ui.plot_wavelength_slices.isChecked() == True:
                 plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "3", self.getMultiplier())
                 self.openPlotViewer(plot)
@@ -616,28 +614,6 @@ class MainWindow(QMainWindow):
             if self.ui.plot_concentrations.isChecked() == True:
                 plot = self.Controller.plotKinetics(model)
                 self.openPlotViewer(plot)
-                
-    def disableFitted(self):
-        """
-        Makes sure fitting dependent plots can't be selected if only raw data
-        is selected.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.plot_fitted.isChecked() == False:
-            self.ui.plot_concentrations.setChecked(False)
-            self.ui.plot_concentrations.setEnabled(False)
-            self.ui.plot_das_sas.setChecked(False)
-            self.ui.plot_das_sas.setEnabled(False)
-            self.ui.plot_residuals.setChecked(False)
-            self.ui.plot_residuals.setEnabled(False)
-        else:
-            self.ui.plot_concentrations.setEnabled(True)
-            self.ui.plot_das_sas.setEnabled(True)
-            self.ui.plot_residuals.setEnabled(True)
             
     def getFolderPath(self):
         """
@@ -1289,10 +1265,6 @@ class MainWindow(QMainWindow):
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
             self.finalInputs['Matrix'] = str(self.custom_matrix)
-        if self.ui.plot_raw.isChecked() == True:
-            self.finalInputs['Selected Data'] = ', Raw Data'
-        if self.ui.plot_fitted.isChecked() == True:
-            self.finalInputs['Selected Data'] += ', Fitted Data'
         if self.ui.plot_das_sas.isChecked() == True:
             self.finalInputs['Selected Plots'] = ', DAS/SAS' 
         if self.ui.plot_delay_slices.isChecked() == True:
