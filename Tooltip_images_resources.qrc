@@ -10,8 +10,9 @@
     <file>images/example plots/ex_waveslice.png</file>
   </qresource>
   <qresource prefix="Tooltips">
-    <file>images/tooltips/matrix example.png</file>
+    <file>images/tooltips/reaction example wt.png</file>
     <file>images/tooltips/preset tau example.png</file>
+    <file>images/tooltips/matrix example.png</file>
     <file>images/tooltips/reaction example.png</file>
   </qresource>
 </RCC>
