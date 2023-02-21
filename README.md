@@ -6,7 +6,7 @@
 
 ## **Key Features**
 
-+ Easy to use GUI and script form
++ Easy to use GUI and script
 
 + Darkmode
 
@@ -16,11 +16,11 @@
 
 + Eight preimplemented kinetic models
 
-+ Easy implementation of custom kinetic models by providing only a "reaction equation" for the transitions
++ Easy implementation of custom kinetic models by providing only a "transition equation"
 
-+ Possibility to directly input the "reaction matrix"
++ Possibility to directly input the "kinetic matrix"
 
-+ Many different plots
++ Many different plotting options
 
 ## **Dependencies**
 

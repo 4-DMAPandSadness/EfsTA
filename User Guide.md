@@ -20,7 +20,7 @@ On this first tab a brief explanation of the program can be seen, which referenc
 
 The GUI is designed to guide the user through an evaluation by going for tab to tab. Switching from the Introduction-tab to the Data-tab. The following will be seen.
 
-<img src="/images/GUI/Data.png" width="50%"/>
+<img src="/images/GUI/Data.png" width="50%"/> <img src="/images/GUI/Data WI.png" width="50%"/>
 
 Here the evaluation process starts. The first step is to provide the program with the directory, where the data for the evaluation is located. To provide the data simply copy and past the directory in the designated text field or click the Browse-Button to choose the directory via a directory dialog.
 
@@ -36,7 +36,7 @@ After providing the data and shaping it the next step is to decide if the data s
 
 Going to the GLA-tab the following will be seen.
 
-<img src="/images/GUI/GLA.png" width="50%"/>
+<img src="/images/GUI/GLA.png" width="50%"/> <img src="/images/GUI/GLA WI.png" width="50%"/>
 
 Utilizing this model the spectrum will be treated as a collection of multiple parallel expoential decays.
 
@@ -53,7 +53,7 @@ If even more a priori knowledge is available global target analysis can be used.
 
 Going to the GTA-tab the following can be seen.
 
-<img src="/images/GUI/GTA.png" width="50%"/>
+<img src="/images/GUI/GTA.png" width="50%"/> <img src="/images/GUI/GTA WI.png" width="50%"/>
 
 Here the kinetic models on which the analysis is based can be input in three different ways. 
 
@@ -103,7 +103,7 @@ The input of the lifetimes and their bounds work in the same way they work for t
 
 Lastly for more advanced users it is also possible to input a transition matrix directly. For this select the "Custom Matrix" option and enter the size of the matrix. The size corresponds to the amount of species. After that click the Open Table-Button. A new window will pop up with a table where the lifetimes can be input directly.
 
-<img src="/images/GUI/Table.png" width="30%"/>
+<img src="/images/GUI/Table.png" width="30%"/> <img src="/images/GUI/Table WI.png" width="30%"/>
 
 Given the following transitions:
 
@@ -122,6 +122,8 @@ After all inputs are made the matrix can be saved and in after setting the plott
 ### Plotting
 
 With the selection of the analysis method the last thing left to do is to select if the raw and or fitted data should be plotted. EfsTA provides a variety of different plots.
+
+<img src="/images/GUI/Plotting.png" width="50%"/> <img src="/images/GUI/Plotting WI.png" width="50%"/>
 
 **Plot Choices**
 
@@ -171,7 +173,7 @@ For some Plots other parameters need to be set.
 
 After all plotting settings are done the program is ready to be executed. 
 
-<img src="/images/GUI/Input Confirmation.png" width="50%"/>
+<img src="/images/GUI/Input Confirmation.png" width="50%"/> <img src="/images/GUI/Input Confirmation WI.png" width="50%"/>
 
 On the Input Confirmation-tab all inputs given by the user will be displayed, so that they can be checked one last time. If everything is as it should be the program can be started by clicking the Confirm-Button.
 
@@ -295,3 +297,9 @@ Another plot can be plotted with `Controller.plotConcentrations(model)`. It show
 Furthermore the DAS or SAS can be plotted with `Controller.plotDAS(model, tau_fit)`. It is a plot of the absorption change against the wavelengths.
 
 The images for both of the plots are presented in the section of the GUI.
+
+## Error Messages
+
+### Please provide a bound for each lifetime
+
+This error occurs when the amount of bounds provided does not match the amount of lifetimes provided for the Preset or Custom Model GTA. It is possible to provide bounds only for some lifetimes, however the other lifetimes still have to be included. Make sure that, if you provide bounds, to match the amount of commata of the lifetimes and the bounds. 

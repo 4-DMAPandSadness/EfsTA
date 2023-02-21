@@ -141,7 +141,7 @@ class Controller():
         self.SAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, model, 
                          opt_method, ivp_method)
-        if model == ("custom model" or model == "custom matrix"):
+        if (model == "custom model" or model == "custom matrix"):
             M_lin = self.SAS.getM_lin(tau)
             K,n = self.SAS.getK(M_lin)
             self.SAS.setTauBounds(tau_low, tau_high, M_lin)
@@ -160,7 +160,7 @@ class Controller():
         return tau_fit, spec, res, D_fit, fit_report
 
     def plot3OrigData(self, wave, time, v_min, v_max,
-                      cont, mul, opt_method, ivp_method):
+                      cont, mul):
         """
         Allows the plotting of the original data in a 3-in-1 plot.
         If the lists wave and/or time are empty the corresponding subplots
@@ -183,10 +183,6 @@ class Controller():
             High values will show more lines.
         mul : float
             The value by which data will be multiplied.
-        opt_method : string
-            The algorithm used by the minimize function.
-        ivp_method : string
-            The algorithm used by the initial value problem solver.
 
         Returns
         -------
@@ -220,11 +216,6 @@ class Controller():
             Upper limit for the colorbar.
         mul : float
             The value by which data will be multiplied.
-        opt_method : string
-            The algorithm used by the minimize function.
-        ivp_method : string
-            The algorithm used by the initial value problem solver.
-            
         Returns
         -------
         fig: matplotlib.pyplot.figure

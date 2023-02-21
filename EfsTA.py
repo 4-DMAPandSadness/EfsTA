@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
         self.default_palette = QGuiApplication.palette()
         self.finalInputs = {}
         self.PltView = []
-        self.ui.user_input_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        self.ui.input_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.radios = QButtonGroup(self)
         self.radios.addButton(self.ui.GLA_radio)
         self.radios.addButton(self.ui.GTA_radio_preset_model)
@@ -206,6 +206,7 @@ class MainWindow(QMainWindow):
 
         """
         EfsTA.setPalette(self.default_palette)
+        self.saveAllInputs()
         self.savePickle()
         
     def functionality(self):
@@ -220,7 +221,7 @@ class MainWindow(QMainWindow):
         self.ui.stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(self.selectFolderPath)
         self.ui.Theme.stateChanged.connect(self.changeTheme)
-        self.ui.user_confirm.clicked.connect(self.finalCheck)      
+        self.ui.input_confirm.clicked.connect(self.finalCheck)      
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
         self.ui.GTA_open_table.clicked.connect(self.checkIfCustomMatrixSizeEmpty)
@@ -257,6 +258,16 @@ class MainWindow(QMainWindow):
             self.ui.plot_delay_slices.setChecked(False)
             
     def checkIfMethodSelected(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            False if not.
+
+        """
         if(self.ui.GLA_radio.isChecked() == False and 
            self.ui.GTA_radio_preset_model.isChecked() == False and 
            self.ui.GTA_radio_custom_model.isChecked() == False and 
@@ -322,7 +333,7 @@ class MainWindow(QMainWindow):
             True if empty.
 
         """
-        if (self.ui.GLA_user_input_tau_fix.text() == "" and self.ui.GLA_user_input_tau_var.text() == ""):
+        if (self.ui.GLA_input_tau_fix.text() == "" and self.ui.GLA_input_tau_var.text() == ""):
             self.openFailSafe("Please input guessed decay times.")
             return True
         
@@ -341,22 +352,22 @@ class MainWindow(QMainWindow):
             if (self.ui.GTA_input_preset_model_tau_lb.text().count(",") != 
                 self.ui.GTA_input_preset_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
-                return True
+                return False
         if self.ui.GTA_input_preset_model_tau_ub.text() != "":
             if (self.ui.GTA_input_preset_model_tau_ub.text().count(",") != 
                 self.ui.GTA_input_preset_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
-                return True
+                return False
         if self.ui.GTA_input_custom_model_tau_lb.text() != "":
             if (self.ui.GTA_custom_preset_model_tau_lb.text().count(",") != 
                 self.ui.GTA_custom_preset_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
-                return True
+                return False
         if self.ui.GTA_input_custom_model_tau_ub.text() != "":
             if (self.ui.GTA_input_custom_model_tau_ub.text().count(",") != 
                 self.ui.GTA_input_custom_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
-                return True
+                return False
             
 
     def checkIfBrowseEmpty(self):
@@ -410,7 +421,7 @@ class MainWindow(QMainWindow):
         if self.ui.GTA_input_custom_model_equation.text() == "":
            self.openFailSafe("Please input a reaction equation.")
            return True
-        elif self.ui.GTA_user_input_custom_model_tau.text() == "":
+        elif self.ui.GTA_input_custom_model_tau.text() == "":
             self.openFailSafe("Please input lifetimes.")
             return True
             
@@ -429,7 +440,7 @@ class MainWindow(QMainWindow):
             pass
         if (self.checkIfMethodSelected() == False):
             pass
-        if self.checkIfBoundsMatch() == True:
+        if self.checkIfBoundsMatch() == False:
             pass
         if (self.ui.GLA_radio.isChecked() == True and 
             self.checkIfGLATauEmpty() == True):
@@ -583,10 +594,10 @@ class MainWindow(QMainWindow):
                 plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier())
                 self.openPlotViewer(plot)
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier(), self.getGTAOptMethod(), self.getGTAIvpMethod())
+                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier())
                 self.openPlotViewer(plot)
                 
         if raw == False:
@@ -787,8 +798,8 @@ class MainWindow(QMainWindow):
             The lifetimes input by the user.
 
         """
-        tau_var = self.ui.GLA_user_input_tau_var.text().split(',')
-        tau_fix = self.ui.GLA_user_input_tau_fix.text().split(',')
+        tau_var = self.ui.GLA_input_tau_var.text().split(',')
+        tau_fix = self.ui.GLA_input_tau_fix.text().split(',')
         for i in range(len(tau_var)):
             if tau_var[i] != "":
                 tau_var[i] = float(tau_var[i])
@@ -965,7 +976,7 @@ class MainWindow(QMainWindow):
         #GUI input 
         eq = self.ui.GTA_input_custom_model_equation.text()
 
-        tau = self.ui.GTA_user_input_custom_model_tau.text().split(',')
+        tau = self.ui.GTA_input_custom_model_tau.text().split(',')
 
         #checks if the equation used arrows
         arrow = False
@@ -1189,7 +1200,7 @@ class MainWindow(QMainWindow):
         '''
         if ind == 5:
             self.saveAllInputs()
-            iterator = QTreeWidgetItemIterator(self.ui.user_input_tree)
+            iterator = QTreeWidgetItemIterator(self.ui.input_tree)
             while iterator.value():
                 item = iterator.value()
                 if item.text(0) in self.finalInputs:
@@ -1201,18 +1212,47 @@ class MainWindow(QMainWindow):
                 if item.text(0) == 'Algorithms':
                     algorithm_pointer = item
                 if (item.text(0) == 'GLA' and item.text(0) in self.finalInputs):
-                    item.setExpanded(True)
+                    if item.text(1) == 'Selected': 
+                        item.setExpanded(True)
+                        item.setDisabled(False)
+                    else:
+                        item.setExpanded(False)
+                        item.setDisabled(True)
                 if item.text(0) == 'GTA':
                     GTA_pointer = item
                 if (item.text(0) == 'Preset Model' and self.ui.GTA_radio_preset_model.isChecked() == True):
-                    item.setExpanded(True)
-                    GTA_pointer.setExpanded(True)
+                    if item.text(1) == 'Selected': 
+                        item.setExpanded(True)
+                        item.setDisabled(False)
+                        GTA_pointer.setExpanded(True)
+                        GTA_pointer.setDisabled(False)
+                    else:
+                        item.setExpanded(False)
+                        item.setDisabled(True)
+                        GTA_pointer.setExpanded(False)
+                        GTA_pointer.setDisabled(True)
                 elif (item.text(0) == 'Custom Model' and self.ui.GTA_radio_custom_model.isChecked() == True):
-                    item.setExpanded(True)
-                    GTA_pointer.setExpanded(True)
+                    if item.text(1) == 'Selected': 
+                        item.setExpanded(True)
+                        item.setDisabled(False)
+                        GTA_pointer.setExpanded(True)
+                        GTA_pointer.setDisabled(False)
+                    else:
+                        item.setExpanded(False)
+                        item.setDisabled(True)
+                        GTA_pointer.setExpanded(False)
+                        GTA_pointer.setDisabled(True)
                 elif (item.text(0) == 'Custom Matrix' and self.ui.GTA_radio_custom_matrix.isChecked() == True):
-                    item.setExpanded(True)    
-                    GTA_pointer.setExpanded(True)
+                    if item.text(1) == 'Selected': 
+                        item.setExpanded(True)
+                        item.setDisabled(False)
+                        GTA_pointer.setExpanded(True)
+                        GTA_pointer.setDisabled(False)
+                    else:
+                        item.setExpanded(False)
+                        item.setDisabled(True)
+                        GTA_pointer.setExpanded(False)
+                        GTA_pointer.setDisabled(True)
                 iterator+=1
             algorithm_pointer.setExpanded(True)
     
@@ -1237,8 +1277,8 @@ class MainWindow(QMainWindow):
         if self.ui.GLA_radio.isChecked() == True:
             self.finalInputs['GLA'] = "Selected"
             self.finalInputs['Optimizer'] = self.ui.GLA_algorithm_optimize.currentText()
-            self.finalInputs['Variable Taus'] = self.ui.GLA_user_input_tau_var.text()
-            self.finalInputs['Fixed Taus'] = self.ui.GLA_user_input_tau_fix.text()
+            self.finalInputs['Variable Taus'] = self.ui.GLA_input_tau_var.text()
+            self.finalInputs['Fixed Taus'] = self.ui.GLA_input_tau_fix.text()
         if self.ui.GTA_radio_preset_model.isChecked() == True:
             self.finalInputs['Preset Model'] = "Selected"
             self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
@@ -1255,9 +1295,9 @@ class MainWindow(QMainWindow):
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Model'] = self.ui.GTA_input_custom_model_equation.text()
-            self.finalInputs['Taus'] = self.ui.GTA_user_input_custom_model_tau.text()
-            self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_user_input_custom_model_tau_lb.text()
-            self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_user_input_custom_model_tau_ub.text()
+            self.finalInputs['Taus'] = self.ui.GTA_input_custom_model_tau.text()
+            self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_custom_model_tau_lb.text()
+            self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_custom_model_tau_ub.text()
             self.finalInputs['Saved Models'] = [self.ui.GTA_input_custom_model_saved_equations.itemText(i) for i in range(self.ui.GTA_input_custom_model_saved_equations.count())]
         if self.ui.GTA_radio_custom_matrix.isChecked() == True:
             self.finalInputs['Custom Matrix'] = "Selected"
@@ -1265,8 +1305,9 @@ class MainWindow(QMainWindow):
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
             self.finalInputs['Matrix'] = str(self.custom_matrix)
+        self.finalInputs['Selected Plots'] = ""
         if self.ui.plot_das_sas.isChecked() == True:
-            self.finalInputs['Selected Plots'] = ', DAS/SAS' 
+            self.finalInputs['Selected Plots'] += ', DAS/SAS' 
         if self.ui.plot_delay_slices.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Delay Slices'
         if self.ui.plot_heatmap.isChecked() == True:
@@ -1274,20 +1315,16 @@ class MainWindow(QMainWindow):
         if self.ui.plot_wavelength_slices.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Wavelength Slices'
         if self.ui.plot_concentrations.isChecked() == True:
-            self.finalInputs['Selected Plots'] += ', Kinetics'
+            self.finalInputs['Selected Plots'] += ', Concentrations'
         if self.ui.plot_residuals.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Residuals'
         if self.ui.plot_three_in_one.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Three In One'
         if self.ui.plot_threed_contour.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', 3D Contour'
-        if self.ui.plot_input_contour.value() !=0:
-            self.finalInputs['Contour Lines'] = str(self.ui.plot_input_contour.value())
-        else:
-            self.finalInputs['Contour Lines'] = str(20)
+        self.finalInputs['Contour Lines'] = str(self.getUserContour())
         self.finalInputs['Delay Slices'] = self.ui.plot_input_delay_slices.text()      
         self.finalInputs['Wavelength Slices'] = self.ui.plot_input_wavelength_slices.text()
-        self.finalInputs['Selected Data'] = self.finalInputs['Selected Data'][2:]
         self.finalInputs['Selected Plots'] = self.finalInputs['Selected Plots'][2:]
         
 
@@ -1385,7 +1422,7 @@ class MainWindow(QMainWindow):
         """
         self.getPickle()
         if "Custom Model" in self.shelf:
-            models = self.shelf["Saved Custom Models"]
+            models = self.shelf["Saved Models"]
             for i in range(len(models)):
                 self.ui.GTA_input_custom_model_saved_equations.addItem(models[i])
         if "Custom Matrix" in self.shelf:
@@ -1416,9 +1453,9 @@ class MainWindow(QMainWindow):
                 self.ui.GTA_radio_custom_matrix.setChecked(True) 
             if self.ui.GLA_radio.isChecked() == True:
                 if key == "Fixed Taus":
-                    self.ui.GLA_user_input_tau_fix.setText(val)
+                    self.ui.GLA_input_tau_fix.setText(val)
                 if key == "Variable Taus":
-                    self.ui.GLA_user_input_tau_var.setText(val)
+                    self.ui.GLA_input_tau_var.setText(val)
             if self.ui.GTA_radio_preset_model.isChecked() == True:
                 if key == "Preset Model Index":
                     self.ui.GTA_preset_model_selection.setCurrentIndex(int(val)-1)
