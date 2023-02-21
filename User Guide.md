@@ -12,7 +12,9 @@ You can decide between using the graphical user-interface or the script form *Ap
 
 Upon starting the program the following window will popup. 
 
-<img src="/images/GUI/Introduction.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/Introduction.png" width="49%"/>
+</p>
 
 On this first tab a brief explanation of the program can be seen, which references this guide and provides contact information. There is also a possibility to change the theme of the GUI.
 
@@ -20,7 +22,9 @@ On this first tab a brief explanation of the program can be seen, which referenc
 
 The GUI is designed to guide the user through an evaluation by going for tab to tab. Switching from the Introduction-tab to the Data-tab. The following will be seen.
 
-<img src="/images/GUI/Data.png" width="50%"/> <img src="/images/GUI/Data WI.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/Data.png" width="49%"/> <img src="/images/GUI/Data WI.png" width="49%"/>
+</p>
 
 Here the evaluation process starts. The first step is to provide the program with the directory, where the data for the evaluation is located. To provide the data simply copy and past the directory in the designated text field or click the Browse-Button to choose the directory via a directory dialog.
 
@@ -36,7 +40,9 @@ After providing the data and shaping it the next step is to decide if the data s
 
 Going to the GLA-tab the following will be seen.
 
-<img src="/images/GUI/GLA.png" width="50%"/> <img src="/images/GUI/GLA WI.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/GLA.png" width="49%"/> <img src="/images/GUI/GLA WI.png" width="49%"/>
+</p>
 
 Utilizing this model the spectrum will be treated as a collection of multiple parallel expoential decays.
 
@@ -53,7 +59,9 @@ If even more a priori knowledge is available global target analysis can be used.
 
 Going to the GTA-tab the following can be seen.
 
-<img src="/images/GUI/GTA.png" width="50%"/> <img src="/images/GUI/GTA WI.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/GTA.png" width="49%"/> <img src="/images/GUI/GTA WI.png" width="49%"/>
+</p>
 
 Here the kinetic models on which the analysis is based can be input in three different ways. 
 
@@ -89,7 +97,9 @@ Should the eight provided models not suffice the option "Custom Model" can be se
 
 The custom models are limited to a maximum of 26 species. Each species needs to be denoted with a capital letter from A to Z. If one species decays back to the ground state the non capital letter v (for void) may be used. A decay into the ground state only has to be declared once per species. The equation can be written with arrows (A->B->C->v) or for faster input without the arrows (ABCv). The important thing is to keep them in the order of the transitions. The letters need to be selected in alphabetical order. For example if there are only the species the letters used need to be A,B and C **not** F,X and Q. For branching or transitions back to previos species start a new subequation by separation with a ";". For example given the following transitions:
 
+<p align="center">
 <img src="/images/tooltips/reaction example.png" width="30%"/>
+</p>
 
 the input for the eqaution would be:
 
@@ -103,15 +113,21 @@ The input of the lifetimes and their bounds work in the same way they work for t
 
 Lastly for more advanced users it is also possible to input a transition matrix directly. For this select the "Custom Matrix" option and enter the size of the matrix. The size corresponds to the amount of species. After that click the Open Table-Button. A new window will pop up with a table where the lifetimes can be input directly.
 
+<p align="center">
 <img src="/images/GUI/Table.png" width="30%"/> <img src="/images/GUI/Table WI.png" width="30%"/>
+</p>
 
 Given the following transitions:
 
+<p align="center">
 <img src="/images/tooltips/reaction example.png" width="30%"/>
+</p>
 
 the input for the matrix should look like this:
 
+<p align="center">
 <img src="/images/tooltips/matrix example.png" width="30%"/>
+</p>
 
 The matrix can be divided in three major parts. The main diagonal, the triangle above the main diagonal and the triangle below it. On the main diagonal the loss or decay of the corresponding species is described. The upper triangle describes the regain or repopulation of previous species. The lower triangle describes the gain or population of following species.
 
@@ -123,41 +139,59 @@ After all inputs are made the matrix can be saved and in after setting the plott
 
 With the selection of the analysis method the last thing left to do is to select if the raw and or fitted data should be plotted. EfsTA provides a variety of different plots.
 
-<img src="/images/GUI/Plotting.png" width="50%"/> <img src="/images/GUI/Plotting WI.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/Plotting.png" width="49%"/> <img src="/images/GUI/Plotting WI.png" width="49%"/>
+</p>
 
 **Plot Choices**
 
 - *Delay Slices (ΔA/λ)*: Specified slices through the time domain will be shown as a plot of the absorption change against the wavelengths. (Will only be shown if delays are provided.)
 
-<img src="/images/example plots/ex_timeslice.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_timeslice.png" width="49%"/>
+</p>
 
 - *Wavelength Slices (t/ΔA)*: Specified slices through the wavelength domain will be shown as a plot of the delay against the absorption change. (Will only be shown if wavelengths are provided.)
 
-<img src="/images/example plots/ex_waveslice.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_waveslice.png" width="49%"/>
+</p>
 
 - *Heatmap*: The threedimensional data will be shown as a heatmap.
 
-<img src="/images/example plots/ex_heatmap.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_heatmap.png" width="49%"/>
+</p>
 
 - *All in One*: This plot shows the delay slices, wavelength slices and the heatmap next to eachother in a single image.
 
-<img src="/images/example plots/ex_all.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_all.png" width="49%"/>
+</p>
 
 - *Concentrations (c/t)*: This plot displays the concentration development of each species by plotting the concentration against the delay.
 
-<img src="/images/example plots/ex_concentrations.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_concentrations.png" width="49%"/>
+</p>
 
 - *DAS/SAS(ΔA/λ)*: Depending on the evaluation method the decay associated spectra (for GLA) or the species associated spectra (for GTA) will be shown as plots of the absorption change against the wavelength.
 
-<img src="/images/example plots/ex_DASSAS.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_DASSAS.png" width="49%"/>
+</p>
 
 - *Residuals*: Displays the residuals as a heatmap.
 
-<img src="/images/example plots/ex_residuals.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_residuals.png" width="49%"/>
+</p>
 
 - *3D Contour*: Displays the data as an interactive 3D contour plot.
 
-<img src="/images/example plots/ex_3D.png" width="30%"/>
+<p align="center">
+<img src="/images/example plots/ex_3D.png" width="49%"/>
+</p>
 
 **Plot Settings**
 
@@ -173,7 +207,9 @@ For some Plots other parameters need to be set.
 
 After all plotting settings are done the program is ready to be executed. 
 
-<img src="/images/GUI/Input Confirmation.png" width="50%"/> <img src="/images/GUI/Input Confirmation WI.png" width="50%"/>
+<p align="center">
+<img src="/images/GUI/Input Confirmation.png" width="49%"/> <img src="/images/GUI/Input Confirmation WI.png" width="49%"/>
+</p>
 
 On the Input Confirmation-tab all inputs given by the user will be displayed, so that they can be checked one last time. If everything is as it should be the program can be started by clicking the Confirm-Button.
 
@@ -189,7 +225,9 @@ The general features of the GUI are also included in the script, although there 
 
 At the top of the script, the general settings will be found.
 
-<img src="/images/script/settings.png" width="50%"/>
+<p align="center">
+<img src="/images/script/settings.png" width="49%"/>
+</p>
 
 First, the `directory` to the folder containing the data needs to be provided. Files with the following names will be recognized:
 > `/...lambda.txt` contains the wavelengths/nm,
@@ -198,7 +236,9 @@ First, the `directory` to the folder containing the data needs to be provided. F
 
 Then the evaluation `model` can be selected. GLA will be used for `0`, for the GTA one of the eight preimplemented models `1`-`8` can be selected or `"custom"` for a custom matrix.
 
-<img src="/images/script/models.png" width="50%"/>
+<p align="center">
+<img src="/images/script/models.png" width="49%"/>
+</p>
 
 The next settings are `w_bounds` and `d_bounds` which are the `[lower, upper]` bound for the `wavelengths` and `delays` where the original data will be cut off. If the data should not be cut the bounds can be set as 'None'.
 
@@ -242,7 +282,9 @@ Lastly an optimizer algorithm needs to be set.
 
 In the next section if GLA (model = 0) was selected, `0`-`a` fixed and `0`-`b` variable values for the decay constants `tau`  need to be set. The fixed values won't be optimized, whereas the variable ones will be incuded in the fit. The total number of tau values `a`+`b` has to be at least `1`.
 
-<img src="/images/script/gla.png" width="50%"/>
+<p align="center">
+<img src="/images/script/gla.png" width="49%"/>
+</p>
 
 ### Settings for the Species Associated Spectra
 
@@ -252,13 +294,17 @@ For the initial concentrations `C_0`, you will be asked to set `0` or `n` values
 
 Should you choose the model `"custom"` you can specify the matrix `M` at the end. It can be a list or an array either handwritten or imported from a file.
 
-<img src="/images/script/gta.png" width="50%"/>
+<p align="center">
+<img src="/images/script/gta.png" width="49%"/>
+</p>
 
 ### Settings for the *all-in-one* plots
 
 In the next section you can configure the settings for the *all-in-one* plots.
 
-<img src="/images/script/plotting.png" width="50%"/>
+<p align="center">
+<img src="/images/script/plotting.png" width="49%"/>
+</p>
 
 You are offered the following possibilities:
 
