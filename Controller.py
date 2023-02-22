@@ -93,7 +93,7 @@ class Controller():
         self.saveResults(0, np.concatenate((tau_fix, tau_guess)), tau_fit,
                          l_limits, d_limits, spec, D_fit,
                          self.DAS.getTauBounds(tau_guess), self.DAS.lambdas,
-                         self.DAS.delays, self.DAS.spectra)
+                         self.DAS.delays, self.DAS.spectra, fit_report)
         return tau_fit, spec, res, D_fit, fit_report
 
     def calcSAS(self, tau, C_0, d_limits, l_limits, model, tau_low, tau_high, opt_method, ivp_method):
@@ -156,7 +156,7 @@ class Controller():
         res = self.SAS.calcResiduals()        
         self.saveResults(model, tau, tau_fit, l_limits, d_limits, spec, D_fit,
                          self.SAS.getTauBounds(tau), self.SAS.lambdas,
-                         self.SAS.delays, self.SAS.spectra)
+                         self.SAS.delays, self.SAS.spectra, fit_report)
         return tau_fit, spec, res, D_fit, fit_report
 
     def plot3OrigData(self, wave, time, v_min, v_max,
@@ -505,7 +505,7 @@ class Controller():
         return fig
             
     def saveResults(self, model, tau_start, tau_fit, l_limits, d_limits, A_fit,
-                    D_fit, bounds, lambdas, delays, spectra):
+                    D_fit, bounds, lambdas, delays, spectra, fit_report):
         """
         Saves the results of the DAS or SAS at the end of the optimizing in a
         .txt file.
@@ -562,7 +562,7 @@ class Controller():
             "\nWavelength range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
             " nm\nTime" + "delay range: " + str(d_limits[0])+" - "
             + str(d_limits[1]) + " ps\n\nTime constants / ps: " + str(tau_fit)
-            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n"  + "\n")
+            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n"  + "\n" + fit_report)
         
         np.savetxt(path+name+"_A_fit.txt", A_fit)
         if model == 0:

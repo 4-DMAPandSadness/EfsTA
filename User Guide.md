@@ -2,9 +2,9 @@
 
 In this user guide the evaluation of femtosecond transient absorption spectra data using the program EfsTA will be explained.
 
-This TA-Evaluation program allows the optimizing of the decay constants based on given values. These values should be derived of the 2D-data and previous knowledge of the photophysics of the molecule.
+This TA-Evaluation program allows the optimizing of the lifetimes based on given values. These values should be derived of the 3D-data and previous knowledge of the photophysics of the molecule.
 
-You can decide between using the graphical user-interface or the script form *App.py* in Python. They both have the features for the evaluation (GLA -> DAS and GTA -> SAS), as well as the plotting. However the UI checks for the completeness of the user inputs, whereas the script allows more customization.
+The program can be used with the GUI or with the script *App.py*. They both offer mostly the same features for the evaluation, as well as the plotting. However the UI checks for the completeness of the user inputs and allows for the use of custom kinetic models, whereas the script allows more customization for more programming affine users.
 
 ## GUI
 
@@ -16,7 +16,7 @@ Upon starting the program the following window will popup.
 <img src="/images/GUI/Introduction.png" width="49%"/>
 </p>
 
-On this first tab a brief explanation of the program can be seen, which references this guide and provides contact information. There is also a possibility to change the theme of the GUI.
+On this first tab a brief explanation of the program can be seen, which references this guide and provides contact information. There is also a checkbox to switch the regular dark theme of the GUI to a light theme.
 
 ### Data
 
@@ -26,15 +26,15 @@ The GUI is designed to guide the user through an evaluation by going for tab to 
 <img src="/images/GUI/Data.png" width="49%"/> <img src="/images/GUI/Data WI.png" width="49%"/>
 </p>
 
-Here the evaluation process starts. The first step is to provide the program with the directory, where the data for the evaluation is located. To provide the data simply copy and past the directory in the designated text field or click the Browse-Button to choose the directory via a directory dialog.
+Here the evaluation process starts. The first step is to provide the program with the directory, where the data for the evaluation is located. To provide the data simply copy and past the directory in the designated text field or click the "Browse"-Button to choose the directory via a directory dialog.
 
-Note that the program only recognizes data in the form of three separate .txt-files for the wavelengths, delays and measured absorption ending with lambda.txt,delay.txt and spectra.txt respectively. 
+Note that the program only recognizes data in the form of three separate *.txt-files* for the wavelengths, delays and measured absorption ending with *lambda.txt*,*delay.txt* and *spectra.txt* respectively. 
 
-If a directory is selected which was previously use to evaluate data the inputs made for the previous evaluation will be restored. To clear out all these inputs in case completely different parameters should  be used, the Clear Cache-Button will delete all inputs.
+If a directory is selected which was previously used to evaluate data the inputs made for the previous evaluation will be restored. To clear out all these inputs in case completely different parameters should be used, the "Clear Cache"-Button will delete all inputs.
 
-If the directory is a new one with a fresh set of data all input fields will be empty. The data can be shaped if required. The wavelength and time domain can be specified by providing upper and lower limits e.g. if artifacts around time 0 are a problem the lower bound for the delay values can be set to 0.4, so that only the data starting from 0.4 ps will be used. Additionally if the data was meassured in ODU but should be displayed as mOUD a data multiplier can be set e.g. 1000. These parameters are all optional and can be left empty.
+If the directory is a new one with a fresh set of data all input fields will be empty. The data can be shaped if required. The wavelength and delay domain can be specified by providing upper and lower limits e.g. if the data was measured for delays between -10 ps and 4000 ps but artifacts around time 0 are a problem the lower bound for the delay values can be set to 0.4, so that only the data starting from 0.4 ps will be used. Additionally if the data was meassured in ODU but should be displayed as mOUD a data multiplier can be set e.g. 1000. These parameters are all optional and can be left empty.
 
-After providing the data and shaping it the next step is to decide if the data should be analysed using global liftime analysis or global target analysis. Typically the first step is to use global lifetime analysis.
+After providing the data and shaping it the next step is to decide if the data should be analysed using global liftime analysis or global target analysis.
 
 ### Global Lifetime Analysis (GLA)
 
