@@ -13,6 +13,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import TTIMG
 
+import faulthandler as fh
+
+fh.enable()
+
 class TableWindow(QWidget):
     def __init__(self,size):
         """
@@ -93,7 +97,7 @@ class FailSafeWindow(QWidget):
         self.setWindowModality(Qt.ApplicationModal)
         
 class ResultsWindow(QWidget):
-    def __init__(self, model, Controller, fit_report):
+    def __init__(self, model, Controller):
         """
         Initializes the results popup window, where the results of the fitting
         routine will be displayed in a QTextEdit.
@@ -116,9 +120,9 @@ class ResultsWindow(QWidget):
         super(QWidget,self).__init__()
         self.ui = loadUi("results_gui.ui",self)
         self.ui.closeResults.clicked.connect(lambda: self.close)
-        self.setText(model, Controller, fit_report)
+        self.setText(model, Controller)
         
-    def setText(self, model, Controller, fit_report):
+    def setText(self, model, Controller):
         """
         Fills the QTextEdit object with the corresponding data.
 
@@ -140,12 +144,11 @@ class ResultsWindow(QWidget):
         self.ui.textResults.clear()
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
-        self.ui.textResults.append(fit_report)
    
 class PlotViewer(QWidget):
     def __init__(self, fig):
         """
-        Initializes the PlotViewer popup window, where the plots given by
+        Initializes the PlotViewer popup window, where the plots created by
         the program can be slightly modified.
 
         Parameters
@@ -541,7 +544,7 @@ class MainWindow(QMainWindow):
         else:
             self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
                         model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
-        self.openPopUpResults(model, self.Controller, fit_report)
+        self.openPopUpResults(model, self.Controller)
             
     def plotting(self,ds,ws,model,raw):
         """
@@ -1133,7 +1136,7 @@ class MainWindow(QMainWindow):
         popup.show()
         popup.save.clicked.connect(lambda: self.closePopupMatrix(popup))       
 
-    def openPopUpResults(self, model, Controller, fit_report):
+    def openPopUpResults(self, model, Controller):
         """
         Opens up the results popup window.
 
@@ -1152,7 +1155,7 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        self.resultView = ResultsWindow(model, Controller, fit_report)
+        self.resultView = ResultsWindow(model, Controller)
         self.resultView.show()
         self.resultView.closeResults.clicked.connect(lambda: self.resultView.close())
         

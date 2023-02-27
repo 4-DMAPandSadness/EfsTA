@@ -204,7 +204,7 @@ class Controller():
         return fig
     
     def plot3DOrigData(self, v_min, v_max,
-                      mul, opt_method, ivp_method):
+                      mul):
         """
         Allows the plotting of the original data in a 3D contour plot.
 
@@ -562,7 +562,8 @@ class Controller():
             "\nWavelength range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
             " nm\nTime" + "delay range: " + str(d_limits[0])+" - "
             + str(d_limits[1]) + " ps\n\nTime constants / ps: " + str(tau_fit)
-            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n"  + "\n" + fit_report)
+            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n" 
+            + "lmfit fit_report:" + "\n" + "\n" + fit_report)
         
         np.savetxt(path+name+"_A_fit.txt", A_fit)
         if model == 0:

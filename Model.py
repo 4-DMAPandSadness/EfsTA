@@ -974,7 +974,7 @@ class Model:
             v_max = self.setv_max(spectra, mul)
         wave_index = self.findNearestIndex(wave, self.lambdas)
         time_index = self.findNearestIndex(time, self.delays)
-        space = 0.2 #if 0 overlap between colorbar and y-label of plot3
+        space = 0
 
         if custom == "1":
             width = 2.5
@@ -1035,7 +1035,7 @@ class Model:
             plt.suptitle((self.name + add).replace("_", " "))
         else:
             plt.title((self.name + add).replace("_", " "))
-        plt.tight_layout()
+        grid.tight_layout(fig)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
         plt.show()
