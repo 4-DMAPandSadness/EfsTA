@@ -334,7 +334,7 @@ class Model:
                     k_guess[i][j] = 0
                 if k_guess[i][j] != 0:
                     M_ones[i][j] = 1
-                    M_lin.append(k_guess[i][j])
+                    M_lin.append(abs(k_guess[i][j]))
         tau = 1/np.array(M_lin)
         self.M_ones = M_ones
         return tau
@@ -510,7 +510,7 @@ class Model:
         difference = self.calcA_tau(tau_sum) - self.spectra
         return difference
     
-    def findTau_fit(self, tau_fix, tau_guess, opt_method):
+    def findTau_fit(self, preparam, opt_method):
         """
         The function takes the variable tau_guess and optimizes their values,
         so that ChiSquare takes a minimal value. It outputs a list of the 
@@ -534,20 +534,10 @@ class Model:
         """
         params = Parameters()
         self.tau_fit = []
-        self.tau_fix = tau_fix
-        bounds = self.getTauBounds(tau_guess)
-        if tau_guess == []:
-            self.x_fit = []
-            tau_sum = tau_fix
-        if (self.model == "custom model" or self.model == "custom matrix"):
-            tau_guess = self.getM_lin(tau_guess)
-        for i in range(len(tau_guess)):
-            params.add('tau_guess'+str(i), tau_guess[i],
-                           min=bounds[i][0], max=bounds[i][1])
-        for i in range(len(tau_fix)):
-            params.add('tau_fix'+str(i), tau_fix[i],
-                            min=bounds[len(tau_guess)-1+i][0], 
-                            max=bounds[len(tau_guess)-1+i][1],vary=False)
+        bounds = self.getTauBounds(preparam)
+        for i in range(len(preparam)):
+            params.add('tau'+str(i), preparam[i][0],
+                           min=bounds[i][0], max=bounds[i][1],vary=preparam[i][1])
         res_fit = minimize(self.getDifference, params, method=opt_method)
         fit_rep = fit_report(res_fit)
         if hasattr(res_fit, "success"):
@@ -928,8 +918,7 @@ class Model:
         ax.view_init(20,250)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
-        return fig
-
+        
     def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont, mul,
                    add=""):
         """
@@ -1039,7 +1028,6 @@ class Model:
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
         plt.show()
-        return fig
 
     def plotData(self, x, y, x_label, y_label, add="", label=None):
         """
@@ -1079,4 +1067,3 @@ class Model:
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
                     bbox_inches="tight")
         plt.show()
-        return fig

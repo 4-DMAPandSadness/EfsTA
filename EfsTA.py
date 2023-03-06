@@ -1,23 +1,17 @@
 import sys
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLineEdit, 
-                             QSpinBox, QComboBox, QTreeWidgetItemIterator,
-                             QButtonGroup)
+from PyQt5 import QtWidgets as QW
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import Controller as Cont
 import numpy as np
 import os as os
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib import use as mpluse
 import TTIMG
 
-import faulthandler as fh
+mpluse("QtAgg")
 
-fh.enable()
-
-class TableWindow(QWidget):
+class TableWindow(QW.QWidget):
     def __init__(self,size):
         """
         Initializes the popup window where the user inputs their own lifetime
@@ -33,7 +27,7 @@ class TableWindow(QWidget):
         None.
 
         """
-        super(QWidget,self).__init__()
+        super(QW.QWidget,self).__init__()
         self.ui = loadUi("table_gui.ui",self)
         self.ui.custom_Matrix.setRowCount(size)
         self.ui.custom_Matrix.setColumnCount(size)
@@ -74,7 +68,7 @@ class TableWindow(QWidget):
         self.readTable()
         self.close()
 
-class FailSafeWindow(QWidget):
+class FailSafeWindow(QW.QWidget):
     def __init__(self,msg):
         """
         Initializes the failsafe popup window, where the most common GUI input
@@ -90,13 +84,13 @@ class FailSafeWindow(QWidget):
         None.
 
         """
-        super(QWidget,self).__init__()
+        super(QW.QWidget,self).__init__()
         self.ui = loadUi("failsafe_gui.ui",self)
         self.ui.closeFailsafe.clicked.connect(lambda: self.close)
         self.ui.textFailsafe.setText(msg)
         self.setWindowModality(Qt.ApplicationModal)
         
-class ResultsWindow(QWidget):
+class ResultsWindow(QW.QWidget):
     def __init__(self, model, Controller):
         """
         Initializes the results popup window, where the results of the fitting
@@ -117,7 +111,7 @@ class ResultsWindow(QWidget):
         None.
 
         """
-        super(QWidget,self).__init__()
+        super(QW.QWidget,self).__init__()
         self.ui = loadUi("results_gui.ui",self)
         self.ui.closeResults.clicked.connect(lambda: self.close)
         self.setText(model, Controller)
@@ -144,31 +138,8 @@ class ResultsWindow(QWidget):
         self.ui.textResults.clear()
         text = Controller.getResults(model)
         self.ui.textResults.append(text)
-   
-class PlotViewer(QWidget):
-    def __init__(self, fig):
-        """
-        Initializes the PlotViewer popup window, where the plots created by
-        the program can be slightly modified.
 
-        Parameters
-        ----------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
-
-        Returns
-        -------
-        None.
-
-        """
-        super(PlotViewer,self).__init__()
-        self.ui = loadUi("plotviewer_gui.ui",self)
-        plot = FigureCanvasQTAgg(fig)
-        toolbar = NavigationToolbar(plot, self)
-        self.ui.verticalLayout.addWidget(toolbar)
-        self.ui.verticalLayout.addWidget(plot)
-
-class MainWindow(QMainWindow):
+class MainWindow(QW.QMainWindow):
     def __init__(self): 
         super(MainWindow,self).__init__()
         self.ui = loadUi("gui.ui",self)
@@ -187,9 +158,8 @@ class MainWindow(QMainWindow):
         """
         self.default_palette = QGuiApplication.palette()
         self.finalInputs = {}
-        self.PltView = []
-        self.ui.input_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        self.radios = QButtonGroup(self)
+        self.ui.input_tree.header().setSectionResizeMode(QW.QHeaderView.ResizeToContents)
+        self.radios = QW.QButtonGroup(self)
         self.radios.addButton(self.ui.GLA_radio)
         self.radios.addButton(self.ui.GTA_radio_preset_model)
         self.radios.addButton(self.ui.GTA_radio_custom_model)
@@ -231,6 +201,9 @@ class MainWindow(QMainWindow):
         self.ui.GTA_custom_model_save.clicked.connect(self.saveCustomModel)
         self.ui.GTA_custom_model_del.clicked.connect(self.deleteCustomModel)
         self.ui.Plotting_raw.clicked.connect(self.rawPlotting)
+        self.ui.GTA_input_preset_model_tau.editingFinished.connect(lambda: self.summonRadio("preset"))
+        self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
+        self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
         EfsTA.aboutToQuit.connect(self.onQuit)      
         
     def checkIfWavelengthSlicesEmpty(self):
@@ -336,7 +309,7 @@ class MainWindow(QMainWindow):
             True if empty.
 
         """
-        if (self.ui.GLA_input_tau_fix.text() == "" and self.ui.GLA_input_tau_var.text() == ""):
+        if self.ui.GLA_input_tau.text() == "":
             self.openFailSafe("Please input guessed decay times.")
             return True
         
@@ -351,27 +324,16 @@ class MainWindow(QMainWindow):
             True if empty.
 
         """
-        if self.ui.GTA_input_preset_model_tau_lb.text() != "":
-            if (self.ui.GTA_input_preset_model_tau_lb.text().count(",") != 
+        if self.ui.GTA_input_tau_lb.text() != "":
+            if (self.ui.GTA_input_tau_lb.text().count(",") != 
                 self.ui.GTA_input_preset_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
                 return False
-        if self.ui.GTA_input_preset_model_tau_ub.text() != "":
-            if (self.ui.GTA_input_preset_model_tau_ub.text().count(",") != 
+        if self.ui.GTA_input_tau_ub.text() != "":
+            if (self.ui.GTA_input_tau_ub.text().count(",") != 
                 self.ui.GTA_input_preset_model_tau.text().count(",")):
                 self.openFailSafe("Please provide a bound for each lifetime.")
-                return False
-        if self.ui.GTA_input_custom_model_tau_lb.text() != "":
-            if (self.ui.GTA_input_custom_model_tau_lb.text().count(",") != 
-                self.ui.GTA_input_custom_model_tau.text().count(",")):
-                self.openFailSafe("Please provide a bound for each lifetime.")
-                return False
-        if self.ui.GTA_input_custom_model_tau_ub.text() != "":
-            if (self.ui.GTA_input_custom_model_tau_ub.text().count(",") != 
-                self.ui.GTA_input_custom_model_tau.text().count(",")):
-                self.openFailSafe("Please provide a bound for each lifetime.")
-                return False
-            
+                return False           
 
     def checkIfBrowseEmpty(self):
         """
@@ -463,7 +425,7 @@ class MainWindow(QMainWindow):
         
         elif self.GTA_radio_preset_model.isChecked() == True:
             model = self.getPresetModel()+1
-            K = np.array(self.getGTAPresetModelTaus())
+            K = self.getGTAPresetModelTaus()
             self.calculationGTA(db,wb,model,K)
             self.plotting(ds,ws,model,False)
         
@@ -514,8 +476,8 @@ class MainWindow(QMainWindow):
         None.
 
         '''
-        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.getGLATaus(), db, wb, self.getGLAOptMethod())
-        self.openPopUpResults(0, self.Controller, fit_report)
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.prepareParam("gla"), db, wb, self.getGLAOptMethod())
+        self.openPopUpResults(0, self.Controller)
         
     def calculationGTA(self,db,wb,model,K):
         '''
@@ -538,12 +500,15 @@ class MainWindow(QMainWindow):
 
         '''
         K =  np.array(K)
-        if model == "custom model":
-            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
-                    model,self.getCustomModelTauBounds()[0], self.getCustomModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
+        if model == "custom matrix":
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, [] , self.getCustomConcentration(), db, wb,
+                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
+        elif model == "custom model":
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("custom") , self.getCustomConcentration(), db, wb,
+                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
         else:
-            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.getCustomConcentration(), db, wb,
-                        model,self.getPresetModelTauBounds()[0], self.getPresetModelTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("preset") , self.getCustomConcentration(), db, wb,
+                                                        model,self.getTauBounds()[0], self.getTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
         self.openPopUpResults(model, self.Controller)
             
     def plotting(self,ds,ws,model,raw):
@@ -570,46 +535,34 @@ class MainWindow(QMainWindow):
         
         if raw == True:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = self.Controller.plot3DOrigData(None, None, self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plot3DOrigData(None, None, self.getMultiplier())
                 
         if raw == False:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "3", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "3", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "1", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "1", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                plot = self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "2", self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "2", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
-                plot = self.Controller.plot3FittedData(ws, ds, None, None, model, self.getUserContour(), self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plot3FittedData(ws, ds, None, None, model, self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:
-                plot = self.Controller.plot3DFittedData(None, None, model, self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plot3DFittedData(None, None, model, self.getMultiplier())
             if self.ui.plot_residuals.isChecked() == True:
-                plot = self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())                
             if self.ui.plot_das_sas.isChecked() == True:
-                plot = self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
-                self.openPlotViewer(plot)
+                self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
             if self.ui.plot_concentrations.isChecked() == True:
-                plot = self.Controller.plotKinetics(model)
-                self.openPlotViewer(plot)
+                self.Controller.plotKinetics(model)
+                
             
     def getFolderPath(self):
         """
@@ -772,10 +725,76 @@ class MainWindow(QMainWindow):
             mul = int(self.ui.Data_input_multiplier.text())
         return mul
 
+
+    def summonRadio(self,layout_origin):
+        """
+        Summons radio buttons corresponding to the input lifetimes for the selection
+        of fixed values.
+
+        Parameters
+        ----------
+        layout_origin : string
+            "preset","custom" or "gla" depending on the last edited QLineEdit.
+
+        Returns
+        -------
+        None.
+
+        """
+        if layout_origin == "preset":
+            layout = self.ui.GTA_preset_model_fix_layout
+            taus = self.getGTAPresetModelTaus()
+        elif layout_origin == "custom":
+            layout = self.ui.GTA_custom_model_fix_layout
+            taus = self.getGTACustomModelTaus()
+        elif layout_origin == "gla":
+            layout = self.ui.GLA_fix_layout
+            taus = self.getGLATaus()
+        for i in reversed(range(layout.count())): 
+            widgetToRemove = layout.itemAt(i).widget()
+            widgetToRemove.deleteLater()  
+        for tau in taus:
+            layout.addWidget(QW.QRadioButton(str(tau),autoExclusive=False))
+
+    def prepareParam(self, method):
+        """
+        Prepares the user inputs for the conversion to lmfit parameters.
+
+        Parameters
+        ----------
+        method : string
+            "preset","custom" or "gla" depending on the selected analysis method.
+
+        Returns
+        -------
+        prepParam : list
+            A list containing tuples with the lifetime and a boolean stating if the 
+            lifetime will be varied.
+
+        """
+        if method == "preset":
+            layout = self.ui.GTA_preset_model_fix_layout
+            taus = self.getGTAPresetModelTaus()
+        elif method == "custom":
+            layout = self.ui.GTA_custom_model_fix_layout
+            taus = self.getGTACustomModelTaus()
+        elif method == "gla":
+            layout = self.ui.GLA_fix_layout
+            taus = self.getGLATaus()
+        widgets = (layout.itemAt(i).widget() for i in range(layout.count()))
+        if layout.count() == 0:
+            prepParam = [(t,True) for t in taus]
+        else:
+            prepParam = []
+        for widget in widgets:
+            if isinstance(widget, QW.QRadioButton):
+                prepParam.append((float(widget.text()),not widget.isChecked()))
+        return prepParam
+
+
     def getGLATaus(self):
         """
-        Checks which lifetime guesses are given (fixed, variable or both) and 
-        reads them.
+        Reads the lifetimes input by the user, if GLA is selected.
 
         Returns
         -------
@@ -783,29 +802,20 @@ class MainWindow(QMainWindow):
             The lifetimes input by the user.
 
         """
-        tau_var = self.ui.GLA_input_tau_var.text().split(',')
-        tau_fix = self.ui.GLA_input_tau_fix.text().split(',')
-        for i in range(len(tau_var)):
-            if tau_var[i] != "":
-                tau_var[i] = float(tau_var[i])
-        for i in range(len(tau_fix)):
-            if tau_fix[i] != "":
-                tau_fix[i] = float(tau_fix[i])
-        if any(isinstance(obj,float) for obj in tau_var):
-            tau_var = [None if item == '' else item for item in tau_var]
+        if self.ui.GLA_input_tau.text() == "":
+            tau = []
         else:
-            tau_var = []
-            
-        if any(isinstance(obj,float) for obj in tau_fix):
-            tau_fix = [None if item == '' else item for item in tau_fix]
-        else:
-            tau_fix = [] 
-        return [tau_fix, tau_var]
+            tau = self.ui.GLA_input_tau.text().split(',')
+            for i in range(len(tau)):
+                if tau[i] != "":
+                    tau[i] = float(tau[i])
+                else:
+                    tau.remove("")
+        return tau
     
     def getGTAPresetModelTaus(self):
         """
-        Reads the lifetimes input by the user, if a linear model is 
-        selected.
+        Reads the lifetimes input by the user, if a preset model is selected.
 
         Returns
         -------
@@ -820,9 +830,32 @@ class MainWindow(QMainWindow):
             for i in range(len(tau)):
                 if tau[i] != "":
                     tau[i] = float(tau[i])
+                else:
+                    tau.remove("")
         return tau
     
-    def getPresetModelTauBounds(self):
+    def getGTACustomModelTaus(self):
+        """
+        Reads the lifetimes input by the user, if a preset model is selected.
+
+        Returns
+        -------
+        tau : list
+            The lifetimes input by the user.
+
+        """
+        if self.ui.GTA_input_custom_model_tau.text() == "":
+            tau = []
+        else:
+            tau = self.ui.GTA_input_custom_model_tau.text().split(',')
+            for i in range(len(tau)):
+                if tau[i] != "":
+                    tau[i] = float(tau[i])
+                else:
+                    tau.remove("")
+        return tau
+    
+    def getTauBounds(self):
         """
         Reads the bounds for the lifetimes during the calculation.
 
@@ -832,8 +865,8 @@ class MainWindow(QMainWindow):
             A list containing the lower bounds and upper bounds list.
 
         """
-        tau_lb = self.ui.GTA_input_preset_model_tau_lb.text().split(',')
-        tau_ub = self.ui.GTA_input_preset_model_tau_ub.text().split(',')
+        tau_lb = self.ui.GTA_input_tau_lb.text().split(',')
+        tau_ub = self.ui.GTA_input_tau_ub.text().split(',')
         for i in range(len(tau_lb)):
             if tau_lb[i] != "":
                 tau_lb[i] = float(tau_lb[i])
@@ -861,7 +894,7 @@ class MainWindow(QMainWindow):
             The concentration vector set by the user.
 
         """
-        c0 = self.ui.GTA_concentration.text().split(',')
+        c0 = self.ui.GTA_input_concentration.text().split(',')
         for i in range(len(c0)):
             if c0[i] != "":
                 c0[i] = float(c0[i])
@@ -881,6 +914,18 @@ class MainWindow(QMainWindow):
 
         """
         return self.ui.GTA_preset_model_selection.currentIndex()
+    
+    def getCustomModelEquation(self):
+        """
+        Returns the custom transition equation.
+
+        Returns
+        -------
+        str
+            The custom transition equation.
+
+        """
+        return self.ui.GTA_input_custom_model_equation.text()
     
     def getGTAOptMethod(self):
         """
@@ -959,9 +1004,9 @@ class MainWindow(QMainWindow):
                             "v":-1 #not a coordinate just a mean to identify void decays
                             }
         #GUI input 
-        eq = self.ui.GTA_input_custom_model_equation.text()
+        eq = self.getCustomModelEquation()
 
-        tau = list(map(float,self.ui.GTA_input_custom_model_tau.text().split(',')))
+        tau = self.getGTACustomModelTaus()
 
         #checks if the equation used arrows
         arrow = False
@@ -1022,35 +1067,6 @@ class MainWindow(QMainWindow):
         if M[-1][-1] == -0:
            M[-1][-1] *= -1 
         return M
-    
-    def getCustomModelTauBounds(self):
-        """
-        Reads the bounds for the lifetimes during the calculation.
-
-        Returns
-        -------
-        list
-            A list containing the lower bounds and upper bounds list.
-
-        """
-        tau_lb = self.ui.GTA_input_custom_model_tau_lb.text().split(',')
-        tau_ub = self.ui.GTA_input_custom_model_tau_ub.text().split(',')
-        for i in range(len(tau_lb)):
-            if tau_lb[i] != "":
-                tau_lb[i] = float(tau_lb[i])
-        for i in range(len(tau_ub)):
-            if tau_ub[i] != "":
-                tau_ub[i] = float(tau_ub[i])
-        if any(isinstance(obj,float) for obj in tau_lb):
-            tau_lb = [None if item == '' else item for item in tau_lb]
-        else:
-            tau_lb = []
-            
-        if any(isinstance(obj,float) for obj in tau_ub):
-            tau_ub = [None if item == '' else item for item in tau_ub]
-        else:
-            tau_ub = []
-        return [tau_lb,tau_ub]
     
     def saveCustomModel(self):
         """
@@ -1177,28 +1193,6 @@ class MainWindow(QMainWindow):
         popup.show()
         popup.closeFailsafe.clicked.connect(lambda: popup.close())
 
-    def openPlotViewer(self,fig):
-        """
-        Opens up a plotviewer popup window for each plot selected by the user.
-        Can take a moment if many plots were selected, might be improved in the
-        future.
-
-        Parameters
-        ----------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
-
-        Returns
-        -------
-        None.
-
-        """
-        popup = PlotViewer(fig)
-        popup.show()
-        if hasattr(self, "pltView") == False:
-            self.pltView = []
-        self.pltView.append(popup)
-
     def presentInputs(self,ind):
         '''
         Presents all relevant user inputs in a treewidget.
@@ -1215,7 +1209,7 @@ class MainWindow(QMainWindow):
         '''
         if ind == 5:
             self.saveAllInputs()
-            iterator = QTreeWidgetItemIterator(self.ui.input_tree)
+            iterator = QW.QTreeWidgetItemIterator(self.ui.input_tree)
             while iterator.value():
                 item = iterator.value()
                 if item.text(0) in self.finalInputs:
@@ -1283,38 +1277,40 @@ class MainWindow(QMainWindow):
         self.finalInputs['Lower Wavelength Bound'] = self.ui.Data_wavelength_input_lb.text()
         self.finalInputs['Upper Wavelength Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
-        self.finalInputs['Selected Data'] = ''
         self.finalInputs['Directory'] = self.getFolderPath()
+        self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()
+        self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_tau_ub.text()
         if self.ui.GLA_radio.isChecked() == True:
             self.finalInputs['GLA'] = ""
             self.finalInputs['Optimizer'] = self.ui.GLA_algorithm_optimize.currentText()
-            self.finalInputs['Variable Taus'] = self.ui.GLA_input_tau_var.text()
-            self.finalInputs['Fixed Taus'] = self.ui.GLA_input_tau_fix.text()
+            self.finalInputs['Taus'] = str(self.prepareParam("gla")).replace("True", "Vary").replace("False", "Fix")
+            self.finalInputs['Tau Cache'] = str([tau[0] for tau in self.prepareParam("gla")])
+            self.finalInputs['Buttons'] = self.prepareParam("gla")
         if self.ui.GTA_radio_preset_model.isChecked() == True:
             self.finalInputs['Preset Model'] = ""
-            self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
+            self.finalInputs['Concentrations'] = self.ui.GTA_input_concentration.text()
             self.finalInputs['Model'] = self.ui.GTA_preset_model_selection.currentText()
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
-            self.finalInputs['Taus'] = self.ui.GTA_input_preset_model_tau.text()
-            self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_preset_model_tau_lb.text()
-            self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_preset_model_tau_ub.text()
+            self.finalInputs['Taus'] = str(self.prepareParam("preset")).replace("True", "Vary").replace("False", "Fix")
+            self.finalInputs['Tau Cache'] = str([tau[0] for tau in self.prepareParam("preset")])
+            self.finalInputs['Buttons'] = self.prepareParam("preset")
             self.finalInputs['Preset Model Index'] = self.ui.GTA_preset_model_selection.currentIndex()+1
         if self.ui.GTA_radio_custom_model.isChecked() == True:
             self.finalInputs['Custom Model'] = ""
-            self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
+            self.finalInputs['Concentrations'] = self.ui.GTA_input_concentration.text()
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Model'] = self.ui.GTA_input_custom_model_equation.text()
-            self.finalInputs['Taus'] = self.ui.GTA_input_custom_model_tau.text()
-            self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_custom_model_tau_lb.text()
-            self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_custom_model_tau_ub.text()
+            self.finalInputs['Taus'] = str(self.prepareParam("custom")).replace("True", "Vary").replace("False", "Fix")
+            self.finalInputs['Tau Cache'] = str([tau[0] for tau in self.prepareParam("custom")])
+            self.finalInputs['Buttons'] = self.prepareParam("custom")
             self.finalInputs['Saved Models'] = [self.ui.GTA_input_custom_model_saved_equations.itemText(i) for i in range(self.ui.GTA_input_custom_model_saved_equations.count())]
         if self.ui.GTA_radio_custom_matrix.isChecked() == True:
             self.finalInputs['Custom Matrix'] = ""
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
-            self.finalInputs['Concentrations'] = self.ui.GTA_concentration.text()
+            self.finalInputs['Concentrations'] = self.ui.GTA_input_concentration.text()
             if hasattr(self, "custom_matrix"):
                 self.finalInputs['Matrix'] = str(self.custom_matrix)
             else:
@@ -1351,7 +1347,7 @@ class MainWindow(QMainWindow):
         None.
 
         '''
-        directory = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
+        directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
         self.ui.Data_directory.setText(directory)
         self.finalInputs['Directory'] = directory 
         if self.ui.Data_directory.text() != "":
@@ -1441,6 +1437,9 @@ class MainWindow(QMainWindow):
                 self.ui.GTA_input_custom_model_saved_equations.addItem(models[i])
         if "Custom Matrix" in self.shelf:
             self.custom_matrix = self.shelf["Matrix"]
+        if "Buttons" in self.shelf:
+            buttons = self.shelf["Buttons"]
+            
         for key in self.shelf:
             val = str(self.shelf[key])
             val = val.replace("[","")
@@ -1457,6 +1456,10 @@ class MainWindow(QMainWindow):
                 self.ui.Data_wavelength_input_lb.setText(val)
             if key == "Upper Wavelength Bound":
                 self.ui.Data_wavelength_input_ub.setText(val)
+            if key == "Lower Tau Bounds":
+                self.ui.GTA_input_tau_lb.setText(val)
+            if key == "Upper Tau Bounds":
+                self.ui.GTA_input_tau_ub.setText(val)
             if key == "GLA":
                 self.ui.GLA_radio.setChecked(True)
             if key == "Preset Model":
@@ -1466,30 +1469,35 @@ class MainWindow(QMainWindow):
             if key == "Custom Matrix":
                 self.ui.GTA_radio_custom_matrix.setChecked(True) 
             if self.ui.GLA_radio.isChecked() == True:
-                if key == "Fixed Taus":
-                    self.ui.GLA_input_tau_fix.setText(val)
-                if key == "Variable Taus":
-                    self.ui.GLA_input_tau_var.setText(val)
+                if key == "Tau Cache":
+                    self.ui.GLA_input_tau.setText(val)
+                if key == "Buttons":
+                    for button in buttons:
+                        radio = QW.QRadioButton(str(button[0]),autoExclusive=False)
+                        radio.setChecked(not bool(button[1]))
+                        self.ui.GLA_fix_layout.addWidget(radio)
             if self.ui.GTA_radio_preset_model.isChecked() == True:
                 if key == "Preset Model Index":
                     self.ui.GTA_preset_model_selection.setCurrentIndex(int(val)-1)
-                if key == "Taus":
+                if key == "Tau Cache":
                     self.ui.GTA_input_preset_model_tau.setText(val)
-                if key == "Lower Tau Bounds":
-                    self.ui.GTA_input_preset_model_tau_lb.setText(val)
-                if key == "Upper Tau Bounds":
-                    self.ui.GTA_input_preset_model_tau_ub.setText(val)
+                if key == "Buttons":
+                    for button in buttons:
+                        radio = QW.QRadioButton(str(button[0]),autoExclusive=False)
+                        radio.setChecked(not bool(button[1]))
+                        self.ui.GTA_preset_model_fix_layout.addWidget(radio)
             if self.ui.GTA_radio_custom_model.isChecked() == True:
                if key == "Model":
                    self.ui.GTA_input_custom_model_equation.setText(val)
-               if key == "Taus":
+               if key == "Tau Cache":
                    self.ui.GTA_input_custom_model_tau.setText(val)
-               if key == "Lower Tau Bounds":
-                   self.ui.GTA_input_custom_model_tau_lb.setText(val)
-               if key == "Upper Tau Bounds":
-                   self.ui.GTA_input_custom_model_tau_ub.setText(val)
+               if key == "Buttons":
+                   for button in buttons:
+                       radio = QW.QRadioButton(str(button[0]),autoExclusive=False)
+                       radio.setChecked(not bool(button[1]))
+                       self.ui.GTA_custom_model_fix_layout.addWidget(radio)
             if key == "Concentrations":
-                self.ui.GTA_concentration.setText(val)
+                self.ui.GTA_input_concentration.setText(val)
             if key == "Delay Slices":
                 self.ui.plot_input_delay_slices.setText(val)
             if key == "Wavelength Slices":
@@ -1506,18 +1514,18 @@ class MainWindow(QMainWindow):
         None.
 
         """
-        for lineedit in self.findChildren(QLineEdit):
+        for lineedit in self.findChildren(QW.QLineEdit):
             if lineedit != self.ui.Data_directory:
                 lineedit.clear()
-        for spinbox in self.findChildren(QSpinBox):
+        for spinbox in self.findChildren(QW.QSpinBox):
             spinbox.setValue(0)
-        for combobox in self.findChildren(QComboBox):
+        for combobox in self.findChildren(QW.QComboBox):
             combobox.setCurrentIndex(0)
         if hasattr(self, 'cm') == True:
             self.cm = None
             
 if __name__ == '__main__':
-    EfsTA = QApplication(sys.argv)
+    EfsTA = QW.QApplication(sys.argv)
     EfsTA.setStyle('Fusion')
     mainwindow = MainWindow()
     mainwindow.show()

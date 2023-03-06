@@ -52,15 +52,16 @@ class Controller():
             elif "spectra.txt" in i:
                 self.spectra_filename = i
 
-    def calcDAS(self, tau, d_limits, l_limits, opt_method):
+    def calcDAS(self, preparam, d_limits, l_limits, opt_method):
         """
         Calculates the Decay Associated Spectra and outputs the fitted decay
         constants tau, the calculated spectra, the residuals and the DAS.
 
         Parameters
         ----------
-        tau : list
-            The decay constants for the DAS.
+        preparam : list
+            A list containing tuples with the lifetime and a boolean stating if the 
+            lifetime will be varied.
         d_limits : list with two int/float elements
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
@@ -81,31 +82,34 @@ class Controller():
             Matrix D with the fitted values for x.
 
         """
-        tau_fix = np.array(tau[0])
-        tau_guess = np.array(tau[1])
+        tau = [tau[0] for tau in preparam]
+        
+        
         self.DAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, 0, opt_method, None)
-        self.DAS.M = self.DAS.getM(np.concatenate((tau_fix, tau_guess)))
-        tau_fit, fit_report = self.DAS.findTau_fit(tau_fix, tau_guess, opt_method)
+        self.DAS.M = self.DAS.getM(tau)
+        tau_fit, fit_report = self.DAS.findTau_fit(preparam, opt_method)
         D_fit = self.DAS.calcD_fit()
         spec = self.DAS.calcA_fit()
         res = self.DAS.calcResiduals()
-        self.saveResults(0, np.concatenate((tau_fix, tau_guess)), tau_fit,
+        self.saveResults(0, tau, tau_fit,
                          l_limits, d_limits, spec, D_fit,
-                         self.DAS.getTauBounds(tau_guess), self.DAS.lambdas,
+                         self.DAS.getTauBounds(tau), self.DAS.lambdas,
                          self.DAS.delays, self.DAS.spectra, fit_report)
         return tau_fit, spec, res, D_fit, fit_report
 
-    def calcSAS(self, tau, C_0, d_limits, l_limits, model, tau_low, tau_high, opt_method, ivp_method):
+    def calcSAS(self, K, preparam, C_0, d_limits, l_limits, model, tau_low, tau_high, opt_method, ivp_method):
         """
         Calculated the Species Associated Spectra and outputs the fitted
         decay constants tau, the calculated spectra and the residuals.
 
         Parameters
         ----------
-        tau : list/np.array
-            The decay constants tau for a model 1-10 or a matrix tau for a
-            "custom" model.
+        K : np.array
+            The kinetic matrix for a custom model.
+        preparam : list
+            A list containing tuples with the lifetime and a boolean stating if the 
+            lifetime will be varied.
         C_0 : list
             The list that contains values for C_0 set by the user.
             Can be empty.
@@ -138,19 +142,23 @@ class Controller():
             Matrix D with the fitted values for tau.
 
         """
+        
+        tau = [tau[0] for tau in preparam]
         self.SAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, model, 
                          opt_method, ivp_method)
         if (model == "custom model" or model == "custom matrix"):
-            M_lin = self.SAS.getM_lin(tau)
+            M_lin = self.SAS.getM_lin(K)
             K,n = self.SAS.getK(M_lin)
             self.SAS.setTauBounds(tau_low, tau_high, M_lin)
+            if model == "custom matrix":
+                preparam = [(tau,True) for tau in M_lin]
         else:
-            self.SAS.setTauBounds(tau_low, tau_high, tau)
-            K,n = self.SAS.getK(tau)
+            self.SAS.setTauBounds(tau_low, tau_high, tau)   
+            K,n = self.SAS.getK(tau)                    
         self.SAS.setInitialConcentrations(C_0)
         self.SAS.solveDiff(self.SAS.K, ivp_method)
-        tau_fit, fit_report = self.SAS.findTau_fit([], tau, opt_method)
+        tau_fit, fit_report = self.SAS.findTau_fit(preparam, opt_method)
         D_fit = self.SAS.calcD_fit()
         spec = self.SAS.calcA_fit()
         res = self.SAS.calcResiduals()        
@@ -199,9 +207,8 @@ class Controller():
             custom = "1+2"
         else:
             custom = "1+2+3"
-        fig = self.origData.plotCustom(self.origData.spectra, wave, time,
+        self.origData.plotCustom(self.origData.spectra, wave, time,
                             v_min, v_max, custom, cont, mul)
-        return fig
     
     def plot3DOrigData(self, v_min, v_max,
                       mul):
@@ -222,8 +229,7 @@ class Controller():
             The figure containing the plot.
 
         """
-        fig = self.origData.plot3D(self.origData.spectra, v_min, v_max, mul)
-        return fig
+        self.origData.plot3D(self.origData.spectra, v_min, v_max, mul)
     
     def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
         """
@@ -268,13 +274,12 @@ class Controller():
         else:
             custom = "1+2+3"
         if model == 0:
-            fig = self.DAS.plotCustom(self.DAS.spec, wave, time,
+            self.DAS.plotCustom(self.DAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul, add="_GLA")
         else:
-            fig = self.SAS.plotCustom(self.SAS.spec, wave, time,
+            self.SAS.plotCustom(self.SAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul, add="_GTA")
-        return fig
-            
+        
     def plot3DFittedData(self,v_min, v_max, model, mul):
         """
         Allows the plotting of the original data in a 3D contour plot.
@@ -298,10 +303,9 @@ class Controller():
 
         """
         if model == 0:
-            fig = self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, add="_GLA")
+            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, add="_GLA")
         else:
-            fig = self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, add="_GTA")
-        return fig
+            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, add="_GTA")
             
     def createOrigData(self, d_limits, l_limits, opt_method, ivp_method):
         """
@@ -360,17 +364,16 @@ class Controller():
 
         """
         if model == None:
-            fig = self.origData.plotCustom(self.origData.spectra, wave, time,
+            self.origData.plotCustom(self.origData.spectra, wave, time,
                                 v_min, v_max, custom, cont, mul, add="_"+add)
         elif model == 0:
-            fig = self.DAS.plotCustom(self.DAS.spec, wave, time,
+            self.DAS.plotCustom(self.DAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul,
                                 add="_GLA"+"_"+add)
         else:
-            fig = self.SAS.plotCustom(self.SAS.spec, wave, time,
+            self.SAS.plotCustom(self.SAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul,
                                 add="_GTA"+"_"+add)
-        return fig
 
     def plot1Dresiduals(self, model, mul):
         """
@@ -397,15 +400,14 @@ class Controller():
         if mul != 1:
             dot = " \cdot " + "10^" + str(ltx)
         if model == 0:
-            fig = self.DAS.plotData(self.DAS.delays, self.DAS.residuals.T,
+            self.DAS.plotData(self.DAS.delays, self.DAS.residuals.T,
                               "delays / ps", "$\Delta A" + dot + "$",
                               add="_GLA_Residuals_1D")
         else:
-            fig = self.SAS.plotData(self.SAS.delays, self.SAS.residuals.T,
+            self.SAS.plotData(self.SAS.delays, self.SAS.residuals.T,
                               "delays / ps", "$\Delta A" + dot + "$",
                               add="_GTA_Residuals_1D")
-        return fig 
-    
+         
     def plot2Dresiduals(self, v_min, v_max, model, cont, mul):
         """
         Allows for the ploting of the residuals in a 2D plot.
@@ -432,15 +434,14 @@ class Controller():
 
         """
         if model == 0:
-            fig = self.DAS.plotCustom(self.DAS.residuals, [], [],
+            self.DAS.plotCustom(self.DAS.residuals, [], [],
                                 v_min, v_max, "2", cont, mul,
                                 add="_GLA_Residuals_2D")
         else:
-            fig = self.SAS.plotCustom(self.SAS.residuals, [], [],
+            self.SAS.plotCustom(self.SAS.residuals, [], [],
                                 v_min, v_max, "2", cont, mul,
                                 add="_GTA_Residuals_2D")
-        return fig
-    
+        
     def plotKinetics(self, model):
         """
         This method will plot the concentration against the time for the DAS
@@ -459,13 +460,12 @@ class Controller():
 
         """
         if model == 0:
-            fig = self.DAS.plotData(self.DAS.delays, self.DAS.M.T, "delays / ps",
+            self.DAS.plotData(self.DAS.delays, self.DAS.M.T, "delays / ps",
                               "concentration", add="_GLA_kin")
         else:
-            fig = self.SAS.plotData(self.SAS.delays, self.SAS.M.T, "delays / ps",
+            self.SAS.plotData(self.SAS.delays, self.SAS.M.T, "delays / ps",
                               "concentration", add="_GTA_kin")
-        return fig
-    
+        
     def plotDAS(self, model, tau, mul):
         """
         Allows the plotting of the DAS or SAS with the indicated tau_fit
@@ -491,19 +491,18 @@ class Controller():
             dot = " \cdot " + "10^" + str(ltx)
         tau = list(tau)
         if model == 0:
-            fig = self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
+            self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
                               "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_DAS",
                               label = tau)
         elif (model == "custom model" or model == "custom matrix"):
-            fig = self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
+            self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
                               "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
                               label=list(self.SAS.getM_lin(np.array(tau))))
         else:
-            fig = self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
+            self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
                               "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
                               label=tau)
-        return fig
-            
+
     def saveResults(self, model, tau_start, tau_fit, l_limits, d_limits, A_fit,
                     D_fit, bounds, lambdas, delays, spectra, fit_report):
         """
@@ -563,7 +562,9 @@ class Controller():
             " nm\nTime" + "delay range: " + str(d_limits[0])+" - "
             + str(d_limits[1]) + " ps\n\nTime constants / ps: " + str(tau_fit)
             + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n" 
-            + "lmfit fit_report:" + "\n" + "\n" + fit_report)
+            + "lmfit fit_report:" + "\n" + "\n" + fit_report + "\n" + "\n" + 
+            "All results and plots can be found here:" + "\n" + "\n" + 
+            str(path)) 
         
         np.savetxt(path+name+"_A_fit.txt", A_fit)
         if model == 0:
