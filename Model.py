@@ -9,7 +9,8 @@ import matplotlib.ticker as mticker
 from models import Models
 import os
 
-mpl.rcParams['interactive'] == True
+mpl.use("QtAgg")
+plt.ion()
 
 
 class Model:
@@ -80,15 +81,8 @@ class Model:
             limits[1] = max(values)
         borders[0] = np.absolute(values-limits[0]).argmin()
         borders[1] = np.absolute(values-limits[1]).argmin()
-        #
-        # always higher than lower limit und lower than upper limit
-        #
-        # for i in values:
-        #     if i < limits[0]:
-        #         borders[0] += 1
-        #         borders[1] += 1
-        #     elif i < limits[1]:
-        #         borders[1] += 1
+        # while values[borders[0]] <= 0:
+        #     borders[0] = borders[0]+1
         return borders
 
     def findName(self, delays_filename):
@@ -397,7 +391,6 @@ class Model:
                 tau_low[i] = 0.01
         self.tau_low = tau_low
         self.tau_high = tau_high
-
     # Matrix Reconstruction Algorithm
     
     def getTauBounds(self, tau):
@@ -1027,7 +1020,6 @@ class Model:
         grid.tight_layout(fig)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
-        plt.show()
 
     def plotData(self, x, y, x_label, y_label, add="", label=None):
         """
@@ -1066,4 +1058,3 @@ class Model:
                        handlelength=0)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
                     bbox_inches="tight")
-        plt.show()

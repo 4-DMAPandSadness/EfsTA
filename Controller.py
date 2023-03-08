@@ -142,7 +142,6 @@ class Controller():
             Matrix D with the fitted values for tau.
 
         """
-        
         tau = [tau[0] for tau in preparam]
         self.SAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, model, 

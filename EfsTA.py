@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtWidgets as QW
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
@@ -6,10 +5,7 @@ from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import Controller as Cont
 import numpy as np
 import os as os
-from matplotlib import use as mpluse
 import TTIMG
-
-mpluse("QtAgg")
 
 class TableWindow(QW.QWidget):
     def __init__(self,size):
@@ -310,7 +306,7 @@ class MainWindow(QW.QMainWindow):
 
         """
         if self.ui.GLA_input_tau.text() == "":
-            self.openFailSafe("Please input guessed decay times.")
+            self.openFailSafe("Please input guessed lifetimes.")
             return True
         
     def checkIfBoundsMatch(self):
@@ -347,7 +343,7 @@ class MainWindow(QW.QMainWindow):
 
         """
         if self.ui.Data_directory.text() == "":
-            self.openFailSafe("Please choose a folder directory.")
+            self.openFailSafe("Please select a folder directory.")
             return True
             
     def checkIfCustomModelEmpty(self):
@@ -365,7 +361,7 @@ class MainWindow(QW.QMainWindow):
            self.openFailSafe("Please input a transition equation.")
            return True
         elif self.ui.GTA_input_custom_model_tau.text() == "":
-            self.openFailSafe("Please input lifetimes.")
+            self.openFailSafe("Please input guessed lifetimes.")
             return True
             
     def finalCheck(self):
@@ -450,15 +446,18 @@ class MainWindow(QW.QMainWindow):
         None.
 
         '''
-        ds = sorted(self.getDelaySlices())
-        ws = sorted(self.getWavelengthSlices())
-        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-        self.Controller.createOrigData(db,wb, None, None)
-        self.ui.plot_concentrations.setChecked(False)
-        self.ui.plot_das_sas.setChecked(False)
-        self.ui.plot_residuals.setChecked(False)
-        self.plotting(ds, ws, 0, True)
+        if hasattr(self, "Controller") == False:
+            self.openFailSafe("Please select a directory first.")
+        else:
+            ds = sorted(self.getDelaySlices())
+            ws = sorted(self.getWavelengthSlices())
+            db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+            wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+            self.Controller.createOrigData(db,wb, None, None)
+            self.ui.plot_concentrations.setChecked(False)
+            self.ui.plot_das_sas.setChecked(False)
+            self.ui.plot_residuals.setChecked(False)
+            self.plotting(ds, ws, 0, True)
 
     def calculationGLA(self,db,wb):
         '''
@@ -1356,8 +1355,8 @@ class MainWindow(QW.QMainWindow):
             names = ["delays_filename","lambdas_filename", "spectra_filename"]
             if all(hasattr(C, attr) for attr in names) == False:
                 self.openFailSafe('Please make sure the selected folder ' + 
-                                  'contains *.txt files with "spectra",' + 
-                                  '"delays" and "lambda" in their name.')
+                                  'contains *.txt files ending with "spectra.txt",' + 
+                                  '"delays.txt" and "lambda.txt".')
             else:
                 temp = C.delays_filename[::-1]
                 temp = temp.index("/")
@@ -1525,6 +1524,7 @@ class MainWindow(QW.QMainWindow):
             self.cm = None
             
 if __name__ == '__main__':
+    import sys
     EfsTA = QW.QApplication(sys.argv)
     EfsTA.setStyle('Fusion')
     mainwindow = MainWindow()

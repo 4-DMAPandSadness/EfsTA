@@ -346,6 +346,38 @@ The images for both of the plots are presented in the section of the GUI.
 
 ## Error Messages
 
-### Please provide a bound for each lifetime
+### Please provide a bound for each lifetime.
 
-This error occurs when the amount of bounds provided does not match the amount of lifetimes provided for the Preset or Custom Model GTA. It is possible to provide bounds only for some lifetimes, however the other lifetimes still have to be included. Make sure that, if you provide bounds, to match the amount of commata of the lifetimes and the bounds. 
+This error occurs when the amount of bounds provided does not match the amount of lifetimes provided for the Preset or Custom Model GTA. It is possible to provide bounds only for some lifetimes, however the other lifetimes still have to be included. Make sure that, if you provide bounds, to match the amount of commata of the lifetimes and the bounds.
+
+### Please select an evaluation method.
+
+This error occurs when none of the radiobuttons "GLA", "Preset Model", "Custom Model" or "Custom Matrix" is selected. Make sure that one of these is selected before starting the evaluation.
+
+### Please input guessed lifetimes.
+
+This error occurs when the lineedit for the lifetimes of the selected method is empty. Make sure that you provide lifetime guesses for the chosen evaluation method.
+
+### Please input a table size.
+
+This error occurs when no size was provided when trying to open the matrix table popup window. Make sure that you provide a size for the matrix before opening the popup.
+
+### Please input a kinetic matrix.
+
+This error occurs when the evaluation via "Custom Matrix" was selected but no matrix was provided. Make sure that when using the "Custom Matrix"-evaluation to input and save your matrix.
+
+### Please select a folder directory.
+
+This error occurs when no directory was provided in the "Data"-tab before starting the evaluation. Make sure to provide a directory before starting the evaluation.
+
+### Please input a transition equation.
+
+This error occurs when the evaluation via "Custom Model" was selected but no transition equation was provided. Make sure that when using the "Custom Model"-evaluation to input a transition equation.
+
+### Please select a directory first.
+
+This error occurs when no directory was provided in the "Data"-tab before plotting the raw data. Make sure to provide a directory before plotting the raw data.
+
+### Please make sure the selected folder contains *.txt files ending with "spectra.txt", "delays.txt" and "lambda.txt".
+
+This error occurs when the selected directory does not contain the data in an importable maner. Make sure that in your working folder the data is saved as three separate ".txt"-files ending with "spectra.txt" for the spectral date, "delays.txt" for the delays and "lambda.txt" for the wavelengths.

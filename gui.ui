@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="stack">
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="Introduction">
        <attribute name="title">
@@ -35,8 +35,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption spectroscopy data, using a matrix reconstruction algorithm. To use it go through all the tabs and make your various inputs.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;Multiple inputs NEED to be separeted by a comma except if it is stated otherwise, so for decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/User%20Guide.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Data&amp;quot;-tab you can select the directory in which the measured data is saved and if necessary, specify the range of the data which should be analysed. The data needs to be separate in three .txt files ending with &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra.txt.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; The results will be saved in the data directory, you'll find a new folder called &amp;quot;evaluation&amp;quot;, which will contain all the plots and the reconstructed spectra data.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot;- and &amp;quot;GTA&amp;quot;-tab you can select the analysing method and input various parameters. For Global Target Analysis (GTA) there are three options. You can choose one of the eight preset kinetic models, you can input and save your own kinetic model in form of a simple transition equation or you can skip all the models and input a kinetic matrix directly.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot;-tab you can select from a variety of different plots for your data raw or fitted. You are also able to plot the data after it was fitted, in case you want to change some aspects of the plot.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot;- or &amp;quot;GTA&amp;quot;-tab you can select the analysing method and input various parameters. For Global Target Analysis (GTA) there are three options. You can choose one of the eight preset kinetic models, you can input and save your own kinetic model in form of a simple transition equation or you can skip all the models and input a kinetic matrix directly.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot;-tab you can select from a variety of different plots for your data. There you can also plot the raw unanalysed data, to help you determine your lifetime guesses.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Input Confirmation&amp;quot;-tab all your inputs, with which the program will carry out the analysis will be presented to you so you can check one last time, if everything is as you want it to be. If so, you can confirm your inputs and start the evaluation.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;If you encounter any problems or have suggestions, feel free to email me:&lt;/span&gt;&lt;/p&gt;
@@ -92,7 +92,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength range to be analysed. This is optional and can be left empty. If left empty, all wavelengths from the lower bound upwards will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for wavelengths ranging from 330 nm to 800 nm , but only the data up to 750 nm is relevant.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;750&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Upper Wavelength Bound (Optional)</string>
+              <string>Upper Wavelength Bound in nm (Optional)</string>
              </property>
             </widget>
            </item>
@@ -102,7 +102,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength range to be analysed. This is optional and can be left empty. If left empty, all wavelengths up to the upper bound will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for wavelengths ranging from 330 nm to 800 nm , but only the data starting at 350 nm is relevant.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;350&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower Wavelength Bound (Optional)</string>
+              <string>Lower Wavelength Bound in nm (Optional)</string>
              </property>
             </widget>
            </item>
@@ -112,7 +112,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the time frame to be analysed. This is optional and can be left empty. If left empty, all delays up to the upper bound will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for delays ranging from -10 ps to 4000 ps, but to exclude artifacts at 0 ps the evaluation should start at 0.4 ps.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;0.4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower Delay Bound (Optional)</string>
+              <string>Lower Delay Bound in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -132,7 +132,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set an upper bound for the time frame to be analysed. This is optional and can be left empty. If left empty, all delays from the lower bound upwards will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for delays ranging from -10 ps to 4000 ps, but to the data is only relevant up to 3000 ps.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;3000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Upper Delay Bound (Optional)</string>
+              <string>Upper Delay Bound in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -305,7 +305,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the global lifetime analysis.&lt;/p&gt;&lt;p&gt;After the input press ENTER to select fixed values.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Three species with different lifetimes.&lt;/p&gt;&lt;p&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; = 1.2 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; = 106 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt; = 900 ns&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;1.2, 106, 900000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values</string>
+              <string>τ-values  in ps</string>
              </property>
             </widget>
            </item>
@@ -376,7 +376,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(Make sure that the amount of commas in the &amp;quot;τ-values&amp;quot; and &amp;quot;Lower τ Bounds&amp;quot; lineedit are the same and the positions of the bounds match the position of the corresponding lifetime.)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Upper τ Bounds (Optional)</string>
+              <string>Upper τ Bounds in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(Make sure that the amount of commas in the &amp;quot;τ-values&amp;quot; and &amp;quot;Lower τ Bounds&amp;quot; lineedit are the same and the positions of the bounds match the position of the corresponding lifetime.)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower τ Bounds (Optional)</string>
+              <string>Lower τ Bounds in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -428,7 +428,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;1,80&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values</string>
+              <string>τ-values in ps</string>
              </property>
             </widget>
            </item>
@@ -677,7 +677,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the size of the square kinetic matrix. The size is determined by the amount of species.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Tooltips/images/tooltips/reaction example.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;There are three different species A,B and C.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;3&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="specialValueText">
-              <string>Matrix Dimension</string>
+              <string>Matrix Size</string>
              </property>
              <property name="minimum">
               <number>0</number>
@@ -745,7 +745,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the kinetic model.&lt;/p&gt;&lt;p&gt;Lifetimes need to be input in the same order as the transition arrows are in the equation.&lt;/p&gt;&lt;p&gt;After the input press ENTER to select fixed values.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Tooltips/images/tooltips/reaction example wt.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;Transition equation: ABCv;BA;AC&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;1,80,4000,3,30&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values</string>
+              <string>τ-values in ps</string>
              </property>
             </widget>
            </item>
@@ -794,7 +794,7 @@ p, li { white-space: pre-wrap; }
         <item row="0" column="2">
          <widget class="QGroupBox" name="Plotting_Details">
           <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string/>
           </property>
           <property name="title">
            <string>Plot Details</string>
@@ -809,7 +809,7 @@ p, li { white-space: pre-wrap; }
               <bool>false</bool>
              </property>
              <property name="placeholderText">
-              <string>Delay Slices (Optional)</string>
+              <string>Delay Slices in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -819,7 +819,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific wavelengths for data slicing. Will only effect the &amp;quot;Wavelength Slices&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. If left empty the &amp;quot;Wavelength Slices&amp;quot;-plot will not be created and therefore also not be shown in the &amp;quot;All In One&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The kinetic development at 360 nm, 520 nm and 680 nm is of special interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;360,520,680&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Wavelength Slices (Optional)</string>
+              <string>Wavelength Slices in nm (Optional)</string>
              </property>
             </widget>
            </item>
@@ -839,7 +839,7 @@ p, li { white-space: pre-wrap; }
         <item row="0" column="0" colspan="2">
          <widget class="QGroupBox" name="Plottting_Choices">
           <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string/>
           </property>
           <property name="title">
            <string>Plot Choices</string>
