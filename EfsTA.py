@@ -534,11 +534,11 @@ class MainWindow(QW.QMainWindow):
         
         if raw == True:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "3", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "WS", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "1", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "DS", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "2", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "H", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
                 self.Controller.plot3OrigData(ws, ds, self.getVmin(), self.getVmax(), self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:
@@ -546,11 +546,11 @@ class MainWindow(QW.QMainWindow):
                 
         if raw == False:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "3", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "WS", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "1", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "DS", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "2", self.getMultiplier())
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "H", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
                 self.Controller.plot3FittedData(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:

@@ -200,8 +200,9 @@ class Controller():
         None.
         
         """
-        self.origData.plot11(wave, self.origData.spectra, mul)
-        self.origData.plot33(time, self.origData.spectra, mul)
+        #self.origData.plotWSlices(wave, self.origData.spectra, mul)
+        #self.origData.plotHeat(wave, time, v_min, v_max, self.origData.spectra, "", 20)
+        #self.origData.plotDSlices(time, self.origData.spectra.T, mul)
         if len(list(wave)) <= 0:
             if len(list(time)) <= 0:
                 custom = "2"
@@ -374,6 +375,51 @@ class Controller():
             self.SAS.plotCustom(self.SAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul,
                                 add="_GTA"+"_"+add)
+        
+    def plotSolo(self, wave, time, v_min, v_max, model, cont, solo, mul,
+                   add=""):
+        """
+        Allows for the creation of 1-3 subplots in one plot.
+
+        Parameters
+        ----------
+        wave : list
+            Wavelenghts which should be plotted.
+        time : list
+            Delays which should be plotted.
+        v_min : float
+            Lower limit for the colorbar.
+        v_max : float
+            Upper limit for the colorbar.
+        model : int/string
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-8 ,"custom model" or "custom matrix".
+        cont : float
+            Determines how much contour lines will be shown in the 2D plot.
+            High values will show more lines.
+        solo : string
+            Describes which soloplot will be plotted.
+        mul : float
+            The value by which data will be multiplied.
+        add : string
+            Addition to the title of the plot. The default is "".
+
+        Returns
+        -------
+        None.
+
+        """
+        if model == None:
+            self.origData.plotSolo(self.origData.spectra, wave, time,
+                                v_min, v_max, solo, cont, mul, add="_"+add)
+        elif model == 0:
+            self.DAS.plotSolo(self.DAS.spec, wave, time,
+                                v_min, v_max, solo, cont, mul,
+                                add="_GLA"+"_"+add)
+        else:
+            self.SAS.plotSolo(self.SAS.spec, wave, time,
+                                v_min, v_max, solo, cont, mul,
+                                add="_GTA"+"_"+add)
 
     def plot1Dresiduals(self, model, mul):
         """
@@ -433,12 +479,10 @@ class Controller():
 
         """
         if model == 0:
-            self.DAS.plotCustom(self.DAS.residuals, [], [],
-                                v_min, v_max, "2", cont, mul,
+            self.DAS.plotHeat([], [], None, None, self.DAS.residuals, cont, mul,
                                 add="_GLA_Residuals_2D")
         else:
-            self.SAS.plotCustom(self.SAS.residuals, [], [],
-                                v_min, v_max, "2", cont, mul,
+            self.SAS.plotHeat([], [], None, None, self.SAS.residuals, cont, mul,
                                 add="_GTA_Residuals_2D")
         
     def plotKinetics(self, model):
