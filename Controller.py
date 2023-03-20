@@ -15,7 +15,7 @@ class Controller():
         Parameters
         ----------
         path : string
-            Path where the folder with the files is located.
+            Path where the folder containing the data is located.
 
         Returns
         -------
@@ -80,6 +80,8 @@ class Controller():
             and the original spectra.
         D_fit : np.array
             Matrix D with the fitted values for x.
+        fit_report : string
+           Fitting results and other fit statistics created by lmfit. 
 
         """
         tau = [tau[0] for tau in preparam]
@@ -119,7 +121,7 @@ class Controller():
             Lower and upper limits for the lambda values.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix".
         tau_low: list
             The lower bound for each tau value.
         tau_high: list
@@ -140,6 +142,8 @@ class Controller():
             and the original spectra.
         D_fit : np.array
             Matrix D with the fitted values for tau.
+        fit_report : string
+           Fitting results and other fit statistics created by lmfit. 
 
         """
         tau = [tau[0] for tau in preparam]
@@ -193,10 +197,11 @@ class Controller():
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
-
+        None.
+        
         """
+        self.origData.plot11(wave, self.origData.spectra, mul)
+        self.origData.plot33(time, self.origData.spectra, mul)
         if len(list(wave)) <= 0:
             if len(list(time)) <= 0:
                 custom = "2"
@@ -224,8 +229,7 @@ class Controller():
             The value by which data will be multiplied.
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         self.origData.plot3D(self.origData.spectra, v_min, v_max, mul)
@@ -250,7 +254,7 @@ class Controller():
             Upper limit for the colorbar.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 or "custom model" or "custom matrix".
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -259,8 +263,7 @@ class Controller():
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         if len(wave) <= 0 or len(wave) > 10:
@@ -291,14 +294,13 @@ class Controller():
             Upper limit for the colorbar.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix.
         mul : float
             The value by which data will be multiplied.
             
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         if model == 0:
@@ -345,7 +347,7 @@ class Controller():
             Upper limit for the colorbar.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -358,8 +360,7 @@ class Controller():
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         if model == None:
@@ -383,15 +384,14 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         mul : float
             The value by which data will be multiplied.
             
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         ltx = str(mul).count("0")
@@ -419,7 +419,7 @@ class Controller():
             Upper limit for the colorbar.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         cont : float
             Determines how much contour lines will be shown in the 2D plot.
             High values will show more lines.
@@ -450,7 +450,7 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
 
         Returns
         -------
@@ -474,14 +474,13 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         tau_fit : list
             The decay constants for the DAS or SAS.
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         ltx = str(mul).count("0")
@@ -512,7 +511,7 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         tau_start : list, np.array
             An array containing the start values for tau.
         tau_fit : list, np.array
@@ -584,7 +583,7 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
 
         Returns
         -------
@@ -613,7 +612,7 @@ class Controller():
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8 ,"custom model" or "custom matrix".
         d_limits : list with two int/float elements
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
@@ -643,7 +642,7 @@ class Controller():
         temp = self.delays_filename[::-1]
         temp = temp.index("/")
         name = self.delays_filename[-temp:-11]
-        txt = name+"_pickle"
+        txt = name+"_input_backup"
         s = shelve.open(path+txt, writeback=True)
         s.clear()
         for key, value in dict_.items():
@@ -666,7 +665,7 @@ class Controller():
         temp = self.delays_filename[::-1]
         temp = temp.index("/")
         name = self.delays_filename[-temp:-11]
-        txt = name+"_pickle"
+        txt = name+"_input_backup"
         s = shelve.open(path+txt, writeback=False)
         shelf = dict(s).copy()
         s.close()

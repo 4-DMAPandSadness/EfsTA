@@ -10,7 +10,7 @@ import TTIMG
 class TableWindow(QW.QWidget):
     def __init__(self,size):
         """
-        Initializes the popup window where the user inputs their own lifetime
+        Initializes the popup window where the user inputs their own kinetic
         matrix through a QTableWidget.
 
         Parameters
@@ -32,7 +32,7 @@ class TableWindow(QW.QWidget):
         
     def readTable(self):
         """
-        Reads the lifetime matrix input by the user and saves the matrix in a
+        Reads the kinetic matrix input by the user and saves the matrix in a
         numpy array as an attribute.
 
         Returns
@@ -96,9 +96,9 @@ class ResultsWindow(QW.QWidget):
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix".
         Controller : Controller
-            An Object of the Controller class.
+            An object of the Controller class.
         fit_report : string
             The report of the minimize routine by lmfit.
 
@@ -120,7 +120,7 @@ class ResultsWindow(QW.QWidget):
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix".
         Controller : Controller
             An Object of the Controller class.
         fit_report : string
@@ -144,8 +144,7 @@ class MainWindow(QW.QMainWindow):
   
     def startUp(self):
         """
-        Ensures that upon startup everything is shown correctly. Sets the 
-        GUI to show the widgets in the right order.
+        Ensures that upon startup everything is shown correctly.
 
         Returns
         -------
@@ -400,8 +399,7 @@ class MainWindow(QW.QMainWindow):
         """
         Starts the program creating a controller object and saving the user 
         inputs. Executes the corresponding plotting/calculation, 
-        depending on the model chosen by the user. Opens a popup with the 
-        results.
+        depending on the model chosen by the user.
 
         Returns
         -------
@@ -461,7 +459,8 @@ class MainWindow(QW.QMainWindow):
 
     def calculationGLA(self,db,wb):
         '''
-        Starts the calculation for the global lifetime analysis.
+        Starts the calculation for the global lifetime analysis and opens up
+        a popup window with the results.
 
         Parameters
         ----------
@@ -480,7 +479,8 @@ class MainWindow(QW.QMainWindow):
         
     def calculationGTA(self,db,wb,model,K):
         '''
-        Starts the calculation for the global target analysis.
+        Starts the calculation for the global target analysis and opens up
+        a popup window with the results.
 
         Parameters
         ----------
@@ -523,7 +523,7 @@ class MainWindow(QW.QMainWindow):
             The specific wavelenght values the user wants to examine.
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix".
         raw : bool
             Dictates if raw or analysed data will be plotted.
         Returns
@@ -534,29 +534,29 @@ class MainWindow(QW.QMainWindow):
         
         if raw == True:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "3", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "3", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "1", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "1", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, None, self.getUserContour(), "2", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "2", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
-                self.Controller.plot3OrigData(ws, ds, None, None, self.getUserContour(), self.getMultiplier())
+                self.Controller.plot3OrigData(ws, ds, self.getVmin(), self.getVmax(), self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:
-                self.Controller.plot3DOrigData(None, None, self.getMultiplier())
+                self.Controller.plot3DOrigData( self.getVmin(), self.getVmax(), self.getMultiplier())
                 
         if raw == False:
             if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "3", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "3", self.getMultiplier())
             if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "1", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "1", self.getMultiplier())
             if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotCustom(ws, ds, None, None, model, self.getUserContour(), "2", self.getMultiplier())
+                self.Controller.plotCustom(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "2", self.getMultiplier())
             if self.ui.plot_three_in_one.isChecked() == True:
-                self.Controller.plot3FittedData(ws, ds, None, None, model, self.getUserContour(), self.getMultiplier())
+                self.Controller.plot3FittedData(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())
             if self.ui.plot_threed_contour.isChecked() == True:
-                self.Controller.plot3DFittedData(None, None, model, self.getMultiplier())
+                self.Controller.plot3DFittedData( self.getVmin(), self.getVmax(), model, self.getMultiplier())
             if self.ui.plot_residuals.isChecked() == True:
-                self.Controller.plot2Dresiduals(None, None, model, self.getUserContour(), self.getMultiplier())                
+                self.Controller.plot2Dresiduals( self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())                
             if self.ui.plot_das_sas.isChecked() == True:
                 self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
             if self.ui.plot_concentrations.isChecked() == True:
@@ -580,7 +580,7 @@ class MainWindow(QW.QMainWindow):
         
     def getDelaySlices(self):
         """
-        Reads the delays input by the user if empty, returns preset values.
+        Reads the delays input by the user if empty, returns an empty list.
 
         Returns
         -------
@@ -599,7 +599,7 @@ class MainWindow(QW.QMainWindow):
     
     def getWavelengthSlices(self):
         """
-        Reads the lambdas input by the user if empty, returns preset values.
+        Reads the lambdas input by the user if empty, returns an empty list.
 
         Returns
         -------
@@ -618,8 +618,7 @@ class MainWindow(QW.QMainWindow):
 
     def getLowerDelayBound(self):
         """
-        Reads the lower delay bound input by the user if empty returns preset
-        a value.
+        Reads the lower delay bound input by the user if empty returns None.
 
         Returns
         -------
@@ -636,8 +635,7 @@ class MainWindow(QW.QMainWindow):
         
     def getUpperDelayBound(self):
         """
-        Reads the upper delay bound input by the user if empty returns preset
-        a value.
+        Reads the upper delay bound input by the user if empty returns None.
 
         Returns
         -------
@@ -655,8 +653,7 @@ class MainWindow(QW.QMainWindow):
     
     def getLowerWavelengthBound(self):
         """
-        Reads the lower lambda bound input by the user if empty returns preset
-        a value.
+        Reads the lower lambda bound input by the user if empty returns None.
 
         Returns
         -------
@@ -673,8 +670,7 @@ class MainWindow(QW.QMainWindow):
     
     def getUpperWavelengthBound(self):
         """
-        Reads the upper lambda bound input by the user if empty returns preset
-        a value.
+        Reads the upper lambda bound input by the user if empty returns None.
 
         Returns
         -------
@@ -691,7 +687,7 @@ class MainWindow(QW.QMainWindow):
     
     def getUserContour(self):
         """
-        Reads the contour input by the user if empty returns preset value.
+        Reads the contour input by the user, if empty returns 20.
 
         Returns
         -------
@@ -706,10 +702,41 @@ class MainWindow(QW.QMainWindow):
             cont = self.ui.plot_input_contour.value()
         return cont
     
+    def getVmin(self):
+        """
+        Reads the colormap normalization minimum input by the user, if empty
+        returns None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_vmin.text() == "":
+            vmin = None
+        else:
+            vmin = float(self.ui.plot_input_vmin.text())
+        return vmin
+    
+    def getVmax(self):
+        """
+        Reads the colormap normalization maximum input by the user, if empty
+        returns None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_vmax.text() == "":
+            vmax = None
+        else:
+            vmax = float(self.ui.plot_input_vmax.text())
+        return vmax
+    
     def getMultiplier(self):
         """
-        Reads the ΔA data multiplier input by the user if empty returns 
-        preset value.
+        Reads the ΔA data multiplier input by the user if empty returns 1.
 
         Returns
         -------
@@ -835,7 +862,7 @@ class MainWindow(QW.QMainWindow):
     
     def getGTACustomModelTaus(self):
         """
-        Reads the lifetimes input by the user, if a preset model is selected.
+        Reads the lifetimes input by the user, if a custom model is selected.
 
         Returns
         -------
@@ -905,7 +932,7 @@ class MainWindow(QW.QMainWindow):
     
     def getPresetModel(self):
         """
-        Returns the current selected kinetic model.
+        Returns the currently selected kinetic model.
         Returns
         -------
         int
@@ -969,8 +996,9 @@ class MainWindow(QW.QMainWindow):
 
         Returns
         -------
-        M : TYPE
-            DESCRIPTION.
+        M : np.ndarray
+            The kinetic matrix created from the transition equation and the 
+            lifetime imputs.
 
         '''
         #dictionary used to convert species names to corresponding matrix coordinates
@@ -1159,9 +1187,9 @@ class MainWindow(QW.QMainWindow):
         ----------
         model : int/string
             Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-10 or "custom" for a custom model.
+            number 1-8, "custom model" or "custom matrix".
         Controller : Controller
-            DESCRIPTION.
+            An object of the Controller class.
         fit_report : string
             The results of the fit and some goodness of fit statistics.
 
@@ -1331,6 +1359,8 @@ class MainWindow(QW.QMainWindow):
             self.finalInputs['Selected Plots'] += ', Three In One'
         if self.ui.plot_threed_contour.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', 3D Contour'
+        self.finalInputs['Vmin'] = self.ui.plot_input_vmin.text()
+        self.finalInputs['Vmax'] = self.ui.plot_input_vmax.text()
         self.finalInputs['Contour Lines'] = str(self.getUserContour())
         self.finalInputs['Delay Slices'] = self.ui.plot_input_delay_slices.text()      
         self.finalInputs['Wavelength Slices'] = self.ui.plot_input_wavelength_slices.text()
@@ -1348,7 +1378,7 @@ class MainWindow(QW.QMainWindow):
         '''
         directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
         self.ui.Data_directory.setText(directory)
-        self.finalInputs['Directory'] = directory 
+        self.finalInputs['Directory'] = directory
         if self.ui.Data_directory.text() != "":
             C = Cont.Controller(directory)
             path = C.path+"/"
@@ -1361,7 +1391,7 @@ class MainWindow(QW.QMainWindow):
                 temp = C.delays_filename[::-1]
                 temp = temp.index("/")
                 name = C.delays_filename[-temp:-11]
-                txt = name+"_pickle"
+                txt = name+"_input_backup"
                 pickle = path + txt + ".dir"
                 if os.path.isfile(pickle):
                     self.setPickle()
@@ -1503,6 +1533,10 @@ class MainWindow(QW.QMainWindow):
                 self.ui.plot_input_wavelength_slices.setText(val)
             if key == "Contour Lines":
                 self.ui.plot_input_contour.setValue(int(val))
+            if key == "Vmin":
+                self.ui.plot_input_vmin.setText(val)
+            if key == "Vmax":
+                self.ui.plot_input_vmax.setText(val)
 
     def clearPickle(self):
         """

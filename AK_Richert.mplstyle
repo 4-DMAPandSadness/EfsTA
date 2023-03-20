@@ -1,0 +1,53 @@
+# Line
+lines.linewidth: 2            # line width in points
+lines.linestyle: -            # solid line
+
+
+# LaTex
+font.family:  sans-serif
+font.sans-serif: cmbright
+text.usetex: True
+text.latex.preamble:    \renewcommand{\familydefault}{\sfdefault} \usepackage{sfmath} \usepackage{cmbright} \renewcommand{\sfdefault} {cmbr}
+
+
+# Axis
+axes.linewidth:     1.5     # edge line width
+axes.grid.which:    major   # grid lines at {major, minor, both} ticks
+axes.labelsize:     20      # font size of the x and y labels
+axes.labelpad:      10      # space between label and axis
+axes.prop_cycle: cycler('color', ['2ca02c', 'd62728', '9467bd', '8c564b', 'e377c2', '7f7f7f', 'bcbd22', '17becf']) # color cycle for plot (Hex-Codes) 
+
+# Ticks
+xtick.major.size:    6      # major tick size in points
+xtick.major.width:   1.5    # major tick width in points
+xtick.major.pad:     5      # distance to major tick label in points
+xtick.labelsize:     18     # font size of the tick labels
+xtick.direction:     out    # direction: {in, out, inout}
+xtick.major.top:     False  # draw x axis top major ticks
+ytick.major.size:    6      # major tick size in points
+ytick.major.width:   1.5    # major tick width in points
+ytick.major.pad:     5      # distance to major tick label in points
+ytick.labelsize:     18     # font size of the tick labels
+ytick.direction:     in     # direction: {in, out, inout}
+ytick.major.right:   False  # draw y axis right major ticks
+
+# Legend
+legend.loc:           upper right
+legend.frameon:       False   # if True, draw the legend on a background patch
+legend.fontsize:      15
+legend.labelspacing:  0.3     # the vertical space between the legend entries
+legend.handlelength:  1.8     # the length of the legend lines
+legend.handletextpad: 0.5     # the space between the legend line and legend text
+legend.borderaxespad: -0.05   # the border between the axes and legend edge
+
+# Figure
+figure.figsize:     5.6, 4    # figure size in inches (x times y)
+figure.dpi:         100       # figure dots per inch
+figure.facecolor:   white     # figure face color
+figure.frameon:     True      # enable figure frame
+figure.autolayout: True       # When True, automatically adjust subplot
+
+# Saving
+savefig.dpi:       600        # figure dots per inch or 'figure'
+savefig.format:    png        # {png, ps, pdf, svg}
+

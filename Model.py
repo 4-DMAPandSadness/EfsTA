@@ -10,8 +10,9 @@ from models import Models
 import os
 
 mpl.use("QtAgg")
+plt.style.use('./AK_Richert.mplstyle')
+#plt.style.use('default')
 plt.ion()
-
 
 class Model:
 
@@ -79,10 +80,8 @@ class Model:
             limits[0] = min(values)
         if limits[1] == None:
             limits[1] = max(values)
-        borders[0] = np.absolute(values-limits[0]).argmin()
-        borders[1] = np.absolute(values-limits[1]).argmin()
-        # while values[borders[0]] <= 0:
-        #     borders[0] = borders[0]+1
+        borders[0] = round(np.absolute(values-limits[0]).argmin(),2)
+        borders[1] = round(np.absolute(values-limits[1]).argmin(),2)
         return borders
 
     def findName(self, delays_filename):
@@ -104,9 +103,9 @@ class Model:
         temp = temp.index("/")
         name = delays_filename[-temp:-11]
         path = delays_filename[:-temp]
-        if not os.path.exists(path+'evaluation'):
-            os.makedirs(path+'evaluation')
-        self.path = delays_filename[:-temp]+"evaluation/"
+        if not os.path.exists(path+'analysis'):
+            os.makedirs(path+'analysis')
+        self.path = delays_filename[:-temp]+"analysis/"
         return name
 
     def initDelays(self, delays_filename):
@@ -793,8 +792,8 @@ class Model:
         )
         ax2.clabel(contours, inline=False, fontsize=0)
 
-        for i in range(len(wave)):
-            ax2.axvline(wave[i], linestyle="-.")
+        for i in wave:
+            ax2.axvline(i,color="black", linestyle="-.")
 
         for i in time:
             ax2.axhline(i, color="black", linestyle="dotted")
@@ -882,8 +881,7 @@ class Model:
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         log_delay = np.log10(self.delays)
@@ -897,10 +895,8 @@ class Model:
             v_max = self.setv_max(spectra, mul)
         X, Y = np.meshgrid(self.lambdas, log_delay)
         Z = spectra.T*mul
-        fig = plt.figure(figsize=(10,10), dpi=(100))
         ax = plt.axes(projection='3d')
         ax.contour3D(X,Y,Z,80,cmap='seismic')
-        ax.set_title((self.name + add).replace("_", " "))
         ax.set_xlabel('wavelength / nm')
         ax.set_ylabel('delay / ps')
         ax.set_zlabel("$\Delta A" + dot + "$")
@@ -942,8 +938,7 @@ class Model:
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
         ltx = str(mul).count("0")
@@ -1012,11 +1007,6 @@ class Model:
                 ax2.set_ylabel("delay / ps")
         if w3 != 0:
             self.plot3(grid, time, time_index, spectra*mul, mul)
-
-        if (w1,w2,w3) != 0:
-            plt.suptitle((self.name + add).replace("_", " "))
-        else:
-            plt.title((self.name + add).replace("_", " "))
         grid.tight_layout(fig)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
             bbox_inches="tight")
@@ -1042,13 +1032,10 @@ class Model:
 
         Returns
         -------
-        fig: matplotlib.pyplot.figure
-            The figure containing the plot.
+        None.
 
         """
-        fig = plt.figure()
         plt.plot(x, y)
-        plt.title((str(self.name) + str(add)).replace("_", " "))
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         if add == "_GTA_kin" or add == "_GLA_kin":
@@ -1058,3 +1045,110 @@ class Model:
                        handlelength=0)
         plt.savefig(self.path + self.name + add + ".png", dpi=300,
                     bbox_inches="tight")
+        
+        
+    def plot11(self, wave, spectra, mul):
+        """
+        Plots a subplot of delays against absorption change for chosen
+        wavelenghts.
+
+        Parameters
+        ----------
+        grid : plt.GridSpec
+            The object of the grid for all subplots.
+        wave : list
+            Wavelenghts which should be plotted.
+        wave_index : list
+            Indexes for the wavelengths to be plotted .
+        spectra : np.array
+            Contains the values of the spectra.
+
+        Returns
+        -------
+        None.
+
+        """
+        wave_index = self.findNearestIndex(wave, self.lambdas)
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
+        
+        plt.yscale("log")
+        plt.xlabel("$\Delta A" + dot + "$")
+        plt.ylabel("delay / ps")
+
+        for i in range(len(wave)):
+            plt.plot(
+                spectra[wave_index[i]],
+                self.delays,
+                label=str(wave[i]) + " nm"
+            )
+
+        plt.axvline(0, color="black")
+        temp = np.concatenate([spectra[wave_index[i]]
+                              for i in range(len(wave))])
+        plt.axis(
+            [
+                1.05 * min(np.array(temp)),
+                1.05 * max(np.array(temp)),
+                min(self.delays),
+                max(self.delays),
+            ]
+        )
+        plt.xticks(())
+        plt.tick_params(bottom=False)
+        plt.legend(loc="upper left", frameon=False, labelcolor="linecolor",
+                   handlelength=0)
+        plt.savefig(self.path + self.name + "11" + ".png")
+        plt.close()
+        
+    def plot33(self, time, spectra, mul):
+        """
+        Plots a subplot of absorption change against wavelenghts for chosen
+        delays.
+
+        Parameters
+        ----------
+        grid : plt.GridSpec
+            The object of the grid for all subplots.
+        time : list
+            Delays which should be plotted.
+        time_index : list
+            Indexes for the delays to be plotted.
+        spectra : np.array
+            Contains the values of the spectra.
+
+        Returns
+        -------
+        None.
+
+        """
+        time_index = self.findNearestIndex(time, self.delays)
+        ltx = str(mul).count("0")
+        dot = ""
+        if mul != 1:
+            dot = " \cdot " + "10^" + str(ltx)
+        plt.ylabel("$\Delta A" + dot + "$")
+        plt.xlabel("$\lambda$ / nm")
+        y = np.zeros(len(self.lambdas))
+        hoehe = 0
+        temp = np.zeros(len(self.lambdas))
+        for i in time_index:
+            for j in range(len(self.lambdas)):
+                temp[j] = spectra[j][i]
+                y[j] = temp[j] + hoehe
+            if i == time_index[0]:
+                mini = min(y)
+            plt.plot(self.lambdas, y, color="black")
+            plt.annotate(
+                str(self.delays[i]) + " ps", (0.5 * (min(self.lambdas) +
+                                 max(self.lambdas)), hoehe)
+            )
+            plt.axhline(hoehe, color="black", linewidth=0.7)
+            hoehe += 1.1 * (abs(max(temp)) + abs(min(temp)))
+        plt.axis([min(self.lambdas), max(self.lambdas), 1.1 * mini,
+                  1.1 * max(y)])
+        plt.yticks(())
+        plt.savefig(self.path + self.name + "33" + ".png")
+        plt.close()

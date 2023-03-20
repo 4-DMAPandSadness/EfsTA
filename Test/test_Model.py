@@ -2,14 +2,12 @@ import pytest as pt
 from Model import Model
 import numpy as np
 from models import Models
-import matplotlib.pyplot as plt
-import DAS_natalia as das
 
 class TestClassModel:
 
-    delays_filename = "/home/schmidbauer/Downloads/data/PDI4sg/01_Toluenez20_c_PDI_c_530_tol_delays.txt"
-    spectra_filename = "/home/schmidbauer/Downloads/data/PDI4sg/01_Toluenez20_c_PDI_c_530_tol_spectra.txt"
-    lambdas_filename = "/home/schmidbauer/Downloads/data/PDI4sg/01_Toluenez20_c_PDI_c_530_tol_lambda.txt"
+    delays_filename = "/home/hackerman/Documents/fsTA Daten/c_PDI_c/01_Toluenez20_c_PDI_c_530_tol_delays.txt"
+    spectra_filename = "/home/hackerman/Documents/fsTA Daten/c_PDI_c/01_Toluenez20_c_PDI_c_530_tol_spectra.txt"
+    lambdas_filename = "/home/hackerman/Documents/fsTA Daten/c_PDI_c/01_Toluenez20_c_PDI_c_530_tol_lambda.txt"
     d_limits = [0.3, None]
     l_limits = [None, None]
 
@@ -24,6 +22,8 @@ class Test_init(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
 
     def test_type(self):
@@ -33,9 +33,8 @@ class Test_init(TestClassModel):
             type(self.mod.lambdas),
             type(self.mod.d_borders),
             type(self.mod.l_borders),
-            type(self.mod.name),
         ]
-        test_types = [np.ndarray, np.ndarray, np.ndarray, list, list, str]
+        test_types = [np.ndarray, np.ndarray, np.ndarray, list, list]
         assert types == test_types
 
     def test_shape(self):
@@ -45,9 +44,8 @@ class Test_init(TestClassModel):
             self.mod.lambdas.shape,
             len(self.mod.d_borders),
             len(self.mod.l_borders),
-            len(self.mod.name),
         ]
-        test_shapes = [(107,), (367, 107), (367,), 2, 2, 33]
+        test_shapes = [(107,), (367, 107), (367,), 2, 2]
         assert shapes == test_shapes
 
     def test_values(self):
@@ -57,9 +55,8 @@ class Test_init(TestClassModel):
             self.mod.lambdas[349],
             self.mod.d_borders[1],
             self.mod.l_borders[0],
-            self.mod.name[10],
         ]
-        test_values = [32.45, 0.04855014, 731.20184, 132, 0, 'z']
+        test_values = [32.45, 0.04855014, 731.20184, 132, 0]
         assert values == pt.approx(test_values)
 
 
@@ -73,6 +70,8 @@ class Test_genE_tau(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         tau = [1.2, 150, 900000]
         self.E_tau = self.mod.genE_tau(tau)
@@ -98,6 +97,8 @@ class Test_setInitialConcentrations(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.n = 3
         C_0 = []
@@ -123,6 +124,8 @@ class Test_calcdCdt(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.K = np.array([[-8.3e-01,  0.0e+00,  0.0e+00],
                                [8.3e-01, -2.5e-02,  0.0e+00],
@@ -151,12 +154,15 @@ class Test_solveDiff(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         K = np.array([[-8.3e-01,  0.0e+00,  0.0e+00],
                       [8.3e-01, -2.5e-02,  0.0e+00],
                       [0.0e+00,  2.5e-02, -1.1e-06]])
         self.mod.C_0 = np.array([1, 0, 0])
-        self.C_t = self.mod.solveDiff(K)
+        self.ivp_method = "BDF"
+        self.C_t = self.mod.solveDiff(K, self.ivp_method)
 
     def test_shape(self):
         assert self.C_t.shape == (3,107)
@@ -178,6 +184,8 @@ class Test_getK(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         ks = [0.83, 0.025, 0.0000011]
         self.mod.mod = Models(ks)
@@ -208,6 +216,8 @@ class Test_getM(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         tau = [1.2, 150, 900000]
         self.M = self.mod.getM(tau)
@@ -223,7 +233,7 @@ class Test_getM(TestClassModel):
         
 class Test_getMlin(TestClassModel):
     def setup(self):
-        model = "custom"
+        model = "custom matrix"
         self.mod = Model(
             self.delays_filename,
             self.spectra_filename,
@@ -231,6 +241,8 @@ class Test_getMlin(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         M = np.array([[-0.83,  0.  ,  0.  ],[ 0.83 , -0.025,  0.   ],
                       [ 0.0e+00,  2.5e-02, -1.1e-06]])
@@ -245,10 +257,10 @@ class Test_getMlin(TestClassModel):
     def test_values(self):
         test_values = [0.83, 0.025, -0.0000011]
         assert self.M_lin == pt.approx(test_values)
-        
+
 class Test_regenM(TestClassModel):
     def setup(self):
-        model = "custom"
+        model = "custom matrix"
         self.mod = Model(
             self.delays_filename,
             self.spectra_filename,
@@ -256,6 +268,8 @@ class Test_regenM(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method  
         )
         ks = [0.83, 0.025, -0.0000011]
         self.mod.M_ones = np.array([[0, 0, 0],[1, 0, 0],[0, 1, 1]])
@@ -272,7 +286,7 @@ class Test_regenM(TestClassModel):
                       [ 0.0e+00,  2.5e-02, -1.1e-06]])
         assert self.M == pt.approx(test_values)
         
-class Test_calcD_x(TestClassModel):
+class Test_calcD_tau(TestClassModel):
     def setup(self):
         model = 0
         self.mod = Model(
@@ -282,10 +296,12 @@ class Test_calcD_x(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         tau = [1.2, 150, 900000]
         self.mod.M = self.mod.getM(tau)
-        self.D = self.mod.calcD_x(tau)
+        self.D = self.mod.calcD_tau(tau)
         
     def test_shape(self):
         assert self.D.shape == (367, 3)
@@ -297,7 +313,7 @@ class Test_calcD_x(TestClassModel):
         assert self.D[2] == pt.approx(np.array([-0.01543421,  0.02202565,
                                                 0.04493234]))
     
-class Test_calcA_x(TestClassModel):
+class Test_calcA_tau(TestClassModel):
     def setup(self):
         model = 0
         self.mod = Model(
@@ -307,10 +323,12 @@ class Test_calcA_x(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         tau = [1.2, 150, 900000]
         self.mod.M = self.mod.getM(tau)
-        self.A = self.mod.calcA_x(tau)
+        self.A = self.mod.calcA_tau(tau)
         
     def test_shape(self):
         assert self.A.shape == (367,107)
@@ -323,7 +341,7 @@ class Test_calcA_x(TestClassModel):
         test_A = np.array([-0.00348274, -0.00323534, -0.00300282])
         assert self.A[289,76:79] == pt.approx(test_A)
         
-class Test_getChiSquare(TestClassModel):
+class Test_getDifference(TestClassModel):
     def setup(self):
         model = 0
         self.mod = Model(
@@ -333,16 +351,17 @@ class Test_getChiSquare(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.x_fix = [900000]
         x_guess = [1.2, 106]
-        self.Chi = self.mod.getChiSquare(x_guess)
+        self.Diff = self.mod.getChiSquare(x_guess)
 
     def test_type(self):
-        assert type(self.Chi) == np.float64
+        assert type(self.Diff) == np.ndarray
         
     def test_values(self):
-        print(self.Chi)
         assert self.Chi == 1.4805668823781104
         
 class Test_findx_fit(TestClassModel):
@@ -355,6 +374,8 @@ class Test_findx_fit(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         x_fix = [900000]
         x_guess = [1.2, 106]
@@ -379,6 +400,8 @@ class Test_calcD_fit(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.x_fit = [9.66481077e+00, 5.30173314e+02]
         self.mod.x_fix = [ 9.00000000e+05]
@@ -406,6 +429,8 @@ class Test_calcA_fit(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.x_fit = [9.66481077e+00, 5.30173314e+02]
         self.mod.x_fix = [ 9.00000000e+05]
@@ -433,6 +458,8 @@ class Test_calcResiduals(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         self.mod.x_fit = [9.66481077e+00, 5.30173314e+02]
         self.mod.x_fix = [ 9.00000000e+05]
@@ -462,6 +489,8 @@ class Test_setv_min(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         data = np.array([[1.0,0.0002],[0.0,0.61900]])
         self.v_min = self.mod.setv_min(data, 1)
@@ -482,6 +511,8 @@ class Test_setv_max(TestClassModel):
             self.d_limits,
             self.l_limits,
             model,
+            self.opt_method,
+            self.ivp_method
         )
         data = np.array([[1.0,0.0002],[0.0,0.61900]])
         self.v_max = self.mod.setv_max(data, 1)

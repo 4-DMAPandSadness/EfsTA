@@ -69,47 +69,9 @@ class Test_model2:
         
 class Test_model3:
     def setup(self):
-        ks = [1, 2, 5, 9, 13]
-        self.mod = Models(ks)
-        model = 3
-        self.K, self.n = self.mod.getK(model)
-        
-    def test_shape(self):
-        assert self.K.shape == (3,3)
-        
-    def test_type(self):
-        assert type(self.K) == np.ndarray
-        
-    def test_values(self):
-        test_values = np.array([[-1, 9, 0.0], [1, -11, 13],
-                                [0.0, 2, -18]])
-        assert self.K == pt.approx(test_values)
-        
-class Test_model4:
-    def setup(self):
-        ks = [1, 2, 5, 9, 13, 18]
-        self.mod = Models(ks)
-        model = 4
-        self.K, self.n = self.mod.getK(model)
-        
-    def test_shape(self):
-        assert self.K.shape == (4,4)
-        
-    def test_type(self):
-        assert type(self.K) == np.ndarray
-        
-    def test_values(self):
-        test_values = np.array([[-1, 9, 0.0, 0.0],
-                                [1, -11, 13, 0.0],
-                                [0.0, 2, -18, 18],
-                                [0.0, 0.0, 5, -18]])
-        assert self.K == pt.approx(test_values)
-        
-class Test_model5:
-    def setup(self):
         ks = [1, 2, 5, 9]
         self.mod = Models(ks)
-        model = 5
+        model = 3
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):
@@ -125,11 +87,11 @@ class Test_model5:
                                 [0.0, 9, 5, 0.0]])
         assert self.K == pt.approx(test_values)
 
-class Test_model6:
+class Test_model4:
     def setup(self):
         ks = [1, 2, 5, 9, 13]
         self.mod = Models(ks)
-        model = 6
+        model = 4
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):
@@ -146,11 +108,11 @@ class Test_model6:
                                 [0.0, 13, 0.0, 9, 0.0]])
         assert self.K == pt.approx(test_values)
         
-class Test_model7:
+class Test_model5:
     def setup(self):
         ks = [1, 2, 5, 9, 13]
         self.mod = Models(ks)
-        model = 7
+        model = 5
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):
@@ -168,11 +130,11 @@ class Test_model7:
         print([list(item) for item in self.K])
         assert self.K == pt.approx(test_values)
         
-class Test_model8:
+class Test_model6:
     def setup(self):
         ks = [1, 2, 5, 9, 13, 18]
         self.mod = Models(ks)
-        model = 8
+        model = 6
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):
@@ -191,11 +153,11 @@ class Test_model8:
         print([list(item) for item in self.K])
         assert self.K == pt.approx(test_values)
         
-class Test_model9:
+class Test_model7:
     def setup(self):
         ks = [1, 2]
         self.mod = Models(ks)
-        model = 9
+        model = 7
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):
@@ -209,11 +171,11 @@ class Test_model9:
                                 [2, 0.0, 0.0]])
         assert self.K == pt.approx(test_values)
         
-class Test_model10:
+class Test_model8:
     def setup(self):
         ks = [1, 2, 5]
         self.mod = Models(ks)
-        model = 10
+        model = 8
         self.K, self.n = self.mod.getK(model)
         
     def test_shape(self):

@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="stack">
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="Introduction">
        <attribute name="title">
@@ -32,12 +32,15 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption spectroscopy data, using a matrix reconstruction algorithm. To use it go through all the tabs and make your various inputs.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;Multiple inputs NEED to be separeted by a comma except if it is stated otherwise, so for decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/User%20Guide.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Data&amp;quot;-tab you can select the directory in which the measured data is saved and if necessary, specify the range of the data which should be analysed. The data needs to be separate in three .txt files ending with &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra.txt.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; The results will be saved in the data directory, you'll find a new folder called &amp;quot;evaluation&amp;quot;, which will contain all the plots and the reconstructed spectra data.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot;- or &amp;quot;GTA&amp;quot;-tab you can select the analysing method and input various parameters. For Global Target Analysis (GTA) there are three options. You can choose one of the eight preset kinetic models, you can input and save your own kinetic model in form of a simple transition equation or you can skip all the models and input a kinetic matrix directly.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot;-tab you can select from a variety of different plots for your data. There you can also plot the raw unanalysed data, to help you determine your lifetime guesses.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Input Confirmation&amp;quot;-tab all your inputs, with which the program will carry out the analysis will be presented to you so you can check one last time, if everything is as you want it to be. If so, you can confirm your inputs and start the evaluation.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;This program is used to analyse femtosecond transient absorption data, using a matrix reconstruction algorithm. To use it, go through all the tabs and make your various inputs.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;Multiple input parameters NEED to be separated by a comma except if it is stated otherwise. For decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/User%20Guide.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Data&amp;quot; tab you can select the directory in which the measured data are saved and, if necessary, specify the data range which should be analysed. The data need to be separated in three .txt files ending with &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra.txt.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; The results will be saved in the data directory. You will find a new folder called &amp;quot;analysis&amp;quot;, which will contain all the plots and the reconstructed spectra.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot; or &amp;quot;GTA&amp;quot; tab you can select the analysis method and input various parameters. For Global Target Analysis (GTA) there are three options:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(i) You can choose one of the eight preset kinetic models, &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(ii) you can input and save your own kinetic model in form of a simple transition equation or&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(iii) you can skip all the models and input a kinetic matrix directly.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot; tab you can select from a variety of different plots for your data. You can also use this tab to plot the raw data, to help you determine your lifetime guesses.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Input Confirmation&amp;quot; you will find an overview of all your input parameters that will be used for the analysis. If everything appears to be correct, you can confirm your input and start the evaluation.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;If you encounter any problems or have suggestions, feel free to email me:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;lucas.traenkle@gmx.net&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -800,20 +803,37 @@ p, li { white-space: pre-wrap; }
            <string>Plot Details</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="plot_input_delay_slices">
+           <item row="3" column="0">
+            <widget class="QLineEdit" name="plot_input_vmin">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific delays for data slicing. Will only effect the &amp;quot;Delay Slices&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. This is optional and can be left empty. If left empty the &amp;quot;Delay Slices&amp;quot;-plot will not be created and therefore also not be shown in the &amp;quot;All In One&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The spectroscopic behavior at 23 ps, 67 ps and 124 ps is of special interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;23,67,124&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="readOnly">
-              <bool>false</bool>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;test&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The absorption values go from -200 to +100, so the colormap will not be centered around 0.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;-200&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Delay Slices in ps (Optional)</string>
+              <string>Colormap Norm. Min. (Optional)</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="plot_input_vmax">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;test&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The absorption values go from -200 to +100, so the colormap will not be centered around 0.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;+200&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="placeholderText">
+              <string>Colormap Norm. Max. (Optional)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QSpinBox" name="plot_input_contour">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the amount of contour lines in the &amp;quot;Heatmap&amp;quot;-, &amp;quot;Residuals&amp;quot;- and &amp;quot;3D Contour&amp;quot;-plot. Only effects the &amp;quot;Heatmap&amp;quot;- , &amp;quot;Residuals-&amp;quot;, &amp;quot;3D Contour&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. This is optional and can be left empty. If left empty, will resort to a default value of 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="specialValueText">
+              <string>Contour Lines (Optional)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
             <widget class="QLineEdit" name="plot_input_wavelength_slices">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific wavelengths for data slicing. Will only effect the &amp;quot;Wavelength Slices&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. If left empty the &amp;quot;Wavelength Slices&amp;quot;-plot will not be created and therefore also not be shown in the &amp;quot;All In One&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The kinetic development at 360 nm, 520 nm and 680 nm is of special interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;360,520,680&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -823,13 +843,16 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QSpinBox" name="plot_input_contour">
+           <item row="0" column="0" colspan="2">
+            <widget class="QLineEdit" name="plot_input_delay_slices">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the amount of contour lines in the &amp;quot;Heatmap&amp;quot;-, &amp;quot;Residuals&amp;quot;- and &amp;quot;3D Contour&amp;quot;-plot. Only effects the &amp;quot;Heatmap&amp;quot;- , &amp;quot;Residuals-&amp;quot;, &amp;quot;3D Contour&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. This is optional and can be left empty. If left empty, will resort to a default value of 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific delays for data slicing. Will only effect the &amp;quot;Delay Slices&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. This is optional and can be left empty. If left empty the &amp;quot;Delay Slices&amp;quot;-plot will not be created and therefore also not be shown in the &amp;quot;All In One&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The spectroscopic behavior at 23 ps, 67 ps and 124 ps is of special interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;23,67,124&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-             <property name="specialValueText">
-              <string>Contour Lines (Optional)</string>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="placeholderText">
+              <string>Delay Slices in ps (Optional)</string>
              </property>
             </widget>
            </item>
@@ -1156,6 +1179,16 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="text">
              <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Vmin</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Vmax</string>
             </property>
            </item>
           </item>
