@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="stack">
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="Introduction">
        <attribute name="title">
@@ -36,11 +36,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;Multiple input parameters NEED to be separated by a comma except if it is stated otherwise. For decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/User%20Guide.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#00ff00;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Data&amp;quot; tab you can select the directory in which the measured data are saved and, if necessary, specify the data range which should be analysed. The data need to be separated in three .txt files ending with &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;delays.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda.txt&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra.txt.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; The results will be saved in the data directory. You will find a new folder called &amp;quot;analysis&amp;quot;, which will contain all the plots and the reconstructed spectra.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot; or &amp;quot;GTA&amp;quot; tab you can select the analysis method and input various parameters. For Global Target Analysis (GTA) there are three options:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(i) You can choose one of the eight preset kinetic models, &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(ii) you can input and save your own kinetic model in form of a simple transition equation or&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(iii) you can skip all the models and input a kinetic matrix directly.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(i) You can choose one of the eight preset kinetic models&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(ii) you can input and save your own kinetic model in form of a simple transition equation&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(iii) you can skip all the models and input a kinetic matrix directly&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot; tab you can select from a variety of different plots for your data. You can also use this tab to plot the raw data, to help you determine your lifetime guesses.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Input Confirmation&amp;quot; you will find an overview of all your input parameters that will be used for the analysis. If everything appears to be correct, you can confirm your input and start the evaluation.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Input Confirmation&amp;quot; tab you will find an overview of all your input parameters that will be used for the analysis. If everything appears to be correct, you can confirm your input and start the evaluation.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;If you encounter any problems or have suggestions, feel free to email me:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;lucas.traenkle@gmx.net&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -83,7 +83,171 @@ p, li { white-space: pre-wrap; }
         <string>Data</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="2" column="0" colspan="3">
+        <item row="3" column="1">
+         <spacer name="spacer_clear_cache">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>731</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="Data_browse">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the data directory. There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt-&lt;/span&gt;files ending with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra.txt, delays.txt &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda.txt&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="Data_directory">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the directory of the folder containing the data or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/sample_1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>Data Directory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QPushButton" name="Data_clear_cache">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clears the saved inputs from previous evaluations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Clear Cache</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Data Type</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QComboBox" name="Data_type">
+             <property name="toolTip">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Select an experiment type to automatically set the axis labels and units for the plots.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;fs TA	: x-Axis (Wavelength / nm), y-Axis (delay / ps), z-Axis (ΔA)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ns TA	: x-Axis (Wavelength / nm), y-Axis (delay / ns), z-Axis (ΔA)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;μs trEPR	: x-Axis (Magnetic Field / mT), y-Axis (delay / μs), z-Axis (trEPR signal)&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ns trEPR	: x-Axis (Magnetic Field / mT), y-Axis (delay / ns), z-Axis (trEPR signal)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>fs TA</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ns TA</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>μs trEPR</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ns trEPR</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="Data_xAxis">
+             <property name="toolTip">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Set the x-axis label and unit for the plot of your data. To correctly display the unit in the plots the input must look like this:&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;data / unit&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The experiment measured transient absorption data of electromagnetic radiation.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;wavelength / nm&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Note:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The program can read LaTeX inputs. Alternative input:&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$\lambda$ / nm&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>$\lambda$ / nm</string>
+             </property>
+             <property name="placeholderText">
+              <string>x-Axis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="Data_yAxis">
+             <property name="toolTip">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Set the y-axis label and unit for the plot of your data. To correctly display the unit in the plots the input must look like this:&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;data / unit&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The experiment measured transient absorption data of electromagnetic radiation.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;delay / ps&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Note:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The program can read LaTeX inputs. Alternative input:&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$t$ / nm&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>delay / ps</string>
+             </property>
+             <property name="placeholderText">
+              <string>y-Axis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="Data_zAxis">
+             <property name="toolTip">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Set the z-axis label and unit for the plot of your data.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The experiment measured transient absorption data of electromagnetic radiation.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;absorption change&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Note:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The program can read LaTeX inputs. Alternative input:&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$\Delta$A&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>$\Delta A$</string>
+             </property>
+             <property name="placeholderText">
+              <string>z-Axis</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="1">
          <widget class="QGroupBox" name="Data_Modification">
           <property name="title">
            <string>Data Modification</string>
@@ -95,17 +259,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength range to be analysed. This is optional and can be left empty. If left empty, all wavelengths from the lower bound upwards will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for wavelengths ranging from 330 nm to 800 nm , but only the data up to 750 nm is relevant.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;750&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Upper Wavelength Bound in nm (Optional)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLineEdit" name="Data_wavelength_input_lb">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength range to be analysed. This is optional and can be left empty. If left empty, all wavelengths up to the upper bound will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for wavelengths ranging from 330 nm to 800 nm , but only the data starting at 350 nm is relevant.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;350&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="placeholderText">
-              <string>Lower Wavelength Bound in nm (Optional)</string>
+              <string>Upper Wavelength/Field Bound (Optional)</string>
              </property>
             </widget>
            </item>
@@ -115,7 +269,27 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the time frame to be analysed. This is optional and can be left empty. If left empty, all delays up to the upper bound will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for delays ranging from -10 ps to 4000 ps, but to exclude artifacts at 0 ps the evaluation should start at 0.4 ps.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;0.4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower Delay Bound in ps (Optional)</string>
+              <string>Lower Delay Bound (Optional)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLineEdit" name="Data_delay_input_ub">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set an upper bound for the time frame to be analysed. This is optional and can be left empty. If left empty, all delays from the lower bound upwards will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for delays ranging from -10 ps to 4000 ps, but to the data is only relevant up to 3000 ps.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;3000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="placeholderText">
+              <string>Upper Delay Bound (Optional)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLineEdit" name="Data_wavelength_input_lb">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set a lower bound for the wavelength range to be analysed. This is optional and can be left empty. If left empty, all wavelengths up to the upper bound will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for wavelengths ranging from 330 nm to 800 nm , but only the data starting at 350 nm is relevant.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;350&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="placeholderText">
+              <string>Lower Wavelength/Field Bound(Optional)</string>
              </property>
             </widget>
            </item>
@@ -129,63 +303,7 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLineEdit" name="Data_delay_input_ub">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set an upper bound for the time frame to be analysed. This is optional and can be left empty. If left empty, all delays from the lower bound upwards will be used.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The data was measured for delays ranging from -10 ps to 4000 ps, but to the data is only relevant up to 3000 ps.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;3000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="placeholderText">
-              <string>Upper Delay Bound in ps (Optional)</string>
-             </property>
-            </widget>
-           </item>
           </layout>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="Data_clear_cache">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clears the saved inputs from previous evaluations.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>Clear Cache</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="Data_browse">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the data directory. There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt-&lt;/span&gt;files ending with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra.txt, delays.txt &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda.txt&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <spacer name="spacer_clear_cache">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>731</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLineEdit" name="Data_directory">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the directory of the folder containing the data or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/sample_1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-          <property name="placeholderText">
-           <string>Data Directory</string>
-          </property>
          </widget>
         </item>
        </layout>
@@ -229,7 +347,7 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QComboBox" name="GLA_algorithm_optimize">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function to minimize the Chi-Square function.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function to minimize the Chi-Square function. The default algorithm is &amp;quot;Nelder-Mead&amp;quot;.&lt;/p&gt;&lt;p&gt;For more information read the documentation for &amp;quot;scipy.optimize.minimize&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <item>
               <property name="text">
@@ -308,7 +426,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the global lifetime analysis.&lt;/p&gt;&lt;p&gt;After the input press ENTER to select fixed values.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Three species with different lifetimes.&lt;/p&gt;&lt;p&gt;τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; = 1.2 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; = 106 ps; τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;3&lt;/span&gt; = 900 ns&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;1.2, 106, 900000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values  in ps</string>
+              <string>τ-values</string>
              </property>
             </widget>
            </item>
@@ -379,7 +497,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(Make sure that the amount of commas in the &amp;quot;τ-values&amp;quot; and &amp;quot;Lower τ Bounds&amp;quot; lineedit are the same and the positions of the bounds match the position of the corresponding lifetime.)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Upper τ Bounds in ps (Optional)</string>
+              <string>Upper τ Bounds (Optional)</string>
              </property>
             </widget>
            </item>
@@ -401,7 +519,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(Make sure that the amount of commas in the &amp;quot;τ-values&amp;quot; and &amp;quot;Lower τ Bounds&amp;quot; lineedit are the same and the positions of the bounds match the position of the corresponding lifetime.)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Lower τ Bounds in ps (Optional)</string>
+              <string>Lower τ Bounds (Optional)</string>
              </property>
             </widget>
            </item>
@@ -431,7 +549,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;1,80&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values in ps</string>
+              <string>τ-values</string>
              </property>
             </widget>
            </item>
@@ -564,7 +682,7 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QComboBox" name="GTA_algorithm_optimize">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function to minimize the Chi-Square function.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the optimize function to minimize the Chi-Square function. The default algorithm is &amp;quot;Nelder-Mead&amp;quot;.&lt;/p&gt;&lt;p&gt;For more information read the documentation for &amp;quot;scipy.optimize.minimize&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <item>
               <property name="text">
@@ -631,8 +749,13 @@ p, li { white-space: pre-wrap; }
            <item row="1" column="0">
             <widget class="QComboBox" name="GTA_algorithm_initial_value_problem">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the ivp solver to solve the differential equations for the concentrations of each species.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the algorithm used by the ivp solver to solve the differential equations for the concentrations of each species. The default algorithm is &amp;quot;LSODA&amp;quot;.&lt;/p&gt;&lt;p&gt;For more information read the documentation for &amp;quot;scipy.integrate.solve_ivp&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <item>
+              <property name="text">
+               <string>LSODA</string>
+              </property>
+             </item>
              <item>
               <property name="text">
                <string>BDF</string>
@@ -656,11 +779,6 @@ p, li { white-space: pre-wrap; }
              <item>
               <property name="text">
                <string>Radau</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>LSODA</string>
               </property>
              </item>
             </widget>
@@ -748,7 +866,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the guessed lifetimes for the kinetic model.&lt;/p&gt;&lt;p&gt;Lifetimes need to be input in the same order as the transition arrows are in the equation.&lt;/p&gt;&lt;p&gt;After the input press ENTER to select fixed values.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Tooltips/images/tooltips/reaction example wt.png&quot;/&gt;&lt;/p&gt;&lt;p&gt;Transition equation: ABCv;BA;AC&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;1,80,4000,3,30&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>τ-values in ps</string>
+              <string>τ-values</string>
              </property>
             </widget>
            </item>
@@ -839,7 +957,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set specific wavelengths for data slicing. Will only effect the &amp;quot;Wavelength Slices&amp;quot;- and &amp;quot;All In One&amp;quot;-plot. If left empty the &amp;quot;Wavelength Slices&amp;quot;-plot will not be created and therefore also not be shown in the &amp;quot;All In One&amp;quot;-plot.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The kinetic development at 360 nm, 520 nm and 680 nm is of special interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;360,520,680&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="placeholderText">
-              <string>Wavelength Slices in nm (Optional)</string>
+              <string>Wavelength/Field Slices (Optional)</string>
              </property>
             </widget>
            </item>
@@ -852,7 +970,7 @@ p, li { white-space: pre-wrap; }
               <bool>false</bool>
              </property>
              <property name="placeholderText">
-              <string>Delay Slices in ps (Optional)</string>
+              <string>Delay Slices (Optional)</string>
              </property>
             </widget>
            </item>
@@ -900,7 +1018,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the change of absorption against the wavelengths for delay slices. Will only work, if specific delays for data slicing are provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_timeslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>Delay Slices (ΔA / λ)</string>
+              <string>Delay Slices</string>
              </property>
             </widget>
            </item>
@@ -910,7 +1028,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Plots the delays against the change of absorption for wavelength slices. Will only work, if specific wavelengths for data slicing are provided.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_waveslice.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>Wavelength Slices (t / ΔA)</string>
+              <string>Wavelength/Field Slices</string>
              </property>
             </widget>
            </item>
@@ -940,7 +1058,7 @@ p, li { white-space: pre-wrap; }
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If GLA is selected:&lt;/p&gt;&lt;p&gt;Plots the Decay Associated Spectra (DAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;If GTA is selected:&lt;/p&gt;&lt;p&gt;Plots the Species Associated Spectra (SAS) with fitted lifetimes against the wavelengths.&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/ex_DASSAS.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>DAS / SAS (ΔA / λ)</string>
+              <string>DAS / SAS</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -1189,6 +1307,21 @@ p, li { white-space: pre-wrap; }
            <item>
             <property name="text">
              <string>Vmax</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>x-Axis</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>y-Axis</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>z-Axis</string>
             </property>
            </item>
           </item>

@@ -45,7 +45,7 @@ class Controller():
         for file in content:
             file_paths.append(f'{path}/{file}')
         for i in file_paths:
-            if "lambda.txt" in i:
+            if ("lambda.txt" or "field.txt") in i:
                 self.lambdas_filename = i
             elif "delays.txt" in i:
                 self.delays_filename = i
@@ -200,9 +200,6 @@ class Controller():
         None.
         
         """
-        #self.origData.plotWSlices(wave, self.origData.spectra, mul)
-        #self.origData.plotHeat(wave, time, v_min, v_max, self.origData.spectra, "", 20)
-        #self.origData.plotDSlices(time, self.origData.spectra.T, mul)
         if len(list(wave)) <= 0:
             if len(list(time)) <= 0:
                 custom = "2"
@@ -213,7 +210,7 @@ class Controller():
         else:
             custom = "1+2+3"
         self.origData.plotCustom(self.origData.spectra, wave, time,
-                            v_min, v_max, custom, cont, mul)
+                            v_min, v_max, custom, cont, mul, self.labels)
     
     def plot3DOrigData(self, v_min, v_max,
                       mul):
@@ -233,7 +230,7 @@ class Controller():
         None.
 
         """
-        self.origData.plot3D(self.origData.spectra, v_min, v_max, mul)
+        self.origData.plot3D(self.origData.spectra, v_min, v_max, mul, self.labels)
     
     def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
         """
@@ -278,10 +275,10 @@ class Controller():
             custom = "1+2+3"
         if model == 0:
             self.DAS.plotCustom(self.DAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, add="_GLA")
+                                v_min, v_max, custom, cont, mul, self.labels, add="_GLA")
         else:
             self.SAS.plotCustom(self.SAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, add="_GTA")
+                                v_min, v_max, custom, cont, mul, self.labels ,add="_GTA")
         
     def plot3DFittedData(self,v_min, v_max, model, mul):
         """
@@ -305,9 +302,9 @@ class Controller():
 
         """
         if model == 0:
-            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, add="_GLA")
+            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, self.labels ,add="_GLA")
         else:
-            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, add="_GTA")
+            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, self.labels ,add="_GTA")
             
     def createOrigData(self, d_limits, l_limits, opt_method, ivp_method):
         """
@@ -366,10 +363,11 @@ class Controller():
         """
         if model == None:
             self.origData.plotCustom(self.origData.spectra, wave, time,
-                                v_min, v_max, custom, cont, mul, add="_"+add)
+                                v_min, v_max, custom, cont, mul,self.labels ,
+                                add="_"+add)
         elif model == 0:
             self.DAS.plotCustom(self.DAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul,
+                                v_min, v_max, custom, cont, mul, self.labels ,
                                 add="_GLA"+"_"+add)
         else:
             self.SAS.plotCustom(self.SAS.spec, wave, time,
@@ -411,14 +409,15 @@ class Controller():
         """
         if model == None:
             self.origData.plotSolo(self.origData.spectra, wave, time,
-                                v_min, v_max, solo, cont, mul, add="_"+add)
+                                v_min, v_max, solo, cont, mul, self.labels,
+                                add="_"+add)
         elif model == 0:
             self.DAS.plotSolo(self.DAS.spec, wave, time,
-                                v_min, v_max, solo, cont, mul,
+                                v_min, v_max, solo, cont, mul, self.labels,
                                 add="_GLA"+"_"+add)
         else:
             self.SAS.plotSolo(self.SAS.spec, wave, time,
-                                v_min, v_max, solo, cont, mul,
+                                v_min, v_max, solo, cont, mul, self.labels,
                                 add="_GTA"+"_"+add)
 
     def plot1Dresiduals(self, model, mul):
@@ -443,15 +442,15 @@ class Controller():
         ltx = str(mul).count("0")
         dot = ""
         if mul != 1:
-            dot = " \cdot " + "10^" + str(ltx)
+            dot = " \cdot " + "10^" + str(ltx) + "$"
         if model == 0:
             self.DAS.plotData(self.DAS.delays, self.DAS.residuals.T,
-                              "delays / ps", "$\Delta A" + dot + "$",
-                              add="_GLA_Residuals_1D")
+                              self.labels[1], self.labels[2]+ dot,
+                              add="_GLA_Residuals_")
         else:
             self.SAS.plotData(self.SAS.delays, self.SAS.residuals.T,
-                              "delays / ps", "$\Delta A" + dot + "$",
-                              add="_GTA_Residuals_1D")
+                              self.labels[1], self.labels[2]+ dot,
+                              add="_GTA_Residuals_")
          
     def plot2Dresiduals(self, v_min, v_max, model, cont, mul):
         """
@@ -480,10 +479,10 @@ class Controller():
         """
         if model == 0:
             self.DAS.plotHeat([], [], None, None, self.DAS.residuals, cont, mul,
-                                add="_GLA_Residuals_2D")
+                              self.labels,  add="_GLA_Residuals")
         else:
             self.SAS.plotHeat([], [], None, None, self.SAS.residuals, cont, mul,
-                                add="_GTA_Residuals_2D")
+                               self.labels, add="_GTA_Residuals")
         
     def plotKinetics(self, model):
         """
@@ -503,11 +502,11 @@ class Controller():
 
         """
         if model == 0:
-            self.DAS.plotData(self.DAS.delays, self.DAS.M.T, "delays / ps",
-                              "concentration", add="_GLA_kin")
+            self.DAS.plotData(self.DAS.delays, self.DAS.M.T, self.labels[1],
+                              "concentration",label = None, add="_GLA_kin")
         else:
-            self.SAS.plotData(self.SAS.delays, self.SAS.M.T, "delays / ps",
-                              "concentration", add="_GTA_kin")
+            self.SAS.plotData(self.SAS.delays, self.SAS.M.T, self.labels[1],
+                              "concentration",label = None, add="_GTA_kin")
         
     def plotDAS(self, model, tau, mul):
         """
@@ -530,20 +529,38 @@ class Controller():
         ltx = str(mul).count("0")
         dot = ""
         if mul != 1:
-            dot = " \cdot " + "10^" + str(ltx)
-        tau = list(tau)
+            dot = f" $\cdot 10^{ltx}$"
+        unit = self.labels[1].split("/")[1]
         if model == 0:
+            label = []
+            ind = 0
+            for tau in tau:
+                label.append(f"$\\tau_{ind}=$ {tau}{unit}")
+                ind +=1
             self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_DAS",
-                              label = tau)
+                              self.labels[0], self.labels[2] + dot, 
+                              label = label, add="_DAS")
         elif (model == "custom model" or model == "custom matrix"):
+            custom_tau = list(self.SAS.getM_lin(np.array(tau)))
+            label = []
+            ind = 0
+            for tau in tau:
+                label.append(f"$\\tau_{ind}=$ {custom_tau}{unit}")
+                ind +=1
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
-                              label=list(self.SAS.getM_lin(np.array(tau))))
+                              self.labels[0], self.labels[2] + dot,
+                              label = label, add="_SAS")
         else:
+            label = []
+            ind = 0
+            for tau in tau:
+                label.append(f"$\\tau_{ind}=$ {tau}{unit}")
+                ind +=1
+            if model == 2:
+                label.append("inf")
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
-                              "$\lambda$ / nm", "$\Delta A" + dot + "$", add="_SAS",
-                              label=tau)
+                              self.labels[0], self.labels[2] + dot, 
+                              label= label, add="_SAS") 
 
     def saveResults(self, model, tau_start, tau_fit, l_limits, d_limits, A_fit,
                     D_fit, bounds, lambdas, delays, spectra, fit_report):

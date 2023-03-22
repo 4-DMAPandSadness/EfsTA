@@ -7,6 +7,8 @@ import numpy as np
 import os as os
 import TTIMG
 
+#####################################EXTRA CLASSES#############################
+
 class TableWindow(QW.QWidget):
     def __init__(self,size):
         """
@@ -85,6 +87,7 @@ class FailSafeWindow(QW.QWidget):
         self.ui.closeFailsafe.clicked.connect(lambda: self.close)
         self.ui.textFailsafe.setText(msg)
         self.setWindowModality(Qt.ApplicationModal)
+
         
 class ResultsWindow(QW.QWidget):
     def __init__(self, model, Controller):
@@ -133,7 +136,27 @@ class ResultsWindow(QW.QWidget):
         """
         self.ui.textResults.clear()
         text = Controller.getResults(model)
-        self.ui.textResults.append(text)
+        self.ui.textResults.append(text)    
+ 
+    def closePopupMatrix(self,popup):
+        """
+        Transfers the custom matrix input by the user from the popup object to
+        the main window and closes the popup window.
+
+        Parameters
+        ----------
+        popup : TableWindow
+            The TableWindow object created by the main window.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.custom_matrix = popup.custom_matrix
+        popup.close()
+
+#####################################MAIN######################################
 
 class MainWindow(QW.QMainWindow):
     def __init__(self): 
@@ -162,7 +185,6 @@ class MainWindow(QW.QMainWindow):
         self.ui.stack.setCurrentIndex(0)
         self.ui.Theme.setChecked(False)
         self.changeTheme()
-        
         
     def onQuit(self):
         """
@@ -199,136 +221,10 @@ class MainWindow(QW.QMainWindow):
         self.ui.GTA_input_preset_model_tau.editingFinished.connect(lambda: self.summonRadio("preset"))
         self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
+        self.ui.Data_type.currentIndexChanged.connect(lambda: self.setAxis(self.ui.Data_type.currentIndex()))
         EfsTA.aboutToQuit.connect(self.onQuit)      
-        
-    def checkIfWavelengthSlicesEmpty(self):
-        """
-        Checks if the user provided specific wavelengths for data slicing.
-        If not disables corresponding plot option.
 
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.plot_input_wavelength_slices.text() == "":
-            self.ui.plot_wavelength_slices.setChecked(False)
-        
-    
-    def checkIfDelaySlicesEmpty(self):
-        """
-        Checks if the user provided specific delays for data slicing.
-        If not disables corresponding plot option.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.plot_input_delay_slices.text() == "":
-            self.ui.plot_delay_slices.setChecked(False)
-            
-    def checkIfMethodSelected(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            False if not.
-
-        """
-        if(self.ui.GLA_radio.isChecked() == False and 
-           self.ui.GTA_radio_preset_model.isChecked() == False and 
-           self.ui.GTA_radio_custom_model.isChecked() == False and 
-           self.ui.GTA_radio_custom_matrix.isChecked() == False):
-            self.openFailSafe("Please select an evaluation method.")
-            return False
-            
-    def checkIfPresetModelTauEmpty(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if self.ui.GTA_input_preset_model_tau.text() == "":
-            self.openFailSafe("Please input guessed lifetimes.")
-            return True
-    
-    def checkIfCustomMatrixSizeEmpty(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if self.ui.GTA_input_rows_and_columns.value() !=  0:
-            self.openPopUpMatrixInput(self.ui.GTA_input_rows_and_columns.value())
-        else:
-            self.openFailSafe("Please input a table size.")
-            return True
-    
-    def checkIfCustomMatrixEmpty(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if hasattr(self, 'custom_matrix') == False:
-            self.openFailSafe("Please input a kinetic matrix.")
-            return True
-        
-    def checkIfGLATauEmpty(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if self.ui.GLA_input_tau.text() == "":
-            self.openFailSafe("Please input guessed lifetimes.")
-            return True
-        
-    def checkIfBoundsMatch(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
-
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if self.ui.GTA_input_tau_lb.text() != "":
-            if (self.ui.GTA_input_tau_lb.text().count(",") != 
-                self.ui.GTA_input_preset_model_tau.text().count(",")):
-                self.openFailSafe("Please provide a bound for each lifetime.")
-                return False
-        if self.ui.GTA_input_tau_ub.text() != "":
-            if (self.ui.GTA_input_tau_ub.text().count(",") != 
-                self.ui.GTA_input_preset_model_tau.text().count(",")):
-                self.openFailSafe("Please provide a bound for each lifetime.")
-                return False           
+#####################################DATA######################################
 
     def checkIfBrowseEmpty(self):
         """
@@ -344,225 +240,36 @@ class MainWindow(QW.QMainWindow):
         if self.ui.Data_directory.text() == "":
             self.openFailSafe("Please select a folder directory.")
             return True
-            
-    def checkIfCustomModelEmpty(self):
-        """
-        Checks if the required information is provided, if not opens up a popup
-        window, letting the user know which information is missing.
 
-        Returns
-        -------
-        bool
-            True if empty.
-
-        """
-        if self.ui.GTA_input_custom_model_equation.text() == "":
-           self.openFailSafe("Please input a transition equation.")
-           return True
-        elif self.ui.GTA_input_custom_model_tau.text() == "":
-            self.openFailSafe("Please input guessed lifetimes.")
-            return True
-            
-    def finalCheck(self):
-        """
-        Checks all required data fields before starting the program.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.checkIfWavelengthSlicesEmpty()
-        self.checkIfDelaySlicesEmpty()
-        if self.checkIfBrowseEmpty() == True:
-            return
-        if (self.checkIfMethodSelected() == False):
-            return
-        if self.checkIfBoundsMatch() == False:
-            return
-        if (self.ui.GLA_radio.isChecked() == True and 
-            self.checkIfGLATauEmpty() == True):
-            return
-        elif (self.ui.GTA_radio_preset_model.isChecked() == True and 
-              self.checkIfPresetModelTauEmpty() == True):
-            return
-        elif (self.ui.GTA_radio_custom_model.isChecked() == True and 
-              self.checkIfCustomModelEmpty() == True):
-            return
-        elif (self.ui.GTA_radio_custom_matrix.isChecked() == True and 
-              self.checkCustomMatrixIfEmpty() == True):
-            return
-        else:
-            self.programStart()
-
-    def programStart(self):
-        """
-        Starts the program creating a controller object and saving the user 
-        inputs. Executes the corresponding plotting/calculation, 
-        depending on the model chosen by the user.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.Controller = Cont.Controller(self.getFolderPath())
-        self.savePickle()
-        ds = sorted(self.getDelaySlices())
-        ws = sorted(self.getWavelengthSlices())
-        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-        
-        if self.GLA_radio.isChecked() == True:
-            self.calculationGLA(db, wb)
-            self.plotting(ds,ws,0,False)
-        
-        elif self.GTA_radio_preset_model.isChecked() == True:
-            model = self.getPresetModel()+1
-            K = self.getGTAPresetModelTaus()
-            self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False)
-        
-        elif self.GTA_radio_custom_model.isChecked() == True:
-            model = "custom model"
-            K = self.getCustomModel()
-            self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False)
-        
-        elif self.GTA_radio_custom_matrix.isChecked() == True:
-            model = "custom matrix"
-            K = self.custom_matrix
-            self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False)
-
-    def rawPlotting(self):
+    def selectFolderPath(self):
         '''
-        Plots only the raw unanalysed data.
+        Opens a filedialog window for the user to select the folder directory, where the data is stored.
 
         Returns
         -------
         None.
 
         '''
-        if hasattr(self, "Controller") == False:
-            self.openFailSafe("Please select a directory first.")
-        else:
-            ds = sorted(self.getDelaySlices())
-            ws = sorted(self.getWavelengthSlices())
-            db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-            wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-            self.Controller.createOrigData(db,wb, None, None)
-            self.ui.plot_concentrations.setChecked(False)
-            self.ui.plot_das_sas.setChecked(False)
-            self.ui.plot_residuals.setChecked(False)
-            self.plotting(ds, ws, 0, True)
+        directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
+        self.ui.Data_directory.setText(directory)
+        self.finalInputs['Directory'] = directory
+        if self.ui.Data_directory.text() != "":
+            C = Cont.Controller(directory)
+            path = C.path+"/"
+            names = ["delays_filename","lambdas_filename", "spectra_filename"]
+            if all(hasattr(C, attr) for attr in names) == False:
+                self.openFailSafe('Please make sure the selected folder ' + 
+                                  'contains *.txt files ending with "spectra.txt",' + 
+                                  '"delays.txt" and "lambda.txt".')
+            else:
+                temp = C.delays_filename[::-1]
+                temp = temp.index("/")
+                name = C.delays_filename[-temp:-11]
+                txt = name+"_input_backup"
+                pickle = path + txt + ".dir"
+                if os.path.isfile(pickle):
+                    self.setPickle()
 
-    def calculationGLA(self,db,wb):
-        '''
-        Starts the calculation for the global lifetime analysis and opens up
-        a popup window with the results.
-
-        Parameters
-        ----------
-        db : list
-            Lower and upper bound for the delays.
-        wb : list
-            Lower and upper bound for the wavelengths.
-
-        Returns
-        -------
-        None.
-
-        '''
-        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.prepareParam("gla"), db, wb, self.getGLAOptMethod())
-        self.openPopUpResults(0, self.Controller)
-        
-    def calculationGTA(self,db,wb,model,K):
-        '''
-        Starts the calculation for the global target analysis and opens up
-        a popup window with the results.
-
-        Parameters
-        ----------
-        db : list
-            Lower and upper bound for the delays.
-        wb : list
-            Lower and upper bound for the wavelengths.
-        model : int/string
-            The chosen kinetic model.
-        K : np.ndarray
-            The kinetic matrix.
-
-        Returns
-        -------
-        None.
-
-        '''
-        K =  np.array(K)
-        if model == "custom matrix":
-            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, [] , self.getCustomConcentration(), db, wb,
-                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
-        elif model == "custom model":
-            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("custom") , self.getCustomConcentration(), db, wb,
-                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
-        else:
-            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("preset") , self.getCustomConcentration(), db, wb,
-                                                        model,self.getTauBounds()[0], self.getTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
-        self.openPopUpResults(model, self.Controller)
-            
-    def plotting(self,ds,ws,model,raw):
-        """
-        Creates the plots selected by the user and opens them in popup windows
-        for inspection/modification.
-        
-        Parameters
-        ----------
-        ds : list
-            The specific delay values the user wants to examine.
-        ws : list
-            The specific wavelenght values the user wants to examine.
-        model : int/string
-            Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-8, "custom model" or "custom matrix".
-        raw : bool
-            Dictates if raw or analysed data will be plotted.
-        Returns
-        -------
-        None.
-
-        """
-        
-        if raw == True:
-            if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "WS", self.getMultiplier())
-            if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "DS", self.getMultiplier())
-            if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "H", self.getMultiplier())
-            if self.ui.plot_three_in_one.isChecked() == True:
-                self.Controller.plot3OrigData(ws, ds, self.getVmin(), self.getVmax(), self.getUserContour(), self.getMultiplier())
-            if self.ui.plot_threed_contour.isChecked() == True:
-                self.Controller.plot3DOrigData( self.getVmin(), self.getVmax(), self.getMultiplier())
-                
-        if raw == False:
-            if self.ui.plot_wavelength_slices.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "WS", self.getMultiplier())
-            if self.ui.plot_delay_slices.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "DS", self.getMultiplier())
-            if self.ui.plot_heatmap.isChecked() == True:
-                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "H", self.getMultiplier())
-            if self.ui.plot_three_in_one.isChecked() == True:
-                self.Controller.plot3FittedData(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())
-            if self.ui.plot_threed_contour.isChecked() == True:
-                self.Controller.plot3DFittedData( self.getVmin(), self.getVmax(), model, self.getMultiplier())
-            if self.ui.plot_residuals.isChecked() == True:
-                self.Controller.plot2Dresiduals( self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())                
-            if self.ui.plot_das_sas.isChecked() == True:
-                self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
-            if self.ui.plot_concentrations.isChecked() == True:
-                self.Controller.plotKinetics(model)
-                
-            
     def getFolderPath(self):
         """
         Checks if a folder directory was selected and returns it.
@@ -578,44 +285,6 @@ class MainWindow(QW.QMainWindow):
         else:
             return self.ui.Data_directory.text()
         
-    def getDelaySlices(self):
-        """
-        Reads the delays input by the user if empty, returns an empty list.
-
-        Returns
-        -------
-        user_delays: list
-            A list containing the delays input by the user.
-
-        """
-        if self.ui.plot_input_delay_slices.text() == "":
-            delay_slices = []
-        else: 
-            delay_slices = self.ui.plot_input_delay_slices.text().split(',')
-            for i in range(len(delay_slices)):
-                if delay_slices[i] != "":
-                    delay_slices[i] = float(delay_slices[i])
-        return delay_slices
-    
-    def getWavelengthSlices(self):
-        """
-        Reads the lambdas input by the user if empty, returns an empty list.
-
-        Returns
-        -------
-        user_lambdas: list
-            A list containing the lambdas input by the user.
-
-        """
-        if self.ui.plot_input_wavelength_slices.text() == "":
-            wavelength_slices = []
-        else:
-            wavelength_slices = self.ui.plot_input_wavelength_slices.text().split(',')
-            for i in range(len(wavelength_slices)):
-                if wavelength_slices[i] != "":
-                    wavelength_slices[i] = float(wavelength_slices[i])
-        return wavelength_slices
-
     def getLowerDelayBound(self):
         """
         Reads the lower delay bound input by the user if empty returns None.
@@ -650,7 +319,6 @@ class MainWindow(QW.QMainWindow):
             delay_ub = float(ub_text)
         return delay_ub
     
-    
     def getLowerWavelengthBound(self):
         """
         Reads the lower lambda bound input by the user if empty returns None.
@@ -684,56 +352,7 @@ class MainWindow(QW.QMainWindow):
             ub_text=self.ui.Data_wavelength_input_ub.text()
             lambda_ub = float(ub_text)
         return lambda_ub
-    
-    def getUserContour(self):
-        """
-        Reads the contour input by the user, if empty returns 20.
 
-        Returns
-        -------
-        cont : int
-            The amount of contour lines shown in the heatmap plot input by
-            the user.
-
-        """
-        if self.ui.plot_input_contour.value() == 0:
-            cont = 20
-        else:
-            cont = self.ui.plot_input_contour.value()
-        return cont
-    
-    def getVmin(self):
-        """
-        Reads the colormap normalization minimum input by the user, if empty
-        returns None.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.plot_input_vmin.text() == "":
-            vmin = None
-        else:
-            vmin = float(self.ui.plot_input_vmin.text())
-        return vmin
-    
-    def getVmax(self):
-        """
-        Reads the colormap normalization maximum input by the user, if empty
-        returns None.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.plot_input_vmax.text() == "":
-            vmax = None
-        else:
-            vmax = float(self.ui.plot_input_vmax.text())
-        return vmax
-    
     def getMultiplier(self):
         """
         Reads the ΔA data multiplier input by the user if empty returns 1.
@@ -751,73 +370,81 @@ class MainWindow(QW.QMainWindow):
             mul = int(self.ui.Data_input_multiplier.text())
         return mul
 
-
-    def summonRadio(self,layout_origin):
+    def checkIfAxisEmpty(self):
         """
-        Summons radio buttons corresponding to the input lifetimes for the selection
-        of fixed values.
-
-        Parameters
-        ----------
-        layout_origin : string
-            "preset","custom" or "gla" depending on the last edited QLineEdit.
+        Checks if a label for each axis was input.
 
         Returns
         -------
         None.
 
         """
-        if layout_origin == "preset":
-            layout = self.ui.GTA_preset_model_fix_layout
-            taus = self.getGTAPresetModelTaus()
-        elif layout_origin == "custom":
-            layout = self.ui.GTA_custom_model_fix_layout
-            taus = self.getGTACustomModelTaus()
-        elif layout_origin == "gla":
-            layout = self.ui.GLA_fix_layout
-            taus = self.getGLATaus()
-        for i in reversed(range(layout.count())): 
-            widgetToRemove = layout.itemAt(i).widget()
-            widgetToRemove.deleteLater()  
-        for tau in taus:
-            layout.addWidget(QW.QRadioButton(str(tau),autoExclusive=False))
+        if (self.ui.Data_xAxis.text() or self.ui.Data_yAxis.text() or self.ui.Data_zAxis.text()) == "":
+            self.openFailSafe("Please input guessed lifetimes.")
+            return True    
 
-    def prepareParam(self, method):
+    def getAxis(self):
         """
-        Prepares the user inputs for the conversion to lmfit parameters.
-
-        Parameters
-        ----------
-        method : string
-            "preset","custom" or "gla" depending on the selected analysis method.
+        Reads the labels for each axis and returns them in a list.
 
         Returns
         -------
-        prepParam : list
-            A list containing tuples with the lifetime and a boolean stating if the 
-            lifetime will be varied.
+        labels : list
+            A list containing the axis labels x,y,z.
 
         """
-        if method == "preset":
-            layout = self.ui.GTA_preset_model_fix_layout
-            taus = self.getGTAPresetModelTaus()
-        elif method == "custom":
-            layout = self.ui.GTA_custom_model_fix_layout
-            taus = self.getGTACustomModelTaus()
-        elif method == "gla":
-            layout = self.ui.GLA_fix_layout
-            taus = self.getGLATaus()
-        widgets = (layout.itemAt(i).widget() for i in range(layout.count()))
-        if layout.count() == 0:
-            prepParam = [(t,True) for t in taus]
-        else:
-            prepParam = []
-        for widget in widgets:
-            if isinstance(widget, QW.QRadioButton):
-                prepParam.append((float(widget.text()),not widget.isChecked()))
-        return prepParam
+        labels = []
+        labels.extend((self.ui.Data_xAxis.text(), self.ui.Data_yAxis.text(), self.ui.Data_zAxis.text()))
+        return labels
+        
+    def setAxis(self,ind):
+        """
+        Sets the axis labels for the selected experiment.
 
+        Parameters
+        ----------
+        ind : int
+            The index of the experiment type.
 
+        Returns
+        -------
+        None.
+
+        """
+        if ind == 0:
+            self.ui.Data_xAxis.setText("$\lambda$ / nm")
+            self.ui.Data_yAxis.setText("delay / ps")
+            self.ui.Data_zAxis.setText("$\Delta A$")
+        if ind == 1:
+            self.ui.Data_xAxis.setText("$\lambda$ / nm")
+            self.ui.Data_yAxis.setText("delay / ns")
+            self.ui.Data_zAxis.setText("$\Delta A$")
+        if ind == 2:
+            self.ui.Data_xAxis.setText("$B_0$ / mT")
+            self.ui.Data_yAxis.setText("delay / $\mu$s")
+            self.ui.Data_zAxis.setText("trEPR signal / a.u.")
+        if ind == 3:
+            self.ui.Data_xAxis.setText("$B_0$ / mT")
+            self.ui.Data_yAxis.setText("delay / ns")
+            self.ui.Data_zAxis.setText("trEPR signal / a.u.")
+
+#####################################GLA#######################################
+
+    def checkIfGLATauEmpty(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
+
+        """
+        if self.ui.GLA_input_tau.text() == "":
+            self.openFailSafe("Please input guessed lifetimes.")
+            return True
+        
     def getGLATaus(self):
         """
         Reads the lifetimes input by the user, if GLA is selected.
@@ -839,48 +466,63 @@ class MainWindow(QW.QMainWindow):
                     tau.remove("")
         return tau
     
-    def getGTAPresetModelTaus(self):
+    def getGLAOptMethod(self):
         """
-        Reads the lifetimes input by the user, if a preset model is selected.
+        Reads the algorithm choice for the minimization of the ChiSquare 
+        function by the user.
 
         Returns
         -------
-        tau : list
-            The lifetimes input by the user.
+        string
+            The name of the minimization algorithm.
 
         """
-        if self.ui.GTA_input_preset_model_tau.text() == "":
-            tau = []
-        else:
-            tau = self.ui.GTA_input_preset_model_tau.text().split(',')
-            for i in range(len(tau)):
-                if tau[i] != "":
-                    tau[i] = float(tau[i])
-                else:
-                    tau.remove("")
-        return tau
-    
-    def getGTACustomModelTaus(self):
-        """
-        Reads the lifetimes input by the user, if a custom model is selected.
+        return self.ui.GLA_algorithm_optimize.currentText()
+
+    def calculationGLA(self,db,wb):
+        '''
+        Starts the calculation for the global lifetime analysis and opens up
+        a popup window with the results.
+
+        Parameters
+        ----------
+        db : list
+            Lower and upper bound for the delays.
+        wb : list
+            Lower and upper bound for the wavelengths.
 
         Returns
         -------
-        tau : list
-            The lifetimes input by the user.
+        None.
+
+        '''
+        self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcDAS(self.prepareParam("gla"), db, wb, self.getGLAOptMethod())
+        self.openPopUpResults(0, self.Controller)
+
+#####################################GTA#######################################
+
+    def checkIfBoundsMatch(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
 
         """
-        if self.ui.GTA_input_custom_model_tau.text() == "":
-            tau = []
-        else:
-            tau = self.ui.GTA_input_custom_model_tau.text().split(',')
-            for i in range(len(tau)):
-                if tau[i] != "":
-                    tau[i] = float(tau[i])
-                else:
-                    tau.remove("")
-        return tau
-    
+        if self.ui.GTA_input_tau_lb.text() != "":
+            if (self.ui.GTA_input_tau_lb.text().count(",") != 
+                self.ui.GTA_input_preset_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return False
+        if self.ui.GTA_input_tau_ub.text() != "":
+            if (self.ui.GTA_input_tau_ub.text().count(",") != 
+                self.ui.GTA_input_preset_model_tau.text().count(",")):
+                self.openFailSafe("Please provide a bound for each lifetime.")
+                return False
+            
     def getTauBounds(self):
         """
         Reads the bounds for the lifetimes during the calculation.
@@ -909,7 +551,7 @@ class MainWindow(QW.QMainWindow):
         else:
             tau_ub = []
         return [tau_lb,tau_ub]
-        
+
     def getCustomConcentration(self):
         """
         Reads the concentration vector input by the user and returns it.
@@ -929,29 +571,6 @@ class MainWindow(QW.QMainWindow):
         else:
             c0 = []
         return c0
-    
-    def getPresetModel(self):
-        """
-        Returns the currently selected kinetic model.
-        Returns
-        -------
-        int
-            The integer corresponding to a kinetic model.
-
-        """
-        return self.ui.GTA_preset_model_selection.currentIndex()
-    
-    def getCustomModelEquation(self):
-        """
-        Returns the custom transition equation.
-
-        Returns
-        -------
-        str
-            The custom transition equation.
-
-        """
-        return self.ui.GTA_input_custom_model_equation.text()
     
     def getGTAOptMethod(self):
         """
@@ -976,19 +595,189 @@ class MainWindow(QW.QMainWindow):
 
         """
         return self.ui.GTA_algorithm_initial_value_problem.currentText()
-    
-    def getGLAOptMethod(self):
-        """
-        Reads the algorithm choice for the minimization of the ChiSquare 
-        function by the user.
+
+    def calculationGTA(self,db,wb,model,K):
+        '''
+        Starts the calculation for the global target analysis and opens up
+        a popup window with the results.
+
+        Parameters
+        ----------
+        db : list
+            Lower and upper bound for the delays.
+        wb : list
+            Lower and upper bound for the wavelengths.
+        model : int/string
+            The chosen kinetic model.
+        K : np.ndarray
+            The kinetic matrix.
 
         Returns
         -------
-        string
-            The name of the minimization algorithm.
+        None.
+
+        '''
+        K =  np.array(K)
+        if model == "custom matrix":
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, [] , self.getCustomConcentration(), db, wb,
+                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
+        elif model == "custom model":
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("custom") , self.getCustomConcentration(), db, wb,
+                                                        model, [], [], self.getGTAOptMethod(), self.getGTAIvpMethod())
+        else:
+            self.tau_fit, spec, res, D_fit, fit_report = self.Controller.calcSAS(K, self.prepareParam("preset") , self.getCustomConcentration(), db, wb,
+                                                        model,self.getTauBounds()[0], self.getTauBounds()[1],self.getGTAOptMethod(), self.getGTAIvpMethod())
+        self.openPopUpResults(model, self.Controller)
+
+#Preset
+
+    def getPresetModel(self):
+        """
+        Returns the currently selected kinetic model.
+        Returns
+        -------
+        int
+            The integer corresponding to a kinetic model.
 
         """
-        return self.ui.GLA_algorithm_optimize.currentText()
+        return self.ui.GTA_preset_model_selection.currentIndex()
+
+    def checkIfPresetModelTauEmpty(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
+
+        """
+        if self.ui.GTA_input_preset_model_tau.text() == "":
+            self.openFailSafe("Please input guessed lifetimes.")
+            return True
+        
+    def getGTAPresetModelTaus(self):
+        """
+        Reads the lifetimes input by the user, if a preset model is selected.
+
+        Returns
+        -------
+        tau : list
+            The lifetimes input by the user.
+
+        """
+        if self.ui.GTA_input_preset_model_tau.text() == "":
+            tau = []
+        else:
+            tau = self.ui.GTA_input_preset_model_tau.text().split(',')
+            for i in range(len(tau)):
+                if tau[i] != "":
+                    tau[i] = float(tau[i])
+                else:
+                    tau.remove("")
+        return tau
+
+#Custom
+
+    def checkIfCustomModelEmpty(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            True if empty.
+
+        """
+        if self.ui.GTA_input_custom_model_equation.text() == "":
+           self.openFailSafe("Please input a transition equation.")
+           return True
+        elif self.ui.GTA_input_custom_model_tau.text() == "":
+            self.openFailSafe("Please input guessed lifetimes.")
+            return True
+
+    def getGTACustomModelTaus(self):
+        """
+        Reads the lifetimes input by the user, if a custom model is selected.
+
+        Returns
+        -------
+        tau : list
+            The lifetimes input by the user.
+
+        """
+        if self.ui.GTA_input_custom_model_tau.text() == "":
+            tau = []
+        else:
+            tau = self.ui.GTA_input_custom_model_tau.text().split(',')
+            for i in range(len(tau)):
+                if tau[i] != "":
+                    tau[i] = float(tau[i])
+                else:
+                    tau.remove("")
+        return tau
+    
+    def saveCustomModel(self):
+        """
+        Saves the currently input transition equation to the combobox.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.GTA_input_custom_model_equation.text() == "":
+            pass
+        elif self.ui.GTA_input_custom_model_saved_equations.findText(self.ui.GTA_input_custom_model_equation.text()) != -1:
+            pass
+        else:
+            self.ui.GTA_input_custom_model_saved_equations.addItem(self.ui.GTA_input_custom_model_equation.text())
+    
+    def deleteCustomModel(self):
+        """
+        Deletes the currently selected transition equation from the combobox.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.GTA_input_custom_model_saved_equations.currentText() == "":
+            pass
+        else:
+            self.ui.GTA_input_custom_model_saved_equations.removeItem(self.ui.GTA_input_custom_model_saved_equations.currentIndex())
+ 
+    def setCustomModel(self,ind):
+        '''
+        Sets the custom model to the previously selected model.
+
+        Parameters
+        ----------
+        ind : int
+            The index of the selected custom model.
+
+        Returns
+        -------
+        None.
+
+        '''
+        self.ui.GTA_input_custom_model_saved_equations.setCurrentIndex(ind)
+        model = self.ui.GTA_input_custom_model_saved_equations.currentText()
+        self.ui.GTA_input_custom_model_equation.setText(model)
+    
+    def getCustomModelEquation(self):
+        """
+        Returns the custom transition equation.
+
+        Returns
+        -------
+        str
+            The custom transition equation.
+
+        """
+        return self.ui.GTA_input_custom_model_equation.text()
 
     def getCustomModel(self):
         '''
@@ -1094,72 +883,393 @@ class MainWindow(QW.QMainWindow):
         if M[-1][-1] == -0:
            M[-1][-1] *= -1 
         return M
-    
-    def saveCustomModel(self):
+
+#Matrix
+
+    def checkIfCustomMatrixSizeEmpty(self):
         """
-        Saves the currently input transition equation to the combobox.
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
 
         Returns
         -------
-        None.
+        bool
+            True if empty.
 
         """
-        if self.ui.GTA_input_custom_model_equation.text() == "":
-            pass
-        elif self.ui.GTA_input_custom_model_saved_equations.findText(self.ui.GTA_input_custom_model_equation.text()) != -1:
-            pass
+        if self.ui.GTA_input_rows_and_columns.value() !=  0:
+            self.openPopUpMatrixInput(self.ui.GTA_input_rows_and_columns.value())
         else:
-            self.ui.GTA_input_custom_model_saved_equations.addItem(self.ui.GTA_input_custom_model_equation.text())
+            self.openFailSafe("Please input a table size.")
+            return True
     
-    def deleteCustomModel(self):
+    def checkIfCustomMatrixEmpty(self):
         """
-        Deletes the currently selected transition equation from the combobox.
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
 
         Returns
         -------
-        None.
+        bool
+            True if empty.
 
         """
-        if self.ui.GTA_input_custom_model_saved_equations.currentText() == "":
-            pass
-        else:
-            self.ui.GTA_input_custom_model_saved_equations.removeItem(self.ui.GTA_input_custom_model_saved_equations.currentIndex())
- 
-    def setCustomModel(self,ind):
-        '''
-        Sets the custom model to the previously selected model.
+        if hasattr(self, 'custom_matrix') == False:
+            self.openFailSafe("Please input a kinetic matrix.")
+            return True
+
+#####################################PREPARE PARAMETERS########################
+
+    def summonRadio(self,layout_origin):
+        """
+        Summons radio buttons corresponding to the input lifetimes for the selection
+        of fixed values.
 
         Parameters
         ----------
-        ind : int
-            The index of the selected custom model.
+        layout_origin : string
+            "preset","custom" or "gla" depending on the last edited QLineEdit.
+
+        Returns
+        -------
+        None.
+
+        """
+        if layout_origin == "preset":
+            layout = self.ui.GTA_preset_model_fix_layout
+            taus = self.getGTAPresetModelTaus()
+        elif layout_origin == "custom":
+            layout = self.ui.GTA_custom_model_fix_layout
+            taus = self.getGTACustomModelTaus()
+        elif layout_origin == "gla":
+            layout = self.ui.GLA_fix_layout
+            taus = self.getGLATaus()
+        for i in reversed(range(layout.count())): 
+            widgetToRemove = layout.itemAt(i).widget()
+            widgetToRemove.deleteLater()  
+        for tau in taus:
+            layout.addWidget(QW.QRadioButton(str(tau),autoExclusive=False))
+
+    def prepareParam(self, method):
+        """
+        Prepares the user inputs for the conversion to lmfit parameters.
+
+        Parameters
+        ----------
+        method : string
+            "preset","custom" or "gla" depending on the selected analysis method.
+
+        Returns
+        -------
+        prepParam : list
+            A list containing tuples with the lifetime and a boolean stating if the 
+            lifetime will be varied.
+
+        """
+        if method == "preset":
+            layout = self.ui.GTA_preset_model_fix_layout
+            taus = self.getGTAPresetModelTaus()
+        elif method == "custom":
+            layout = self.ui.GTA_custom_model_fix_layout
+            taus = self.getGTACustomModelTaus()
+        elif method == "gla":
+            layout = self.ui.GLA_fix_layout
+            taus = self.getGLATaus()
+        widgets = (layout.itemAt(i).widget() for i in range(layout.count()))
+        if layout.count() == 0:
+            prepParam = [(t,True) for t in taus]
+        else:
+            prepParam = []
+        for widget in widgets:
+            if isinstance(widget, QW.QRadioButton):
+                prepParam.append((float(widget.text()),not widget.isChecked()))
+        return prepParam
+
+#####################################PLOT######################################
+
+    def checkIfWavelengthSlicesEmpty(self):
+        """
+        Checks if the user provided specific wavelengths for data slicing.
+        If not disables corresponding plot option.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_wavelength_slices.text() == "":
+            self.ui.plot_wavelength_slices.setChecked(False)
+            
+    
+    def getWavelengthSlices(self):
+        """
+        Reads the lambdas input by the user if empty, returns an empty list.
+
+        Returns
+        -------
+        user_lambdas: list
+            A list containing the lambdas input by the user.
+
+        """
+        if self.ui.plot_input_wavelength_slices.text() == "":
+            wavelength_slices = []
+        else:
+            wavelength_slices = self.ui.plot_input_wavelength_slices.text().split(',')
+            for i in range(len(wavelength_slices)):
+                if wavelength_slices[i] != "":
+                    wavelength_slices[i] = float(wavelength_slices[i])
+        return wavelength_slices
+        
+    
+    def checkIfDelaySlicesEmpty(self):
+        """
+        Checks if the user provided specific delays for data slicing.
+        If not disables corresponding plot option.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_delay_slices.text() == "":
+            self.ui.plot_delay_slices.setChecked(False)
+
+    def getDelaySlices(self):
+        """
+        Reads the delays input by the user if empty, returns an empty list.
+
+        Returns
+        -------
+        user_delays: list
+            A list containing the delays input by the user.
+
+        """
+        if self.ui.plot_input_delay_slices.text() == "":
+            delay_slices = []
+        else: 
+            delay_slices = self.ui.plot_input_delay_slices.text().split(',')
+            for i in range(len(delay_slices)):
+                if delay_slices[i] != "":
+                    delay_slices[i] = float(delay_slices[i])
+        return delay_slices
+
+    def getUserContour(self):
+        """
+        Reads the contour input by the user, if empty returns 20.
+
+        Returns
+        -------
+        cont : int
+            The amount of contour lines shown in the heatmap plot input by
+            the user.
+
+        """
+        if self.ui.plot_input_contour.value() == 0:
+            cont = 20
+        else:
+            cont = self.ui.plot_input_contour.value()
+        return cont
+    
+    def getVmin(self):
+        """
+        Reads the colormap normalization minimum input by the user, if empty
+        returns None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_vmin.text() == "":
+            vmin = None
+        else:
+            vmin = float(self.ui.plot_input_vmin.text())
+        return vmin
+
+    def getVmax(self):
+        """
+        Reads the colormap normalization maximum input by the user, if empty
+        returns None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.plot_input_vmax.text() == "":
+            vmax = None
+        else:
+            vmax = float(self.ui.plot_input_vmax.text())
+        return vmax
+
+    def rawPlotting(self):
+        '''
+        Plots only the raw unanalysed data.
 
         Returns
         -------
         None.
 
         '''
-        self.ui.GTA_input_custom_model_saved_equations.setCurrentIndex(ind)
-        model = self.ui.GTA_input_custom_model_saved_equations.currentText()
-        self.ui.GTA_input_custom_model_equation.setText(model)
- 
-    def closePopupMatrix(self,popup):
+        if hasattr(self, "Controller") == False:
+            self.openFailSafe("Please select a directory first.")
+        else:
+            ds = sorted(self.getDelaySlices())
+            ws = sorted(self.getWavelengthSlices())
+            db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+            wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+            self.Controller.createOrigData(db,wb, None, None)
+            self.ui.plot_concentrations.setChecked(False)
+            self.ui.plot_das_sas.setChecked(False)
+            self.ui.plot_residuals.setChecked(False)
+            self.plotting(ds, ws, 0, True, self.getAxis())
+            
+    def plotting(self,ds,ws,model,raw,labels):
         """
-        Transfers the custom matrix input by the user from the popup object to
-        the main window and closes the popup window.
-
+        Creates the plots selected by the user and opens them in popup windows
+        for inspection/modification.
+        
         Parameters
         ----------
-        popup : TableWindow
-            The TableWindow object created by the main window.
+        ds : list
+            The specific delay values the user wants to examine.
+        ws : list
+            The specific wavelenght values the user wants to examine.
+        model : int/string
+            Describes the desired model. 0 for the GLA. For GTA it can be a
+            number 1-8, "custom model" or "custom matrix".
+        raw : bool
+            Dictates if raw or analysed data will be plotted.
+        Returns
+        -------
+        None.
+
+        """
+        self.Controller.labels = labels
+        if raw == True:
+            if self.ui.plot_wavelength_slices.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "WS", self.getMultiplier())
+            if self.ui.plot_delay_slices.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "DS", self.getMultiplier())
+            if self.ui.plot_heatmap.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "H", self.getMultiplier())
+            if self.ui.plot_three_in_one.isChecked() == True:
+                self.Controller.plot3OrigData(ws, ds, self.getVmin(), self.getVmax(), self.getUserContour(), self.getMultiplier())
+            if self.ui.plot_threed_contour.isChecked() == True:
+                self.Controller.plot3DOrigData( self.getVmin(), self.getVmax(), self.getMultiplier())
+                
+        if raw == False:
+            if self.ui.plot_wavelength_slices.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "WS", self.getMultiplier())
+            if self.ui.plot_delay_slices.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "DS", self.getMultiplier())
+            if self.ui.plot_heatmap.isChecked() == True:
+                self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), "H", self.getMultiplier())
+            if self.ui.plot_three_in_one.isChecked() == True:
+                self.Controller.plot3FittedData(ws, ds, self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())
+            if self.ui.plot_threed_contour.isChecked() == True:
+                self.Controller.plot3DFittedData( self.getVmin(), self.getVmax(), model, self.getMultiplier())
+            if self.ui.plot_residuals.isChecked() == True:
+                self.Controller.plot2Dresiduals( self.getVmin(), self.getVmax(), model, self.getUserContour(), self.getMultiplier())                
+            if self.ui.plot_das_sas.isChecked() == True:
+                self.Controller.plotDAS(model, self.tau_fit, self.getMultiplier())
+            if self.ui.plot_concentrations.isChecked() == True:
+                self.Controller.plotKinetics(model)
+
+#####################################CONFIRM###################################
+
+    def checkIfMethodSelected(self):
+        """
+        Checks if the required information is provided, if not opens up a popup
+        window, letting the user know which information is missing.
+
+        Returns
+        -------
+        bool
+            False if not.
+
+        """
+        if(self.ui.GLA_radio.isChecked() == False and 
+           self.ui.GTA_radio_preset_model.isChecked() == False and 
+           self.ui.GTA_radio_custom_model.isChecked() == False and 
+           self.ui.GTA_radio_custom_matrix.isChecked() == False):
+            self.openFailSafe("Please select an evaluation method.")
+            return False
+        
+    def finalCheck(self):
+        """
+        Checks all required data fields before starting the program.
 
         Returns
         -------
         None.
 
         """
-        self.custom_matrix = popup.custom_matrix
-        popup.close()
+        self.checkIfWavelengthSlicesEmpty()
+        self.checkIfDelaySlicesEmpty()
+        self.checkIfAxisEmpty()
+        if self.checkIfBrowseEmpty() == True:
+            return
+        if (self.checkIfMethodSelected() == False):
+            return
+        if self.checkIfBoundsMatch() == False:
+            return
+        if (self.ui.GLA_radio.isChecked() == True and 
+            self.checkIfGLATauEmpty() == True):
+            return
+        elif (self.ui.GTA_radio_preset_model.isChecked() == True and 
+              self.checkIfPresetModelTauEmpty() == True):
+            return
+        elif (self.ui.GTA_radio_custom_model.isChecked() == True and 
+              self.checkIfCustomModelEmpty() == True):
+            return
+        elif (self.ui.GTA_radio_custom_matrix.isChecked() == True and 
+              self.checkCustomMatrixIfEmpty() == True):
+            return
+        else:
+            self.programStart()
+
+    def programStart(self):
+        """
+        Starts the program creating a controller object and saving the user 
+        inputs. Executes the corresponding plotting/calculation, 
+        depending on the model chosen by the user.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.Controller = Cont.Controller(self.getFolderPath())
+        self.savePickle()
+        ds = sorted(self.getDelaySlices())
+        ws = sorted(self.getWavelengthSlices())
+        db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+        wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+        
+        if self.GLA_radio.isChecked() == True:
+            self.calculationGLA(db, wb)
+            self.plotting(ds,ws,0,False)
+        
+        elif self.GTA_radio_preset_model.isChecked() == True:
+            model = self.getPresetModel()+1
+            K = self.getGTAPresetModelTaus()
+            self.calculationGTA(db,wb,model,K)
+            self.plotting(ds,ws,model,False, self.getAxis())
+        
+        elif self.GTA_radio_custom_model.isChecked() == True:
+            model = "custom model"
+            K = self.getCustomModel()
+            self.calculationGTA(db,wb,model,K)
+            self.plotting(ds,ws,model,False, self.getAxis())
+        
+        elif self.GTA_radio_custom_matrix.isChecked() == True:
+            model = "custom matrix"
+            K = self.custom_matrix
+            self.calculationGTA(db,wb,model,K)
+            self.plotting(ds,ws,model,False, self.getAxis())
+
+#####################################POPUP#####################################
     
     def openPopUpMatrixInput(self,size):
         """
@@ -1287,8 +1397,39 @@ class MainWindow(QW.QMainWindow):
                 GLA_pointer.setHidden(True)
                 GTA_pointer.setHidden(True)
             algorithm_pointer.setExpanded(True)
+
+#####################################INTRO#####################################
+
+    def changeTheme(self):
+        """
+        Changes the colour theme of the program to either light or dark.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ui.Theme.isChecked() == True:
+            EfsTA.setPalette(self.default_palette)
+        else:
+            darkmode = QPalette()
+            darkmode.setColor(darkmode.Window, QColor(53, 53, 53))
+            darkmode.setColor(darkmode.WindowText, Qt.white)
+            darkmode.setColor(darkmode.Base, QColor(25, 25, 25))
+            darkmode.setColor(darkmode.AlternateBase, QColor(53, 53, 53))
+            darkmode.setColor(darkmode.ToolTipBase, Qt.black)
+            darkmode.setColor(darkmode.ToolTipText, Qt.white)
+            darkmode.setColor(darkmode.Text, Qt.white)
+            darkmode.setColor(darkmode.Button, QColor(53, 53, 53))
+            darkmode.setColor(darkmode.ButtonText, Qt.white)
+            darkmode.setColor(darkmode.BrightText, Qt.green)
+            darkmode.setColor(darkmode.Link, QColor(42, 130, 218))
+            darkmode.setColor(darkmode.Highlight, QColor(42, 130, 218))
+            darkmode.setColor(darkmode.HighlightedText, Qt.black)
+            EfsTA.setPalette(darkmode)
+
+#####################################PICKLE####################################
     
-        
     def saveAllInputs(self):
         '''
         Saves all user inputs in a dictionary to pickle and display them.
@@ -1307,6 +1448,9 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs['Directory'] = self.getFolderPath()
         self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()
         self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_tau_ub.text()
+        self.finalInputs['x-Axis'] = self.ui.Data_xAxis.text()
+        self.finalInputs['y-Axis'] = self.ui.Data_yAxis.text()
+        self.finalInputs['z-Axis'] = self.ui.Data_zAxis.text()
         if self.ui.GLA_radio.isChecked() == True:
             self.finalInputs['GLA'] = ""
             self.finalInputs['Optimizer'] = self.ui.GLA_algorithm_optimize.currentText()
@@ -1364,67 +1508,8 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs['Contour Lines'] = str(self.getUserContour())
         self.finalInputs['Delay Slices'] = self.ui.plot_input_delay_slices.text()      
         self.finalInputs['Wavelength Slices'] = self.ui.plot_input_wavelength_slices.text()
-        self.finalInputs['Selected Plots'] = self.finalInputs['Selected Plots'][2:]
-        
-
-    def selectFolderPath(self):
-        '''
-        Opens a filedialog window for the user to select the folder directory, where the data is stored.
-
-        Returns
-        -------
-        None.
-
-        '''
-        directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
-        self.ui.Data_directory.setText(directory)
-        self.finalInputs['Directory'] = directory
-        if self.ui.Data_directory.text() != "":
-            C = Cont.Controller(directory)
-            path = C.path+"/"
-            names = ["delays_filename","lambdas_filename", "spectra_filename"]
-            if all(hasattr(C, attr) for attr in names) == False:
-                self.openFailSafe('Please make sure the selected folder ' + 
-                                  'contains *.txt files ending with "spectra.txt",' + 
-                                  '"delays.txt" and "lambda.txt".')
-            else:
-                temp = C.delays_filename[::-1]
-                temp = temp.index("/")
-                name = C.delays_filename[-temp:-11]
-                txt = name+"_input_backup"
-                pickle = path + txt + ".dir"
-                if os.path.isfile(pickle):
-                    self.setPickle()
-        
-
-    def changeTheme(self):
-        """
-        Changes the colour theme of the program to either light or dark.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.ui.Theme.isChecked() == True:
-            EfsTA.setPalette(self.default_palette)
-        else:
-            darkmode = QPalette()
-            darkmode.setColor(darkmode.Window, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.WindowText, Qt.white)
-            darkmode.setColor(darkmode.Base, QColor(25, 25, 25))
-            darkmode.setColor(darkmode.AlternateBase, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.ToolTipBase, Qt.black)
-            darkmode.setColor(darkmode.ToolTipText, Qt.white)
-            darkmode.setColor(darkmode.Text, Qt.white)
-            darkmode.setColor(darkmode.Button, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.ButtonText, Qt.white)
-            darkmode.setColor(darkmode.BrightText, Qt.green)
-            darkmode.setColor(darkmode.Link, QColor(42, 130, 218))
-            darkmode.setColor(darkmode.Highlight, QColor(42, 130, 218))
-            darkmode.setColor(darkmode.HighlightedText, Qt.black)
-            EfsTA.setPalette(darkmode)
-            
+        self.finalInputs['Selected Plots'] = self.finalInputs['Selected Plots'][2:]        
+    
     def savePickle(self):
         '''
         Pickles the data, if a path was selected and therefore the controller object generated.
@@ -1556,6 +1641,8 @@ class MainWindow(QW.QMainWindow):
             combobox.setCurrentIndex(0)
         if hasattr(self, 'cm') == True:
             self.cm = None
+            
+#####################################APP#######################################            
             
 if __name__ == '__main__':
     import sys
