@@ -1,14 +1,13 @@
-import numpy as np
-from lmfit import minimize, Parameters, fit_report
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
-import matplotlib as mpl
-import scipy.integrate as scint
 from matplotlib.ticker import LogLocator
 import matplotlib.ticker as mticker
-from models import Models
 import os
-
+import numpy as np
+from lmfit import minimize, Parameters, fit_report
+import scipy.integrate as scint
+from models import Models
 mpl.use("QtAgg")
 plt.style.use('./AK_Richert.mplstyle')
 #plt.style.use('default')
@@ -390,8 +389,7 @@ class Model:
                 tau_low[i] = 0.01
         self.tau_low = tau_low
         self.tau_high = tau_high
-    # Matrix Reconstruction Algorithm
-    
+
     def getTauBounds(self, tau):
         """
         This method outputs the bounds of the tau values for their optimizing.
@@ -720,7 +718,6 @@ class Model:
                 self.delays,
                 label=str(self.lambdas[ind]) + unit
             )
-
         ax1.axvline(0, color="black",lw = 0.5 , alpha=0.75)
         temp = np.concatenate([spectra[i]
                               for i in wave_index])
@@ -735,7 +732,7 @@ class Model:
         ax1.set_xticks(())
         ax1.tick_params(bottom=False)
         ax1.legend(loc="upper left", frameon=False, labelcolor="linecolor",
-                   handlelength=0)
+                   handlelength=0,fontsize=11)
 
     def plot2(self, grid, wave, time, v_min, v_max, spectra, add, cont, mul, labels):
         """
@@ -894,8 +891,8 @@ class Model:
         None.
 
         """
-        fig, ax = plt.subplots()
-        log_delay = np.log10(self.delays)
+        fig, ax = plt.subplots(figsize=(11.2,8),subplot_kw={"projection" : "3d"})
+        log_delay = np.log10(abs(self.delays))
         ltx = str(mul).count("0")
         dot = ""
         if mul != 1:
@@ -915,8 +912,8 @@ class Model:
         yticks = np.linspace(min(log_delay), max(log_delay), 4)
         yticks[0] = -1
         ax.set_yticks(yticks)
-        ax.set(frame_on=False)
         ax.view_init(20,250)
+        plt.savefig(self.path + self.name + "3DContour" + ".png")
         
     def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont, mul, labels,
                    add=""):
@@ -1084,11 +1081,7 @@ class Model:
         None.
 
         """
-        if y_label == 'concentration':
-            fig, ax = plt.subplots(figsize = (7.6,4))
-        else:
-            fig, ax = plt.subplots()
-            ax.axhline(0, color="black", lw=0.5, alpha = 0.75)
+        fig, ax = plt.subplots()
         temp = y.flatten()
         ax.axis(
             [
@@ -1103,6 +1096,9 @@ class Model:
         ax.set_ylabel(y_label)
         if add == "_GTA_kin" or add == "_GLA_kin":
             ax.set_xscale("log")
+            fig.set_size_inches(7.6,4)
+        else:
+            ax.axhline(0, color="black", lw=0.5, alpha = 0.75)
         if label != None:
             ax.legend(label, frameon=False, labelcolor="linecolor",
                        handlelength=0, loc="lower right")

@@ -212,8 +212,7 @@ class Controller():
         self.origData.plotCustom(self.origData.spectra, wave, time,
                             v_min, v_max, custom, cont, mul, self.labels)
     
-    def plot3DOrigData(self, v_min, v_max,
-                      mul):
+    def plot3DOrigData(self, v_min, v_max, mul):
         """
         Allows the plotting of the original data in a 3D contour plot.
 
@@ -533,29 +532,23 @@ class Controller():
         unit = self.labels[1].split("/")[1]
         if model == 0:
             label = []
-            ind = 0
-            for tau in tau:
+            for ind,tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {tau}{unit}")
-                ind +=1
             self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
                               self.labels[0], self.labels[2] + dot, 
                               label = label, add="_DAS")
         elif (model == "custom model" or model == "custom matrix"):
             custom_tau = list(self.SAS.getM_lin(np.array(tau)))
             label = []
-            ind = 0
-            for tau in tau:
+            for ind,tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {custom_tau}{unit}")
-                ind +=1
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
                               self.labels[0], self.labels[2] + dot,
                               label = label, add="_SAS")
         else:
             label = []
-            ind = 0
-            for tau in tau:
+            for ind,tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {tau}{unit}")
-                ind +=1
             if model == 2:
                 label.append("inf")
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,

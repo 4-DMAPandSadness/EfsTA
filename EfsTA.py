@@ -1249,7 +1249,7 @@ class MainWindow(QW.QMainWindow):
         
         if self.GLA_radio.isChecked() == True:
             self.calculationGLA(db, wb)
-            self.plotting(ds,ws,0,False)
+            self.plotting(ds,ws,0,False, self.getAxis())
         
         elif self.GTA_radio_preset_model.isChecked() == True:
             model = self.getPresetModel()+1
