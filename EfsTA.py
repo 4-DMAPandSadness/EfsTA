@@ -208,8 +208,9 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
+        self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
         self.ui.stack.currentChanged.connect(self.presentInputs)
-        self.ui.Data_browse.clicked.connect(self.selectFolderPath)
+        self.ui.Data_browse.clicked.connect(lambda: self.selectFolderPath("button"))
         self.ui.Theme.stateChanged.connect(self.changeTheme)
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
@@ -241,7 +242,7 @@ class MainWindow(QW.QMainWindow):
             self.openFailSafe("Please select a folder directory.")
             return True
 
-    def selectFolderPath(self):
+    def selectFolderPath(self,input_type):
         '''
         Opens a filedialog window for the user to select the folder directory, where the data is stored.
 
@@ -250,21 +251,24 @@ class MainWindow(QW.QMainWindow):
         None.
 
         '''
-        directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
-        self.ui.Data_directory.setText(directory)
+        if input_type == "button":
+            directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
+            self.ui.Data_directory.setText(directory)
+        elif input_type == "text":
+            directory = self.ui.Data_directory.text()
         self.finalInputs['Directory'] = directory
         if self.ui.Data_directory.text() != "":
-            C = Cont.Controller(directory)
-            path = C.path+"/"
+            self.Controller = Cont.Controller(self.getFolderPath())
+            path = self.Controller.path+"/"
             names = ["delays_filename","lambdas_filename", "spectra_filename"]
-            if all(hasattr(C, attr) for attr in names) == False:
+            if all(hasattr(self.Controller, attr) for attr in names) == False:
                 self.openFailSafe('Please make sure the selected folder ' + 
                                   'contains *.txt files ending with "spectra.txt",' + 
                                   '"delays.txt" and "lambda.txt".')
             else:
-                temp = C.delays_filename[::-1]
+                temp = self.Controller.delays_filename[::-1]
                 temp = temp.index("/")
-                name = C.delays_filename[-temp:-11]
+                name = self.Controller.delays_filename[-temp:-11]
                 txt = name+"_input_backup"
                 pickle = path + txt + ".dir"
                 if os.path.isfile(pickle):
@@ -393,9 +397,7 @@ class MainWindow(QW.QMainWindow):
             A list containing the axis labels x,y,z.
 
         """
-        labels = []
-        labels.extend((self.ui.Data_xAxis.text(), self.ui.Data_yAxis.text(), self.ui.Data_zAxis.text()))
-        return labels
+        self.Controller.labels = [self.ui.Data_xAxis.text(), self.ui.Data_yAxis.text(), self.ui.Data_zAxis.text()]
         
     def setAxis(self,ind):
         """
@@ -898,6 +900,7 @@ class MainWindow(QW.QMainWindow):
 
         """
         if self.ui.GTA_input_rows_and_columns.value() !=  0:
+            self.ui.GTA_radio_custom_matrix.setChecked(True)
             self.openPopUpMatrixInput(self.ui.GTA_input_rows_and_columns.value())
         else:
             self.openFailSafe("Please input a table size.")
@@ -938,12 +941,15 @@ class MainWindow(QW.QMainWindow):
         if layout_origin == "preset":
             layout = self.ui.GTA_preset_model_fix_layout
             taus = self.getGTAPresetModelTaus()
+            self.ui.GTA_radio_preset_model.setChecked(True)
         elif layout_origin == "custom":
             layout = self.ui.GTA_custom_model_fix_layout
             taus = self.getGTACustomModelTaus()
+            self.ui.GTA_radio_custom_model.setChecked(True)
         elif layout_origin == "gla":
             layout = self.ui.GLA_fix_layout
             taus = self.getGLATaus()
+            self.ui.GLA_radio.setChecked(True)
         for i in reversed(range(layout.count())): 
             widgetToRemove = layout.itemAt(i).widget()
             widgetToRemove.deleteLater()  
@@ -1122,9 +1128,9 @@ class MainWindow(QW.QMainWindow):
             self.ui.plot_concentrations.setChecked(False)
             self.ui.plot_das_sas.setChecked(False)
             self.ui.plot_residuals.setChecked(False)
-            self.plotting(ds, ws, 0, True, self.getAxis())
+            self.plotting(ds, ws, 0, True)
             
-    def plotting(self,ds,ws,model,raw,labels):
+    def plotting(self,ds,ws,model,raw):
         """
         Creates the plots selected by the user and opens them in popup windows
         for inspection/modification.
@@ -1145,7 +1151,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        self.Controller.labels = labels
+        
         if raw == True:
             if self.ui.plot_wavelength_slices.isChecked() == True:
                 self.Controller.plotSolo(ws, ds, self.getVmin(), self.getVmax(), None, self.getUserContour(), "WS", self.getMultiplier())
@@ -1231,7 +1237,7 @@ class MainWindow(QW.QMainWindow):
 
     def programStart(self):
         """
-        Starts the program creating a controller object and saving the user 
+        Starts the program and saves the user 
         inputs. Executes the corresponding plotting/calculation, 
         depending on the model chosen by the user.
 
@@ -1240,34 +1246,33 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        self.Controller = Cont.Controller(self.getFolderPath())
+        self.getAxis()
         self.savePickle()
         ds = sorted(self.getDelaySlices())
         ws = sorted(self.getWavelengthSlices())
         db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
         wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-        
         if self.GLA_radio.isChecked() == True:
             self.calculationGLA(db, wb)
-            self.plotting(ds,ws,0,False, self.getAxis())
+            self.plotting(ds,ws,0,False)
         
         elif self.GTA_radio_preset_model.isChecked() == True:
             model = self.getPresetModel()+1
             K = self.getGTAPresetModelTaus()
             self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False, self.getAxis())
+            self.plotting(ds,ws,model,False)
         
         elif self.GTA_radio_custom_model.isChecked() == True:
             model = "custom model"
             K = self.getCustomModel()
             self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False, self.getAxis())
+            self.plotting(ds,ws,model,False)
         
         elif self.GTA_radio_custom_matrix.isChecked() == True:
             model = "custom matrix"
             K = self.custom_matrix
             self.calculationGTA(db,wb,model,K)
-            self.plotting(ds,ws,model,False, self.getAxis())
+            self.plotting(ds,ws,model,False)
 
 #####################################POPUP#####################################
     
@@ -1442,8 +1447,8 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs.clear()
         self.finalInputs['Lower Delay Bound'] = self.ui.Data_delay_input_lb.text()
         self.finalInputs['Upper Delay Bound'] = self.ui.Data_delay_input_ub.text()
-        self.finalInputs['Lower Wavelength Bound'] = self.ui.Data_wavelength_input_lb.text()
-        self.finalInputs['Upper Wavelength Bound'] = self.ui.Data_wavelength_input_ub.text()
+        self.finalInputs['Lower Wavelength/Field Bound'] = self.ui.Data_wavelength_input_lb.text()
+        self.finalInputs['Upper Wavelength/Field Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
         self.finalInputs['Directory'] = self.getFolderPath()
         self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()

@@ -534,8 +534,7 @@ class Model:
             if res_fit.success is False:
                 print("Fitting unsuccesful!")
         for name, param in res_fit.params.items():
-            tau_sig = round(param.value)
-            self.tau_fit.append(tau_sig)
+            self.tau_fit.append(param.value)
         if (self.model == "custom model" or self.model == "custom matrix"):
             tau_sum = self.regenM(self.tau_fit)
         else:

@@ -530,6 +530,15 @@ class Controller():
         if mul != 1:
             dot = f" $\cdot 10^{ltx}$"
         unit = self.labels[1].split("/")[1]
+        for i, t in enumerate(tau):
+            if t < 1:
+                tau[i] = round(t,3)
+            elif t < 10 and t > 1:
+                tau[i] = round(t,2)
+            elif t < 100 and t > 10:
+                tau[i] = round(t,1)
+            else:
+                tau[i] = round(t)
         if model == 0:
             label = []
             for ind,tau in enumerate(tau):
@@ -585,6 +594,8 @@ class Controller():
         None.
 
         """
+        time_unit = self.labels[1].split("/")[1]
+        x_axis_unit = self.labels[0].split("/")[1]
         if model == 0:
             path = self.DAS.path
             name = self.DAS.name+"_GLA"
@@ -610,11 +621,12 @@ class Controller():
         f.write(dt_string + "\n" + name + "\nSolver: scipy.optimize.minimize"+
             "\nModel: " + str(model) + "\nStarting Parameters: "+
             str(tau_start) + "\nBounds: "+ str(bounds) +
-            "\nWavelength range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
-            " nm\nTime" + "delay range: " + str(d_limits[0])+" - "
-            + str(d_limits[1]) + " ps\n\nTime constants / ps: " + str(tau_fit)
-            + "\nRate constants / ps^-1: " + str(k_fit) + "\n" + "\n" 
-            + "lmfit fit_report:" + "\n" + "\n" + fit_report + "\n" + "\n" + 
+            "\nWavelength/Field range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
+            " " + x_axis_unit + "\ndelay range: " + str(d_limits[0])+" - "
+            + str(d_limits[1]) + " " + time_unit + "\n\nTime constants / " + 
+            time_unit + ": " + str(tau_fit) + "\nRate constants / " + time_unit +
+            "^-1: " + str(k_fit) + "\n" + "\n" + 
+            "lmfit fit_report:" + "\n" + "\n" + fit_report + "\n" + "\n" + 
             "All results and plots can be found here:" + "\n" + "\n" + 
             str(path)) 
         
