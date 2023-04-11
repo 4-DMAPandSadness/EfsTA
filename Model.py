@@ -1,7 +1,6 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
-from matplotlib.ticker import LogLocator
 import matplotlib.ticker as mticker
 import os
 import numpy as np
@@ -711,11 +710,11 @@ class Model:
         ax1.set_xlabel(labels[2] + dot)
         ax1.set_ylabel(labels[1])
 
-        for ind in wave_index:
+        for i, ind in enumerate(wave_index):
             ax1.plot(
                 spectra[ind],
                 self.delays,
-                label=str(self.lambdas[ind]) + unit
+                label=str(wave[i]) + unit
             )
         ax1.axvline(0, color="black",lw = 0.5 , alpha=0.75)
         temp = np.concatenate([spectra[i]
@@ -847,15 +846,15 @@ class Model:
         y = np.zeros(len(self.lambdas))
         hoehe = 0
         temp = np.zeros(len(self.lambdas))
-        for i in time_index:
+        for i, ind in enumerate(time_index):
             for j in range(len(self.lambdas)):
-                temp[j] = spectra[j][i]
+                temp[j] = spectra[j][ind]
                 y[j] = temp[j] + hoehe
-            if i == time_index[0]:
+            if ind == time_index[0]:
                 mini = min(y)
             ax3.plot(self.lambdas, y, color="black")
             ax3.annotate(
-                str(self.delays[i]) + unit, (0.5 * (min(self.lambdas) +
+                str(time[i]) + unit, (0.5 * (min(self.lambdas) +
                                  max(self.lambdas)), hoehe)
             )
             ax3.axhline(hoehe, color="black", lw = 0.5, alpha = 0.75)
@@ -1009,7 +1008,7 @@ class Model:
             if w3 == 0:
                 cb.set_label(labels[2] + dot)
             if w2 == 4.7:
-                ax2.yaxis.set_major_locator(LogLocator())
+                ax2.yaxis.set_major_locator(mticker.LogLocator())
                 ax2.set_ylabel(labels[1])
         if w3 != 0:
             self.plot3(grid, time, time_index, spectra*mul, mul, labels)
@@ -1200,7 +1199,7 @@ class Model:
         ax.set_yscale("log")
         ax.set_xlabel(labels[0])
         ax.set_ylabel(labels[1])
-        A_t = spectra.T
+        A_t = spectra.T*mul
         pcm = ax.pcolormesh(
             self.lambdas,
             self.delays,

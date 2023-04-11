@@ -1,10 +1,10 @@
 # **EfsTA User Guide**
 
-In this user guide the evaluation of femtosecond transient absorption spectra data using the program EfsTA will be explained.
+In this user guide the analysis of femtosecond transient absorption spectra data using the program EfsTA will be explained.
 
-This TA-Evaluation program allows the optimizing of the lifetimes based on given values. These values should be derived of the 3D-data and previous knowledge of the photophysics of the molecule.
+This TA-Analysis program allows the optimizing of the lifetimes based on given values. These values should be derived of the 3D-data and previous knowledge of the photophysics of the molecule.
 
-The program can be used with the GUI or with the script *Script.py*. They both offer mostly the same features for the evaluation, as well as the plotting. However the UI checks for the completeness of the user inputs and allows for the use of custom kinetic models, whereas the script allows more customization for more programming affine users.
+The program can be used with the GUI or with the script *Script.py*. They both offer mostly the same features for the analysis, as well as the plotting. However the UI checks for the completeness of the user inputs and allows for the use of custom kinetic models, whereas the script allows more customization for more programming affine users.
 
 ## GUI
 
@@ -20,19 +20,21 @@ On this first tab a brief explanation of the program can be seen, which referenc
 
 ### Data
 
-The GUI is designed to guide the user through an evaluation by going from tab to tab. Switching from the Introduction-tab to the Data-tab. The following will be seen.
+The GUI is designed to guide the user through an analysis by going from tab to tab. Switching from the Introduction-tab to the Data-tab. The following will be seen.
 
 <p align="center">
 <img src="/images/GUI/Data.png" width="49%"/> <img src="/images/GUI/Data WI.png" width="49%"/>
 </p>
 
-Here the evaluation process starts. The first step is to provide the program with the directory, where the data for the evaluation is located. To provide the data simply copy and past the directory in the designated textfield or click the "Browse"-Button to choose the directory via a directory dialog.
+Here the analysis process starts. The first step is to provide the program with the directory, where the data for the analysis is located. To provide the data simply copy and past the directory in the designated textfield or click the Browse-Button to choose the directory via a directory dialog.
 
-Note that the program only recognizes data in the form of three separate *.txt-files* for the wavelengths, delays and measured absorption ending with *lambda.txt*,*delay.txt* and *spectra.txt* respectively. 
+Note that the program only recognizes data in the form of three separate *.txt-files* for the wavelengths/field, delays and measured absorption ending with *lambda.txt* / *field.txt*,*delay.txt* and *spectra.txt* respectively. 
 
-If a directory is selected which was previously used to evaluate data the inputs made for the previous evaluation will be restored. To clear out all these inputs, in case completely different parameters should be used, the "Clear Cache"-Button will delete all inputs.
+If a directory is selected which was previously used to analyse data the inputs made for the previous analysis will be restored. To clear out all these inputs, in case completely different parameters should be used, the Clear Cache-Button will delete all inputs.
 
-If the directory is a new one with a fresh set of data all inputfields will be empty. The data can be shaped if required. The wavelength and delay domain can be specified by providing upper and lower limits e.g. if the data was measured for delays between -10 ps and 4000 ps but artifacts around time 0 are a problem the lower bound for the delay values can be set to 0.4, so that only the data starting from 0.4 ps will be used. Additionally if the data was meassured in ODU but should be displayed as mOUD a data multiplier can be set e.g. 1000. These parameters are all optional and can be left empty.
+If the directory is a new one with a fresh set of data all inputfields will be empty. The data can be shaped if required. The wavelength/field and delay domain can be specified by providing upper and lower limits e.g. if the data was measured for delays between -10 ps and 4000 ps but artifacts around time 0 are a problem the lower bound for the delay values can be set to 0.4, so that only the data starting from 0.4 ps will be used. Additionally if the data was meassured in ODU but should be displayed as mOUD a data multiplier can be set e.g. 1000. These parameters are all optional and can be left empty.
+
+In this tab you can also provide labels for the x-,y- and z-axis of the plots. The program will always start with the preset for fsTA data but in principle every kind of time resolved data can be anaylsed e.g. trEPR. To change the preset you can either choose a different preset or write your own labels in the textfields located beneath the preset-combobox. These labels work with LaTeX code but to display the units correctly name and unit need to be separated by a "slash".
 
 After providing the data and shaping it the next step is to decide if the data should be analysed using global liftime analysis or global target analysis. Only one option can be selected.
 
@@ -48,8 +50,7 @@ Going to the GLA-tab the following will be seen.
 
 Utilizing this model the spectrum will be treated as a collection of multiple parallel exponential decays.
 
-First of the GLA-Button needs to be clicked, so that the program knows to use this model for the evaluation.
-After that lifetimes for the different species need to be set, since this program relies on initial guesses by the user. A priori knowlegde or guesses about the amount of forming species during the irradiation and an approximate lifetime for each species is necessary. All lifetimes input need to be separated by a comma. By pressing ENTER a radiobutton for each lifetime will appear below the textfield and the lifetimes can be set fixed so that they wont be changed during the optimization process.
+Firstly the lifetimes for the different species need to be set, since this program relies on initial guesses by the user. A priori knowlegde or guesses about the amount of forming species during the irradiation and an approximate lifetime for each species is necessary. All lifetimes input need to be separated by a comma. By pressing ENTER a radiobutton for each lifetime will appear below the textfield. Selecting lifetimes will set fixed so that they won''t be changed during the optimization process. This is optional.
 
 If the measured photochemical process involves for example three different species with two of them having lifetimes in the lower picosecond range and the third having a lifetime greater than the timeframe of the proccess. The two picosecond lifetimes should be input as variable lifetime values and the longer one as a fixed value since it does not contribute in a meaningful way to the spectrum.
 
@@ -73,25 +74,25 @@ Firstly via the option "Preset Model" one of eight preimplemented kinectic model
 
 The first two models are generic consecutive models with no branching.
 
-- *Model 1* A generic consecutive model with no spefic limitation for the amount of species. In this model the last species will decay back to the ground state.
+- *Model 1*: A generic consecutive model with no spefic limitation for the amount of species. In this model the last species will decay back to the ground state.
 
-- *Model 2* A generic consecutive model with no spefic limitation for the amount of species. In this model the last species will **not** decay back to the ground state.
+- *Model 2*: A generic consecutive model with no spefic limitation for the amount of species. In this model the last species will **not** decay back to the ground state.
 
 The last six models are consecutive models for a set amount of species with branching processes.
 
-- *Model 3* A -> B -> C -> D; B -> D
+- *Model 3*: A -> B -> C -> D; B -> D
 
-- *Model 4* A -> B -> C -> D -> E; B -> E
+- *Model 4*: A -> B -> C -> D -> E; B -> E
 
-- *Model 5* A -> B -> C -> D -> E; C -> E
+- *Model 5*: A -> B -> C -> D -> E; C -> E
 
-- *Model 6* A -> B -> C -> D -> E -> F; C -> F
+- *Model 6*: A -> B -> C -> D -> E -> F; C -> F
 
-- *Model 7* A -> B; A -> C
+- *Model 7*: A -> B; A -> C
 
-- *Model 8* A -> B ; B -> C ; B -> D
+- *Model 8*: A -> B ; B -> C ; B -> D
 
-After selecting a model the lifetimes for the species need to be set. For each transition or "->" there has to be one lifetime. So for Model 3 four lifetimes are required. By pressing ENTER a radiobutton for each lifetime will appear below the textfield and the lifetimes can be set fixed so that they wont be changed during the optimization process. Optionally for each of these lifetimes bounds can be set, so that during the optimization the values stay inside of a certain interval. If for example there are three lifetimes but the last one should never go below 200 the input for the lower bounds would be ",,200". Since the first two lifetimes don't need a lower limit they will be left empty and separated by a comma. The same goes for the input of the upper bounds. Another optional feature for the GTA is that the concentration for each species can be set. Typically only one species exists after irradiation which will get a concentration of one and all other following species will get a concentration of zero. If this does not apply, the concentrations can be set by providing a list of concentrations for each species separated by commas.
+After selecting a model the lifetimes for the species need to be set. For each transition or "->" there has to be one lifetime. So for Model 3, for example, four lifetimes are required. By pressing ENTER a radiobutton for each lifetime will appear below the textfield and the lifetimes can be set fixed so that they wont be changed during the optimization process. Optionally for each of these lifetimes bounds can be set, so that during the optimization the values stay inside of a certain interval. If, for example, there are three lifetimes but the last one should never go below 200 the input for the lower bounds would be ",,200". Since the first two lifetimes don't need a lower limit they will be left empty and separated by a comma. The same goes for the input of the upper bounds. Another optional feature for the GTA is that the concentration for each species can be set. Typically only one species exists after irradiation which will get a concentration of one and all other following species will get a concentration of zero. If this does not apply, the concentrations can be set by providing a list of concentrations for each species separated by commas.
 
 **Custom Models**
 
@@ -133,11 +134,11 @@ the input for the matrix should look like this:
 
 The matrix can be divided in three major parts. The main diagonal, the triangle above the main diagonal and the triangle below it. On the main diagonal the loss or decay of the corresponding species is described. The upper triangle describes the regain or repopulation of previous species. The lower triangle describes the gain or population of following species.
 
-More specific the positions in the matrix always describe the relationship or rather the dependence of the species in the row from the species in the column. For example the position highlighted in blue in the upper triangle describes the dependence of species B from species C. The "reaction equation" shows that there is no transition from species C back to species B so the position is left empty or the input is zero. The position highlighted in red on the main diagonal shows the decay of species A. In the "reaction equation" there are two transitions from species A to another species in other words two ways for species A to lose population. Once through a transition to species B which occurs after a lifetime of τ<sub>1</sub> and once through a transition directly to species C a lifetime of τ<sub>5</sub> so the overall decay of species A is described by the negative sum of those lifetimes, since the transitions result in loss of population.
+More specific the positions in the matrix always describe the relationship or rather the dependence of the species in the row from the species in the column. For example the position highlighted in blue in the upper triangle describes the dependence of species B from species C. The "reaction equation" shows that there is no transition from species C back to species B so the position is left empty or the input is zero. The position highlighted in red on the main diagonal shows the decay of species A. In the "reaction equation" there are two transitions from species A to another species in other words two ways for species A to lose population. Once through a transition to species B which occurs after a lifetime of τ<sub>1</sub> and once through a transition directly to species C after a lifetime of τ<sub>5</sub> so the overall decay of species A is described by the negative sum of those lifetimes, since the transitions result in loss of population.
 
 After all inputs are made the matrix can be saved.
 
-Note that this option is mostly a legacy feature and we highly recommend to use the "Custom Model"-option for any custom evaluations.
+Note that this option is mostly a legacy feature and we highly recommend to use the "Custom Model"-option for any custom analyses.
 
 ### Plotting
 
@@ -179,7 +180,7 @@ With the selection of the analysis method the last thing left to do is to select
 <img src="/images/example plots/ex_concentrations.png" width="49%"/>
 </p>
 
-- *DAS/SAS(ΔA/λ)*: Depending on the evaluation method the decay associated spectra (for GLA) or the species associated spectra (for GTA) will be shown as plots of the absorption change against the wavelength.
+- *DAS/SAS(ΔA/λ)*: Depending on the analysis method the decay associated spectra (for GLA) or the species associated spectra (for GTA) will be shown as plots of the absorption change against the wavelength.
 
 <p align="center">
 <img src="/images/example plots/ex_DASSAS.png" width="49%"/>
@@ -207,6 +208,12 @@ For some Plots other parameters need to be set.
 
 - *Contour Lines*: A value characterizing the number of lines shown in the heatmap, higher values show more lines. If not changed will be set to 20.
 
+Optional:
+
+- *Colormap Normalization Minimum*: Specifies the lower bound of the colormap normalization.
+
+- *Colormap Normalization Maximum*: Specifies the upper bound of the colormap normalization.
+
 ### Input Confirmation
 
 After all plotting settings are done the program is ready to be executed. 
@@ -219,7 +226,7 @@ On the Input Confirmation-tab all inputs given by the user will be displayed, so
 
 ### Results
 
-The resulting plots and the evalutaion results and other fit statistics will be displayed in different popup windows after the evalutaions. In addition to that all plots and results will be saved in a new folder in the data directory called "evaluation". After closing the program the inputs will also be saved in the data directory and reloaded if the directory will be selected another time.
+The resulting plots and the analysis results and other fit statistics will be displayed in different popup windows after the analyses. In addition to that all plots and results will be saved in a new folder in the data directory called "analysis". After closing the program the inputs will also be saved in the data directory and reloaded if the directory will be selected another time. Keep in mind that since the filenames will always be the same for each analysis, previous results will be overwritten.
 
 ## Script
 
@@ -238,7 +245,7 @@ First, the `directory` to the folder containing the data needs to be provided. F
 > `/...delays.txt` contains the delays/ps,
 > `/...spectra.txt` contains the absorption change.
 
-Then the evaluation `model` can be selected. GLA will be used for `0`, for the GTA one of the eight preimplemented models `1`-`8` can be selected or `"custom"` for a custom matrix.
+Then the analysis `model` can be selected. GLA will be used for `0`, for the GTA one of the eight preimplemented models `1`-`8` can be selected or `"custom"` for a custom matrix.
 
 <p align="center">
 <img src="/images/script/models.png" width="49%"/>
@@ -322,7 +329,7 @@ You are offered the following possibilities:
 
 - `mul`: the value by which the absorption data must be multiplied to get ΔA·10³
 
-### Further customizing
+### Further Customization
 
 The script can be used to better customize the images that will be generated.
 
@@ -354,13 +361,13 @@ The images for both of the plots are presented in the section of the GUI.
 
 This error occurs when the amount of bounds provided does not match the amount of lifetimes provided for the Preset or Custom Model GTA. It is possible to provide bounds only for some lifetimes, however the other lifetimes still have to be included. Make sure that, if you provide bounds, to match the amount of commata of the lifetimes and the bounds.
 
-### Please select an evaluation method.
+### Please select an analysis method.
 
-This error occurs when none of the radiobuttons "GLA", "Preset Model", "Custom Model" or "Custom Matrix" is selected. Make sure that one of these is selected before starting the evaluation.
+This error occurs when none of the radiobuttons "GLA", "Preset Model", "Custom Model" or "Custom Matrix" is selected. Make sure that one of these is selected before starting the analysis.
 
 ### Please input guessed lifetimes.
 
-This error occurs when the textfield for the lifetimes of the selected method is empty. Make sure that you provide lifetime guesses for the chosen evaluation method.
+This error occurs when the textfield for the lifetimes of the selected method is empty. Make sure that you provide lifetime guesses for the chosen analysis method.
 
 ### Please input a table size.
 
@@ -368,19 +375,23 @@ This error occurs when no size was provided when trying to open the matrix table
 
 ### Please input a kinetic matrix.
 
-This error occurs when the evaluation via "Custom Matrix" was selected but no matrix was provided. Make sure that when using the "Custom Matrix"-evaluation to input and save your matrix.
+This error occurs when the analysis via "Custom Matrix" was selected but no matrix was provided. Make sure that when using the "Custom Matrix"-analysis to input and save your matrix.
 
 ### Please select a folder directory.
 
-This error occurs when no directory was provided in the "Data"-tab before starting the evaluation. Make sure to provide a directory before starting the evaluation.
+This error occurs when no directory was provided in the "Data"-tab before starting the analysis. Make sure to provide a directory before starting the analysis.
 
 ### Please input a transition equation.
 
-This error occurs when the evaluation via "Custom Model" was selected but no transition equation was provided. Make sure that when using the "Custom Model"-evaluation to input a transition equation.
+This error occurs when the analysis via "Custom Model" was selected but no transition equation was provided. Make sure that when using the "Custom Model"-analysis to input a transition equation.
 
 ### Please select a directory first.
 
 This error occurs when no directory was provided in the "Data"-tab before plotting the raw data. Make sure to provide a directory before plotting the raw data.
+
+### Please select a valid directory first.
+
+This error occurs when an invalid directory ,e.g. one without the three relevant data files, was provided in the "Data"-tab before plotting the raw data. Make sure to provide a valid directory before plotting.
 
 ### Please make sure the selected folder contains *.txt files ending with "spectra.txt", "delays.txt" and "lambda.txt".
 

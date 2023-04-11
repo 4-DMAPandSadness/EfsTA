@@ -376,7 +376,7 @@ class Controller():
     def plotSolo(self, wave, time, v_min, v_max, model, cont, solo, mul,
                    add=""):
         """
-        Allows for the creation of 1-3 subplots in one plot.
+        Allows for the creation of single plots.
 
         Parameters
         ----------
@@ -594,6 +594,8 @@ class Controller():
         None.
 
         """
+        for i,n in enumerate(tau_fit):
+            tau_fit[i] = round(n,2)
         time_unit = self.labels[1].split("/")[1]
         x_axis_unit = self.labels[0].split("/")[1]
         if model == 0:

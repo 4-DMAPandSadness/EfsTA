@@ -26,6 +26,6 @@
 
 NumPy, SciPy, asteval, uncertainties, lmfit, PyQt, matplotlib
 
+## **Known Problems**
 
-
-
+On rare occasions the program randomly segfaults. After starting the program again usually everything is just fine

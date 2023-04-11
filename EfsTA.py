@@ -136,25 +136,7 @@ class ResultsWindow(QW.QWidget):
         """
         self.ui.textResults.clear()
         text = Controller.getResults(model)
-        self.ui.textResults.append(text)    
- 
-    def closePopupMatrix(self,popup):
-        """
-        Transfers the custom matrix input by the user from the popup object to
-        the main window and closes the popup window.
-
-        Parameters
-        ----------
-        popup : TableWindow
-            The TableWindow object created by the main window.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.custom_matrix = popup.custom_matrix
-        popup.close()
+        self.ui.textResults.append(text)
 
 #####################################MAIN######################################
 
@@ -921,6 +903,24 @@ class MainWindow(QW.QMainWindow):
             self.openFailSafe("Please input a kinetic matrix.")
             return True
 
+    def closePopupMatrix(self,popup):
+        """
+        Transfers the custom matrix input by the user from the popup object to
+        the main window and closes the popup window.
+
+        Parameters
+        ----------
+        popup : TableWindow
+            The TableWindow object created by the main window.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.custom_matrix = popup.custom_matrix
+        popup.close()
+
 #####################################PREPARE PARAMETERS########################
 
     def summonRadio(self,layout_origin):
@@ -1120,15 +1120,19 @@ class MainWindow(QW.QMainWindow):
         if hasattr(self, "Controller") == False:
             self.openFailSafe("Please select a directory first.")
         else:
-            ds = sorted(self.getDelaySlices())
-            ws = sorted(self.getWavelengthSlices())
-            db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
-            wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
-            self.Controller.createOrigData(db,wb, None, None)
-            self.ui.plot_concentrations.setChecked(False)
-            self.ui.plot_das_sas.setChecked(False)
-            self.ui.plot_residuals.setChecked(False)
-            self.plotting(ds, ws, 0, True)
+            if hasattr(self.Controller, "delays_filename") == False:
+                self.openFailSafe("Please select a valid directory first.")
+            else:
+                self.getAxis()
+                ds = sorted(self.getDelaySlices())
+                ws = sorted(self.getWavelengthSlices())
+                db = [self.getLowerDelayBound(), self.getUpperDelayBound()]
+                wb = [self.getLowerWavelengthBound(), self.getUpperWavelengthBound()]
+                self.Controller.createOrigData(db,wb, None, None)
+                self.ui.plot_concentrations.setChecked(False)
+                self.ui.plot_das_sas.setChecked(False)
+                self.ui.plot_residuals.setChecked(False)
+                self.plotting(ds, ws, 0, True)
             
     def plotting(self,ds,ws,model,raw):
         """
@@ -1199,7 +1203,7 @@ class MainWindow(QW.QMainWindow):
            self.ui.GTA_radio_preset_model.isChecked() == False and 
            self.ui.GTA_radio_custom_model.isChecked() == False and 
            self.ui.GTA_radio_custom_matrix.isChecked() == False):
-            self.openFailSafe("Please select an evaluation method.")
+            self.openFailSafe("Please select an analysis method.")
             return False
         
     def finalCheck(self):
