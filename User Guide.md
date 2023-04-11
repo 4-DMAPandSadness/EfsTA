@@ -28,15 +28,15 @@ The GUI is designed to guide the user through an analysis by going from tab to t
 
 Here the analysis process starts. The first step is to provide the program with the directory, where the data for the analysis is located. To provide the data simply copy and past the directory in the designated textfield or click the Browse-Button to choose the directory via a directory dialog.
 
-Note that the program only recognizes data in the form of three separate *.txt-files* for the wavelengths/field, delays and measured absorption ending with *lambda.txt* / *field.txt*,*delay.txt* and *spectra.txt* respectively. 
+Note that the program only recognizes data in the form of three separate *.txt-files* for the wavelengths/field, delays and measured absorption ending with *lambda.txt* / *field.txt*, *delay.txt* and *spectra.txt* respectively. 
 
 If a directory is selected which was previously used to analyse data the inputs made for the previous analysis will be restored. To clear out all these inputs, in case completely different parameters should be used, the Clear Cache-Button will delete all inputs.
 
 If the directory is a new one with a fresh set of data all inputfields will be empty. The data can be shaped if required. The wavelength/field and delay domain can be specified by providing upper and lower limits e.g. if the data was measured for delays between -10 ps and 4000 ps but artifacts around time 0 are a problem the lower bound for the delay values can be set to 0.4, so that only the data starting from 0.4 ps will be used. Additionally if the data was meassured in ODU but should be displayed as mOUD a data multiplier can be set e.g. 1000. These parameters are all optional and can be left empty.
 
-In this tab you can also provide labels for the x-,y- and z-axis of the plots. The program will always start with the preset for fsTA data but in principle every kind of time resolved data can be anaylsed e.g. trEPR. To change the preset you can either choose a different preset or write your own labels in the textfields located beneath the preset-combobox. These labels work with LaTeX code but to display the units correctly name and unit need to be separated by a "slash".
+In this tab the user can also provide labels for the x-,y- and z-axis of the plots. The program will always start with the preset for fsTA data but in principle every kind of time resolved data can be anaylsed e.g. trEPR. To change the preset the user can either choose a different preset or write their own labels in the textfields located beneath the preset-combobox. These labels work with LaTeX code but to display the units correctly name and unit need to be separated by a "slash".
 
-After providing the data and shaping it the next step is to decide if the data should be analysed using global liftime analysis or global target analysis. Only one option can be selected.
+After providing the data and shaping it the next step is to decide if the data should be analysed using global liftime analysis or global target analysis. Only one option can be selected at a time.
 
 Note that this program relies on the user approximately knowing how many species there are throughout the measurment and for how long they exist. If such knowledge is not yet available we recommend to skip to the Plotting-tab to plot the raw unanalysed data. The heatmap plot of the data may help to derive additional knowledge about the system.
 
@@ -50,11 +50,11 @@ Going to the GLA-tab the following will be seen.
 
 Utilizing this model the spectrum will be treated as a collection of multiple parallel exponential decays.
 
-Firstly the lifetimes for the different species need to be set, since this program relies on initial guesses by the user. A priori knowlegde or guesses about the amount of forming species during the irradiation and an approximate lifetime for each species is necessary. All lifetimes input need to be separated by a comma. By pressing ENTER a radiobutton for each lifetime will appear below the textfield. Selecting lifetimes will set fixed so that they won''t be changed during the optimization process. This is optional.
+Firstly the lifetimes for the different species need to be set, since this program relies on initial guesses by the user. A priori knowlegde or guesses about the amount of forming species during the irradiation and an approximate lifetime for each species is necessary. All lifetimes input need to be separated by a comma. By pressing ENTER a radiobutton for each lifetime will appear below the textfield. Selecting lifetimes will set them fixed so that they won't be changed during the optimization process. This is optional and when left as is, all lifetimes will be varied.
 
 If the measured photochemical process involves for example three different species with two of them having lifetimes in the lower picosecond range and the third having a lifetime greater than the timeframe of the proccess. The two picosecond lifetimes should be input as variable lifetime values and the longer one as a fixed value since it does not contribute in a meaningful way to the spectrum.
 
-Lastly for the minimization of the Chi-Square-function different algorithms can be selected where the local minimizer Nelder-Mead is the standard but there are also global options with ampgo and basinhoppin which will take a bit longer.
+Lastly, for the minimization of the Chi-Square-function, different algorithms can be selected where the local minimizer Nelder-Mead is the standard but there are also global options with ampgo and basinhoppin which will take a bit longer.
 
 If even more a priori knowledge is available, global target analysis should be used instead.
 
@@ -66,7 +66,7 @@ Going to the GTA-tab the following can be seen.
 <img src="/images/GUI/GTA.png" width="49%"/> <img src="/images/GUI/GTA WI.png" width="49%"/>
 </p>
 
-Here the kinetic models on which the analysis is based can be input in three different ways. 
+Here the kinetic models on which the analysis is based on can be input in three different ways. 
 
 **Preset Models**
 
@@ -92,7 +92,7 @@ The last six models are consecutive models for a set amount of species with bran
 
 - *Model 8*: A -> B ; B -> C ; B -> D
 
-After selecting a model the lifetimes for the species need to be set. For each transition or "->" there has to be one lifetime. So for Model 3, for example, four lifetimes are required. By pressing ENTER a radiobutton for each lifetime will appear below the textfield and the lifetimes can be set fixed so that they wont be changed during the optimization process. Optionally for each of these lifetimes bounds can be set, so that during the optimization the values stay inside of a certain interval. If, for example, there are three lifetimes but the last one should never go below 200 the input for the lower bounds would be ",,200". Since the first two lifetimes don't need a lower limit they will be left empty and separated by a comma. The same goes for the input of the upper bounds. Another optional feature for the GTA is that the concentration for each species can be set. Typically only one species exists after irradiation which will get a concentration of one and all other following species will get a concentration of zero. If this does not apply, the concentrations can be set by providing a list of concentrations for each species separated by commas.
+After selecting a model the lifetimes for the species need to be set. For each transition or "->" there has to be one lifetime. So for Model 3, for example, four lifetimes are required. By pressing ENTER a radiobutton for each lifetime will appear below the textfield and the lifetimes can be set fixed so that they won't be changed during the optimization process. Optionally, bounds can be set for each of these lifetimes, so that during the optimization the values stay inside of a certain interval. If, for example, there are three lifetimes but the last one should never go below 200 the input for the lower bounds would be ",,200". Since the first two lifetimes don't need a lower limit they will be left empty and separated by a comma. The same goes for the input of the upper bounds. Another optional feature for the GTA is that the concentration for each species can be set. Typically only one species exists after irradiation which will get a concentration of one and all other following species will get a concentration of zero. If this does not apply, the concentrations can be set by providing a list of concentrations for each species separated by commas.
 
 **Custom Models**
 
