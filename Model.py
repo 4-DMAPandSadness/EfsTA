@@ -7,6 +7,10 @@ import numpy as np
 from lmfit import minimize, Parameters, fit_report
 import scipy.integrate as scint
 from models import Models
+import torch
+import torch.nn as nn
+from torchdiffeq import odeint
+
 mpl.use("QtAgg")
 plt.style.use('./AK_Richert.mplstyle')
 #plt.style.use('default')
@@ -239,14 +243,12 @@ class Model:
         dCdt = self.K @ C_0
         return dCdt
 
-    def solveDiff(self, K, ivp_method):
+    def solveDiff(self, ivp_method):
         """
         Solves the differential equation of dCdt = K·C.
 
         Parameters
         ----------
-        K : np.array
-            The matrix with the reaction constants for each concentration.
         ivp_method: string
             The algorithm used by the initial value problem solver.
 
@@ -257,11 +259,14 @@ class Model:
             time in delays.
 
         """
-        self.K = K
         Z = scint.solve_ivp(self.calcdCdt, [min(self.delays), max(self.delays)],
             self.C_0, t_eval=self.delays, method=ivp_method)
         C_t = Z.get("y")
         return C_t
+
+    # def testSolveDiff(self, xy):
+    #     Z = odeint(self.calcdCdt,self.C_0, torch.linspace(min(self.delays), max(self.delays), 100))
+    #     return Z
 
     def getK(self, tau):
         """
@@ -433,7 +438,7 @@ class Model:
            self.n = len(tau)
        else:  # GTA
            self.K, n = self.getK(tau)
-           M = self.solveDiff(self.K, self.ivp_method)
+           M = self.solveDiff(self.ivp_method)
        return M
 
     def calcD_tau(self, tau):

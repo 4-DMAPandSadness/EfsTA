@@ -160,7 +160,7 @@ class Controller():
             self.SAS.setTauBounds(tau_low, tau_high, tau)   
             K,n = self.SAS.getK(tau)                    
         self.SAS.setInitialConcentrations(C_0)
-        self.SAS.solveDiff(self.SAS.K, ivp_method)
+        self.SAS.solveDiff(ivp_method)
         tau_fit, fit_report = self.SAS.findTau_fit(preparam, opt_method)
         D_fit = self.SAS.calcD_fit()
         spec = self.SAS.calcA_fit()
