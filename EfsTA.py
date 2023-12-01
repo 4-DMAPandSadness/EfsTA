@@ -166,12 +166,11 @@ class MainWindow(QW.QMainWindow):
         self.radios.addButton(self.ui.GTA_radio_custom_model)
         self.radios.addButton(self.ui.GTA_radio_custom_matrix)
         self.ui.Analysis_stack.setCurrentIndex(0)
-        self.ui.Theme.setChecked(False)
-        self.changeTheme()
+        self.createTheme()
         
     def onQuit(self):
         """
-        Resets the color theme of the application and saves input values.
+        Resets the color of the application and saves input values.
 
         Returns
         -------
@@ -191,12 +190,14 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
+        self.ui.actionTheme.triggered.connect(self.changeTheme)
         self.ui.Exp_TA.clicked.connect(self.initTA)
         self.ui.Exp_trEPR.clicked.connect(self.initEPR)
+        self.ui.GVD_skip.clicked.connect(self.skip)
+        self.ui.GVD_correct.clicked.connect(self.skip)
         self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(lambda: self.selectFolderPath("button"))
-        self.ui.Theme.stateChanged.connect(self.changeTheme)
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
@@ -209,6 +210,9 @@ class MainWindow(QW.QMainWindow):
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
         EfsTA.aboutToQuit.connect(self.onQuit)      
 
+    def skip(self):
+        self.ui.UI_stack.setCurrentIndex(2)
+
     def initTA(self):
         self.ui.plot_type.addItems(["fsTA", "nsTA"])
         self.ui.plot_xAxis.setText("$\lambda$ / nm")
@@ -216,15 +220,13 @@ class MainWindow(QW.QMainWindow):
         self.ui.plot_zAxis.setText("$\Delta A$")
         self.ui.UI_stack.setCurrentIndex(1)
         self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisTA(self.ui.plot_type.currentIndex()))
-        #setsampletext(wave bounds)
-        
         
     def initEPR(self):
         self.ui.plot_type.addItems(["μs trEPR", "ms trEPR"])
         self.ui.plot_xAxis.setText("$B_0$ / mT")
         self.ui.plot_yAxis.setText("time / $\mu$s")
         self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
-        self.ui.UI_stack.setCurrentIndex(1)
+        self.ui.UI_stack.setCurrentIndex(2)
         self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisEPR(self.ui.plot_type.currentIndex()))
 
 #####################################DATA######################################
@@ -1169,6 +1171,9 @@ class MainWindow(QW.QMainWindow):
                 self.ui.plot_concentrations.setChecked(False)
                 self.ui.plot_das_sas.setChecked(False)
                 self.ui.plot_residuals.setChecked(False)
+                if (self.ui.plot_delay_slices.isChecked() == False and 
+                    self.ui.plot_wavelength_slices.isChecked() == False):
+                        self.ui.plot_three_in_one.setChecked(False)
                 self.plotting(ds, ws, 0, True)
             
     def plotting(self,ds,ws,model,raw):
@@ -1446,6 +1451,24 @@ class MainWindow(QW.QMainWindow):
 
 #####################################INTRO#####################################
 
+    def createTheme(self):
+        darkmode = QPalette()
+        darkmode.setColor(darkmode.Window, QColor(53, 53, 53))
+        darkmode.setColor(darkmode.WindowText, Qt.white)
+        darkmode.setColor(darkmode.Base, QColor(25, 25, 25))
+        darkmode.setColor(darkmode.AlternateBase, QColor(53, 53, 53))
+        darkmode.setColor(darkmode.ToolTipBase, Qt.black)
+        darkmode.setColor(darkmode.ToolTipText, Qt.white)
+        darkmode.setColor(darkmode.Text, Qt.white)
+        darkmode.setColor(darkmode.Button, QColor(53, 53, 53))
+        darkmode.setColor(darkmode.ButtonText, Qt.white)
+        darkmode.setColor(darkmode.BrightText, Qt.green)
+        darkmode.setColor(darkmode.Link, QColor(42, 130, 218))
+        darkmode.setColor(darkmode.Highlight, QColor(42, 130, 218))
+        darkmode.setColor(darkmode.HighlightedText, Qt.black)
+        self.darkmode = [darkmode, "active"]
+        EfsTA.setPalette(self.darkmode[0])
+
     def changeTheme(self):
         """
         Changes the colour theme of the program to either light or dark.
@@ -1455,24 +1478,12 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        if self.ui.Theme.isChecked() == True:
+        if self.darkmode[1] == "active":
             EfsTA.setPalette(self.default_palette)
+            self.darkmode[1] = "inactive"
         else:
-            darkmode = QPalette()
-            darkmode.setColor(darkmode.Window, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.WindowText, Qt.white)
-            darkmode.setColor(darkmode.Base, QColor(25, 25, 25))
-            darkmode.setColor(darkmode.AlternateBase, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.ToolTipBase, Qt.black)
-            darkmode.setColor(darkmode.ToolTipText, Qt.white)
-            darkmode.setColor(darkmode.Text, Qt.white)
-            darkmode.setColor(darkmode.Button, QColor(53, 53, 53))
-            darkmode.setColor(darkmode.ButtonText, Qt.white)
-            darkmode.setColor(darkmode.BrightText, Qt.green)
-            darkmode.setColor(darkmode.Link, QColor(42, 130, 218))
-            darkmode.setColor(darkmode.Highlight, QColor(42, 130, 218))
-            darkmode.setColor(darkmode.HighlightedText, Qt.black)
-            EfsTA.setPalette(darkmode)
+            EfsTA.setPalette(self.darkmode[0])
+            self.darkmode[1] = "active"
 
 #####################################PICKLE####################################
     
@@ -1486,10 +1497,10 @@ class MainWindow(QW.QMainWindow):
 
         '''
         self.finalInputs.clear()
-        self.finalInputs['Lower Delay Bound'] = self.ui.Data_delay_input_lb.text()
-        self.finalInputs['Upper Delay Bound'] = self.ui.Data_delay_input_ub.text()
-        self.finalInputs['Lower Wavelength Bound'] = self.ui.Data_wavelength_input_lb.text()
-        self.finalInputs['Upper Wavelength Bound'] = self.ui.Data_wavelength_input_ub.text()
+        self.finalInputs['Lower Delay/Time Bound'] = self.ui.Data_delay_input_lb.text()
+        self.finalInputs['Upper Delay/Time Bound'] = self.ui.Data_delay_input_ub.text()
+        self.finalInputs['Lower Wavelength/Field Bound'] = self.ui.Data_wavelength_input_lb.text()
+        self.finalInputs['Upper Wavelength/Field Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
         self.finalInputs['Directory'] = self.getFolderPath()
         self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()
@@ -1536,11 +1547,11 @@ class MainWindow(QW.QMainWindow):
         if self.ui.plot_das_sas.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', DAS/SAS' 
         if self.ui.plot_delay_slices.isChecked() == True:
-            self.finalInputs['Selected Plots'] += ', Delay Slices'
+            self.finalInputs['Selected Plots'] += ', Delay/Time Slices'
         if self.ui.plot_heatmap.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Heatmap'
         if self.ui.plot_wavelength_slices.isChecked() == True:
-            self.finalInputs['Selected Plots'] += ', Wavelength Slices'
+            self.finalInputs['Selected Plots'] += ', Wavelength/Field Slices'
         if self.ui.plot_concentrations.isChecked() == True:
             self.finalInputs['Selected Plots'] += ', Concentrations'
         if self.ui.plot_residuals.isChecked() == True:
@@ -1552,8 +1563,8 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs['Vmin'] = self.ui.plot_input_vmin.text()
         self.finalInputs['Vmax'] = self.ui.plot_input_vmax.text()
         self.finalInputs['Contour Lines'] = str(self.getUserContour())
-        self.finalInputs['Delay Slices'] = self.ui.plot_input_delay_slices.text()      
-        self.finalInputs['Wavelength Slices'] = self.ui.plot_input_wavelength_slices.text()
+        self.finalInputs['Delay/Time Slices'] = self.ui.plot_input_delay_slices.text()      
+        self.finalInputs['Wavelength/Field Slices'] = self.ui.plot_input_wavelength_slices.text()
         self.finalInputs['Selected Plots'] = self.finalInputs['Selected Plots'][2:]        
     
     def savePickle(self):
@@ -1608,13 +1619,13 @@ class MainWindow(QW.QMainWindow):
             val = val.replace(" ","")
             if key == "Data Multiplier":
                 self.ui.Data_input_multiplier.setText(val)
-            if key == "Lower Delay Bound":
+            if key == "Lower Delay/Time Bound":
                 self.ui.Data_delay_input_lb.setText(val)
-            if key == "Upper Delay Bound":
+            if key == "Upper Delay/Time Bound":
                 self.ui.Data_delay_input_ub.setText(val)
-            if key == "Lower Wavelength Bound":
+            if key == "Lower Wavelength/Field Bound":
                 self.ui.Data_wavelength_input_lb.setText(val)
-            if key == "Upper Wavelength Bound":
+            if key == "Upper Wavelength/Field Bound":
                 self.ui.Data_wavelength_input_ub.setText(val)
             if key == "Lower Tau Bounds":
                 self.ui.GTA_input_tau_lb.setText(val)
@@ -1658,9 +1669,9 @@ class MainWindow(QW.QMainWindow):
                        self.ui.GTA_custom_model_fix_layout.addWidget(radio)
             if key == "Concentrations":
                 self.ui.GTA_input_concentration.setText(val)
-            if key == "Delay Slices":
+            if key == "Delay/Time Slices":
                 self.ui.plot_input_delay_slices.setText(val)
-            if key == "Wavelength Slices":
+            if key == "Wavelength/Field Slices":
                 self.ui.plot_input_wavelength_slices.setText(val)
             if key == "Contour Lines":
                 self.ui.plot_input_contour.setValue(int(val))

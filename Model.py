@@ -714,7 +714,7 @@ class Model:
             ax1.plot(
                 spectra[ind],
                 self.delays,
-                label=str(wave[i]) + unit
+                label=f"{wave[i]} {unit}"
             )
         ax1.axvline(0, color="black",lw = 0.5 , alpha=0.75)
         temp = np.concatenate([spectra[i]
@@ -854,7 +854,7 @@ class Model:
                 mini = min(y)
             ax3.plot(self.lambdas, y, color="black")
             ax3.annotate(
-                str(time[i]) + unit, (0.5 * (min(self.lambdas) +
+                f"{time[i]} {unit}", (0.5 * (min(self.lambdas) +
                                  max(self.lambdas)), hoehe)
             )
             ax3.axhline(hoehe, color="black", lw = 0.5, alpha = 0.75)
@@ -1137,11 +1137,11 @@ class Model:
         ax.set_ylabel(labels[2] + dot)
         ax.set_xlabel(labels[1])
 
-        for i in wave_index:
+        for i, ind in enumerate(wave_index):
             plt.plot(
                 self.delays,
-                spectra[i],
-                label=str(self.lambdas[i]) + " " + unit
+                spectra[ind],
+                label=f"{wave[i]} {unit}"
             )
         temp = np.concatenate([spectra[i]
                               for i in wave_index])
@@ -1276,8 +1276,8 @@ class Model:
             dot = f" $\cdot 10^{ltx}$"
         ax.set_ylabel(labels[2] + dot)
         ax.set_xlabel(labels[0])
-        for i in time_index:
-            plt.plot(self.lambdas,spectra.T[i], label=str(self.delays[i]) + " " + unit)
+        for i, ind in enumerate(time_index):
+            plt.plot(self.lambdas,spectra.T[ind], label=f"{time[i]} {unit}")
         ax.tick_params(bottom=False)
         ax.legend(loc="upper left", frameon=False, labelcolor="linecolor",
                    handlelength=0)
