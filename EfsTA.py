@@ -35,7 +35,7 @@ class TableWindow(QW.QWidget):
     def readTable(self):
         """
         Reads the kinetic matrix input by the user and saves the matrix in a
-        numpy array as an attribute.
+        numpy array as an attribute of the TableWindow object.
 
         Returns
         -------
@@ -143,7 +143,7 @@ class ResultsWindow(QW.QWidget):
 class MainWindow(QW.QMainWindow):
     def __init__(self): 
         super(MainWindow,self).__init__()
-        self.ui = loadUi("gui.ui",self)
+        self.ui = loadUi("gui_with_eprver2.ui",self) #gui.ui
         self.startUp()
         self.functionality()
   
@@ -156,6 +156,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
+        self.ui.UI_stack.setCurrentIndex(0)
         self.default_palette = QGuiApplication.palette()
         self.finalInputs = {}
         self.ui.input_tree.header().setSectionResizeMode(QW.QHeaderView.ResizeToContents)
@@ -164,7 +165,7 @@ class MainWindow(QW.QMainWindow):
         self.radios.addButton(self.ui.GTA_radio_preset_model)
         self.radios.addButton(self.ui.GTA_radio_custom_model)
         self.radios.addButton(self.ui.GTA_radio_custom_matrix)
-        self.ui.stack.setCurrentIndex(0)
+        self.ui.Analysis_stack.setCurrentIndex(0)
         self.ui.Theme.setChecked(False)
         self.changeTheme()
         
@@ -190,8 +191,10 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
+        self.ui.Exp_TA.clicked.connect(self.initTA)
+        self.ui.Exp_trEPR.clicked.connect(self.initEPR)
         self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
-        self.ui.stack.currentChanged.connect(self.presentInputs)
+        self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(lambda: self.selectFolderPath("button"))
         self.ui.Theme.stateChanged.connect(self.changeTheme)
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
@@ -204,8 +207,25 @@ class MainWindow(QW.QMainWindow):
         self.ui.GTA_input_preset_model_tau.editingFinished.connect(lambda: self.summonRadio("preset"))
         self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
-        self.ui.Data_type.currentIndexChanged.connect(lambda: self.setAxis(self.ui.Data_type.currentIndex()))
         EfsTA.aboutToQuit.connect(self.onQuit)      
+
+    def initTA(self):
+        self.ui.plot_type.addItems(["fsTA", "nsTA"])
+        self.ui.plot_xAxis.setText("$\lambda$ / nm")
+        self.ui.plot_yAxis.setText("delay / ps")
+        self.ui.plot_zAxis.setText("$\Delta A$")
+        self.ui.UI_stack.setCurrentIndex(1)
+        self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisTA(self.ui.plot_type.currentIndex()))
+        #setsampletext(wave bounds)
+        
+        
+    def initEPR(self):
+        self.ui.plot_type.addItems(["μs trEPR", "ms trEPR"])
+        self.ui.plot_xAxis.setText("$B_0$ / mT")
+        self.ui.plot_yAxis.setText("time / $\mu$s")
+        self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
+        self.ui.UI_stack.setCurrentIndex(1)
+        self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisEPR(self.ui.plot_type.currentIndex()))
 
 #####################################DATA######################################
 
@@ -245,8 +265,11 @@ class MainWindow(QW.QMainWindow):
             names = ["delays_filename","lambdas_filename", "spectra_filename"]
             if all(hasattr(self.Controller, attr) for attr in names) == False:
                 self.openFailSafe('Please make sure the selected folder ' + 
-                                  'contains *.txt files ending with "spectra.txt",' + 
-                                  '"delays.txt" and "lambda.txt".')
+                                  'contains *.txt files ending with: \n' +
+                                  '"taspectra.txt", "delays.txt" and' +
+                                  '"lambda.txt" for TA or \n' +
+                                  '"eprspectra.txt", "time.txt" and' +
+                                  '"field.txt" for trEPR.')
             else:
                 temp = self.Controller.delays_filename[::-1]
                 temp = temp.index("/")
@@ -365,7 +388,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        if (self.ui.Data_xAxis.text() or self.ui.Data_yAxis.text() or self.ui.Data_zAxis.text()) == "":
+        if (self.ui.plot_xAxis.text() or self.ui.plot_yAxis.text() or self.ui.plot_zAxis.text()) == "":
             self.openFailSafe("Please input guessed lifetimes.")
             return True    
 
@@ -379,9 +402,9 @@ class MainWindow(QW.QMainWindow):
             A list containing the axis labels x,y,z.
 
         """
-        self.Controller.labels = [self.ui.Data_xAxis.text(), self.ui.Data_yAxis.text(), self.ui.Data_zAxis.text()]
+        self.Controller.labels = [self.ui.plot_xAxis.text(), self.ui.plot_yAxis.text(), self.ui.plot_zAxis.text()]
         
-    def setAxis(self,ind):
+    def setAxisTA(self,ind):
         """
         Sets the axis labels for the selected experiment.
 
@@ -396,21 +419,36 @@ class MainWindow(QW.QMainWindow):
 
         """
         if ind == 0:
-            self.ui.Data_xAxis.setText("$\lambda$ / nm")
-            self.ui.Data_yAxis.setText("delay / ps")
-            self.ui.Data_zAxis.setText("$\Delta A$")
+            self.ui.plot_xAxis.setText("$\lambda$ / nm")
+            self.ui.plot_yAxis.setText("delay / ps")
+            self.ui.plot_zAxis.setText("$\Delta A$")
         if ind == 1:
-            self.ui.Data_xAxis.setText("$\lambda$ / nm")
-            self.ui.Data_yAxis.setText("delay / ns")
-            self.ui.Data_zAxis.setText("$\Delta A$")
-        if ind == 2:
-            self.ui.Data_xAxis.setText("$B_0$ / mT")
-            self.ui.Data_yAxis.setText("delay / $\mu$s")
-            self.ui.Data_zAxis.setText("trEPR signal / a.u.")
-        if ind == 3:
-            self.ui.Data_xAxis.setText("$B_0$ / mT")
-            self.ui.Data_yAxis.setText("delay / ns")
-            self.ui.Data_zAxis.setText("trEPR signal / a.u.")
+            self.ui.plot_xAxis.setText("$\lambda$ / nm")
+            self.ui.plot_yAxis.setText("delay / ns")
+            self.ui.plot_zAxis.setText("$\Delta A$")
+    
+    def setAxisEPR(self,ind):
+        """
+        Sets the axis labels for the selected experiment.
+
+        Parameters
+        ----------
+        ind : int
+            The index of the experiment type.
+
+        Returns
+        -------
+        None.
+
+        """
+        if ind == 0:
+            self.ui.plot_xAxis.setText("$B_0$ / mT")
+            self.ui.plot_yAxis.setText("time / $\mu$s")
+            self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
+        if ind == 1:
+            self.ui.plot_xAxis.setText("$B_0$ / mT")
+            self.ui.plot_yAxis.setText("time / ms")
+            self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
 
 #####################################GLA#######################################
 
@@ -846,7 +884,6 @@ class MainWindow(QW.QMainWindow):
         M = np.zeros((species,species))
         #filling the matrix with the lifetimes using the determined coordinates
         tau_index = 0
-        print(tau)
         for list_ in paired_species:
             if list_[1] == -1:
                 M[list_[0]][list_[0]] += tau[tau_index]
@@ -1451,15 +1488,15 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs.clear()
         self.finalInputs['Lower Delay Bound'] = self.ui.Data_delay_input_lb.text()
         self.finalInputs['Upper Delay Bound'] = self.ui.Data_delay_input_ub.text()
-        self.finalInputs['Lower Wavelength/Field Bound'] = self.ui.Data_wavelength_input_lb.text()
-        self.finalInputs['Upper Wavelength/Field Bound'] = self.ui.Data_wavelength_input_ub.text()
+        self.finalInputs['Lower Wavelength Bound'] = self.ui.Data_wavelength_input_lb.text()
+        self.finalInputs['Upper Wavelength Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
         self.finalInputs['Directory'] = self.getFolderPath()
         self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()
         self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_tau_ub.text()
-        self.finalInputs['x-Axis'] = self.ui.Data_xAxis.text()
-        self.finalInputs['y-Axis'] = self.ui.Data_yAxis.text()
-        self.finalInputs['z-Axis'] = self.ui.Data_zAxis.text()
+        self.finalInputs['x-Axis'] = self.ui.plot_xAxis.text()
+        self.finalInputs['y-Axis'] = self.ui.plot_yAxis.text()
+        self.finalInputs['z-Axis'] = self.ui.plot_zAxis.text()
         if self.ui.GLA_radio.isChecked() == True:
             self.finalInputs['GLA'] = ""
             self.finalInputs['Optimizer'] = self.ui.GLA_algorithm_optimize.currentText()

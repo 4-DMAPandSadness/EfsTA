@@ -45,12 +45,18 @@ class Controller():
         for file in content:
             file_paths.append(f'{path}/{file}')
         for i in file_paths:
-            if ("lambda.txt" or "field.txt") in i:
-                self.lambdas_filename = i
-            elif "delays.txt" in i:
-                self.delays_filename = i
-            elif "spectra.txt" in i:
-                self.spectra_filename = i
+            if "lambda" in i or "field" in i:
+                new = i[:-3] + "txt"
+                os.rename(i, new)
+                self.lambdas_filename = new
+            elif "delays" in i or "time" in i:
+                new = i[:-3] + "txt"
+                os.rename(i, new)
+                self.delays_filename = new
+            elif "taspectra" in i or "eprspectra" in i:
+                new = i[:-3] + "txt"
+                os.rename(i, new)
+                self.spectra_filename = new
 
     def calcDAS(self, preparam, d_limits, l_limits, opt_method):
         """

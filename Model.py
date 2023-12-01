@@ -7,9 +7,6 @@ import numpy as np
 from lmfit import minimize, Parameters, fit_report
 import scipy.integrate as scint
 from models import Models
-import torch
-import torch.nn as nn
-from torchdiffeq import odeint
 
 mpl.use("QtAgg")
 plt.style.use('./AK_Richert.mplstyle')
@@ -164,6 +161,8 @@ class Model:
 
         """
         values = np.genfromtxt(spectra_filename)
+        if "eprspectra.txt" in spectra_filename:
+            values = values.T
         spectra = values[self.l_borders[0]: self.l_borders[1],
                          self.d_borders[0]: self.d_borders[1]]
         return spectra
@@ -263,10 +262,6 @@ class Model:
             self.C_0, t_eval=self.delays, method=ivp_method)
         C_t = Z.get("y")
         return C_t
-
-    # def testSolveDiff(self, xy):
-    #     Z = odeint(self.calcdCdt,self.C_0, torch.linspace(min(self.delays), max(self.delays), 100))
-    #     return Z
 
     def getK(self, tau):
         """
