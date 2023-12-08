@@ -1,6 +1,5 @@
 from Model import Model
 import numpy as np
-import os
 from pathlib import Path
 from datetime import datetime
 import shelve
@@ -23,40 +22,8 @@ class Controller():
 
         """
         self.path = path
-        self.get_data(path)
-
-    def get_data(self, path):
-        """
-        Method that loads the needed data from the given folder path into
-        the class.
-
-        Parameters
-        ----------
-        path : string
-            Path where the folder with the files is located.
-
-        Returns
-        -------
-        None.
-
-        """
-        file_paths = []
-        content = os.listdir(path)
-        for file in content:
-            file_paths.append(f'{path}/{file}')
-        for i in file_paths:
-            if "lambda" in i or "field" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                self.lambdas_filename = new
-            elif "delays" in i or "time" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                self.delays_filename = new
-            elif "taspectra" in i or "eprspectra" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                self.spectra_filename = new
+        importer = RI(path)
+        self.lambdas_filename, self.delays_filename, self.spectra_filename = importer.get_Data()
 
     def calcDAS(self, preparam, d_limits, l_limits, opt_method):
         """

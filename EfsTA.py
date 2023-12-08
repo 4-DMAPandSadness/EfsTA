@@ -2,144 +2,12 @@ from PyQt5 import QtWidgets as QW
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
+import PopUps as PU
 import Controller as Cont
 import Chirp
 import numpy as np
 import os as os
 import TTIMG
-
-#####################################EXTRA CLASSES#############################
-
-class TableWindow(QW.QWidget):
-    def __init__(self,size):
-        """
-        Initializes the popup window where the user inputs their own kinetic
-        matrix through a QTableWidget.
-
-        Parameters
-        ----------
-        size : int
-            Size of the square table.
-
-        Returns
-        -------
-        None.
-
-        """
-        super(QW.QWidget,self).__init__()
-        self.ui = loadUi("table_gui.ui",self)
-        self.ui.custom_Matrix.setRowCount(size)
-        self.ui.custom_Matrix.setColumnCount(size)
-        self.ui.save.clicked.connect(self.onSave)
-        self.setWindowModality(Qt.ApplicationModal)
-        
-    def readTable(self):
-        """
-        Reads the kinetic matrix input by the user and saves the matrix in a
-        numpy array as an attribute of the TableWindow object.
-
-        Returns
-        -------
-        None.
-
-        """
-        row = self.ui.custom_Matrix.rowCount()
-        col = self.ui.custom_Matrix.columnCount()
-        K = np.zeros((row,col))
-        for i in range(row):
-            for j in range(col):
-                if self.ui.custom_Matrix.item(i,j) == None:
-                    K[i][j] = 0
-                else:
-                    K[i][j] = float(self.ui.custom_Matrix.item(i,j).text())
-        self.custom_matrix = K
-        
-    def onSave(self):
-        """
-        Executes the readTable function and closes the popup window, when the 
-        user clicks the "Save"-Button.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.readTable()
-        self.close()
-
-class FailSafeWindow(QW.QWidget):
-    def __init__(self,msg):
-        """
-        Initializes the failsafe popup window, where the most common GUI input
-        errors will be displayed in a QTextEdit.
-
-        Parameters
-        ----------
-        msg : string
-            Description of the user error.
-
-        Returns
-        -------
-        None.
-
-        """
-        super(QW.QWidget,self).__init__()
-        self.ui = loadUi("failsafe_gui.ui",self)
-        self.ui.closeFailsafe.clicked.connect(lambda: self.close)
-        self.ui.textFailsafe.setText(msg)
-        self.setWindowModality(Qt.ApplicationModal)
-
-        
-class ResultsWindow(QW.QWidget):
-    def __init__(self, model, Controller):
-        """
-        Initializes the results popup window, where the results of the fitting
-        routine will be displayed in a QTextEdit.
-
-        Parameters
-        ----------
-        model : int/string
-            Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-8, "custom model" or "custom matrix".
-        Controller : Controller
-            An object of the Controller class.
-        fit_report : string
-            The report of the minimize routine by lmfit.
-
-        Returns
-        -------
-        None.
-
-        """
-        super(QW.QWidget,self).__init__()
-        self.ui = loadUi("results_gui.ui",self)
-        self.ui.closeResults.clicked.connect(lambda: self.close)
-        self.setText(model, Controller)
-        
-    def setText(self, model, Controller):
-        """
-        Fills the QTextEdit object with the corresponding data.
-
-        Parameters
-        ----------
-        model : int/string
-            Describes the desired model. 0 for the GLA. For GTA it can be a
-            number 1-8, "custom model" or "custom matrix".
-        Controller : Controller
-            An Object of the Controller class.
-        fit_report : string
-            The report of the minimize routine by lmfit.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ui.textResults.clear()
-        text = Controller.getResults(model)
-        self.ui.textResults.append(text)
-
-#####################################MAIN######################################
 
 class MainWindow(QW.QMainWindow):
     def __init__(self): 
@@ -198,12 +66,12 @@ class MainWindow(QW.QMainWindow):
         self.ui.Exp_TA.clicked.connect(self.initTA)
         self.ui.Exp_trEPR.clicked.connect(self.initEPR)
         # GDV
-        self.ui.GVD_skip.clicked.connect(self.skip)
+        self.ui.GVD_skip.clicked.connect(self.skipChirp)
         self.ui.GVD_correct.clicked.connect(self.goChirp)
         # Chirp
-        self.ui.Chirp_Browse_Sample.clicked.connect()
-        self.ui.Chirp_Browse_Solvent.clicked.connect()
-        self.ui.Chirp_Browse_Chirp.clicked.connect()
+        self.ui.Chirp_Browse_Sample.clicked.connect(self.getpaths)
+        self.ui.Chirp_Browse_Solvent.clicked.connect(self.getpaths)
+        self.ui.Chirp_Browse_Chirp.clicked.connect(self.getpaths)
         self.ui.Chirp_Done.clicked.connect(self.corrChirp)
         # Analysis        
         self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
@@ -220,7 +88,7 @@ class MainWindow(QW.QMainWindow):
         self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
 
-    def skip(self):
+    def skipChirp(self):
         self.ui.UI_stack.setCurrentIndex(3)
         
     def goChirp(self):
@@ -241,7 +109,8 @@ class MainWindow(QW.QMainWindow):
              "Exc_Wave": self.ui.Chirp_Exclude_Wave.text(),
              "Options": options
             }
-        Chirp.correction(x)
+        CCorr = Chirp(x)
+        CCorr.correctData()
 
     def initTA(self):
         self.ui.plot_type.addItems(["fsTA", "nsTA"])
@@ -258,6 +127,40 @@ class MainWindow(QW.QMainWindow):
         self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
         self.ui.UI_stack.setCurrentIndex(3)
         self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisEPR(self.ui.plot_type.currentIndex()))
+
+###################################Utility#####################################
+
+    def readingSingleValues(self, UI_element):
+        text = UI_element.text()
+        if text == "":
+            value = None
+        else:
+            value = float(text)
+        return value
+    
+    def readLists(self, UI_element):
+        text = UI_element.text().split()
+        if text == "":
+            values = []
+        else:
+            values = text.split(',')
+            for ind, val in enumerate(values):
+                if val != "":
+                    values[ind] = float(val)
+                else:
+                    val.remove("")
+        return values
+        
+    
+    
+    
+
+####################################GVD########################################
+
+    def getpaths(self):
+        pass
+        
+
 
 #####################################DATA######################################
 
@@ -288,9 +191,12 @@ class MainWindow(QW.QMainWindow):
         if input_type == "button":
             directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
             self.ui.Data_directory.setText(directory)
+            
         elif input_type == "text":
             directory = self.ui.Data_directory.text()
+            
         self.finalInputs['Directory'] = directory
+        
         if self.ui.Data_directory.text() != "":
             self.Controller = Cont.Controller(self.getFolderPath())
             path = self.Controller.path+"/"
@@ -336,12 +242,7 @@ class MainWindow(QW.QMainWindow):
             The lower delay bound input by the user.
 
         """
-        if self.ui.Data_delay_input_lb.text() == "":
-            delay_lb = None
-        else:
-            lb_text=self.ui.Data_delay_input_lb.text()
-            delay_lb = float(lb_text)
-        return delay_lb
+        return self.readingSingleValues(self.ui.Data_delay_input_lb)
         
     def getUpperDelayBound(self):
         """
@@ -353,12 +254,7 @@ class MainWindow(QW.QMainWindow):
             The upper delay bound input by the user.
 
         """
-        if self.ui.Data_delay_input_ub.text() == "":
-            delay_ub = None
-        else:
-            ub_text=self.ui.Data_delay_input_ub.text()
-            delay_ub = float(ub_text)
-        return delay_ub
+        return self.readingSingleValues(self.ui.Data_delay_input_ub)
     
     def getLowerWavelengthBound(self):
         """
@@ -370,12 +266,7 @@ class MainWindow(QW.QMainWindow):
             The lower lambda bound input by the user.
 
         """
-        if self.ui.Data_wavelength_input_lb.text() == "":
-            lambda_lb = None
-        else:
-            lb_text=self.ui.Data_wavelength_input_lb.text()
-            lambda_lb = float(lb_text)
-        return lambda_lb
+        return self.readingSingleValues(self.ui.Data_wavelength_input_lb)
     
     def getUpperWavelengthBound(self):
         """
@@ -387,12 +278,7 @@ class MainWindow(QW.QMainWindow):
             The upper lambda bound input by the user.
 
         """
-        if self.ui.Data_wavelength_input_ub.text() == "":
-            lambda_ub = None
-        else:
-            ub_text=self.ui.Data_wavelength_input_ub.text()
-            lambda_ub = float(ub_text)
-        return lambda_ub
+        return self.readingSingleValues(self.ui.Data_wavelength_input_ub)
 
     def getMultiplier(self):
         """
@@ -509,16 +395,7 @@ class MainWindow(QW.QMainWindow):
             The lifetimes input by the user.
 
         """
-        if self.ui.GLA_input_tau.text() == "":
-            tau = []
-        else:
-            tau = self.ui.GLA_input_tau.text().split(',')
-            for i in range(len(tau)):
-                if tau[i] != "":
-                    tau[i] = float(tau[i])
-                else:
-                    tau.remove("")
-        return tau
+        return self.readLists(self.ui.GLA_input_tau)
     
     def getGLAOptMethod(self):
         """
@@ -587,14 +464,11 @@ class MainWindow(QW.QMainWindow):
             A list containing the lower bounds and upper bounds list.
 
         """
-        tau_lb = self.ui.GTA_input_tau_lb.text().split(',')
-        tau_ub = self.ui.GTA_input_tau_ub.text().split(',')
-        for i in range(len(tau_lb)):
-            if tau_lb[i] != "":
-                tau_lb[i] = float(tau_lb[i])
-        for i in range(len(tau_ub)):
-            if tau_ub[i] != "":
-                tau_ub[i] = float(tau_ub[i])
+        tau_lb = self.readLists(self.ui.GTA_input_tau_lb)
+        tau_ub = self.readLists(self.ui.GTA_input_tau_ub)
+        
+        ###Replaces empty bound with None?
+        
         if any(isinstance(obj,float) for obj in tau_lb):
             tau_lb = [None if item == '' else item for item in tau_lb]
         else:
@@ -616,10 +490,10 @@ class MainWindow(QW.QMainWindow):
             The concentration vector set by the user.
 
         """
-        c0 = self.ui.GTA_input_concentration.text().split(',')
-        for i in range(len(c0)):
-            if c0[i] != "":
-                c0[i] = float(c0[i])
+        c0 = self.readLists(self.ui.GTA_input_concentration)
+        
+        ###Was passiert hier?
+        
         if any(isinstance(obj,float) for obj in c0):
             c0 = c0
         else:
@@ -721,16 +595,7 @@ class MainWindow(QW.QMainWindow):
             The lifetimes input by the user.
 
         """
-        if self.ui.GTA_input_preset_model_tau.text() == "":
-            tau = []
-        else:
-            tau = self.ui.GTA_input_preset_model_tau.text().split(',')
-            for i in range(len(tau)):
-                if tau[i] != "":
-                    tau[i] = float(tau[i])
-                else:
-                    tau.remove("")
-        return tau
+        return self.readLists(self.ui.GTA_input_preset_model_tau)
 
 #Custom
 
@@ -762,16 +627,7 @@ class MainWindow(QW.QMainWindow):
             The lifetimes input by the user.
 
         """
-        if self.ui.GTA_input_custom_model_tau.text() == "":
-            tau = []
-        else:
-            tau = self.ui.GTA_input_custom_model_tau.text().split(',')
-            for i in range(len(tau)):
-                if tau[i] != "":
-                    tau[i] = float(tau[i])
-                else:
-                    tau.remove("")
-        return tau
+        return self.readLists(self.ui.GTA_input_custom_model_tau)
     
     def saveCustomModel(self):
         """
@@ -871,7 +727,7 @@ class MainWindow(QW.QMainWindow):
                             "X":23,
                             "Y":24,
                             "Z":25,
-                            "v":-1 #not a coordinate just a mean to identify void decays
+                            "v":-1 #not a coordinate just a way to identify void decays
                             }
         #GUI input 
         eq = self.getCustomModelEquation()
@@ -1086,14 +942,7 @@ class MainWindow(QW.QMainWindow):
             A list containing the lambdas input by the user.
 
         """
-        if self.ui.plot_input_wavelength_slices.text() == "":
-            wavelength_slices = []
-        else:
-            wavelength_slices = self.ui.plot_input_wavelength_slices.text().split(',')
-            for i in range(len(wavelength_slices)):
-                if wavelength_slices[i] != "":
-                    wavelength_slices[i] = float(wavelength_slices[i])
-        return wavelength_slices
+        return self.readLists(self.ui.plot_input_wavelength_slices)
         
     
     def checkIfDelaySlicesEmpty(self):
@@ -1119,14 +968,7 @@ class MainWindow(QW.QMainWindow):
             A list containing the delays input by the user.
 
         """
-        if self.ui.plot_input_delay_slices.text() == "":
-            delay_slices = []
-        else: 
-            delay_slices = self.ui.plot_input_delay_slices.text().split(',')
-            for i in range(len(delay_slices)):
-                if delay_slices[i] != "":
-                    delay_slices[i] = float(delay_slices[i])
-        return delay_slices
+        return self.readLists(self.ui.plot_input_delay_slices)
 
     def getUserContour(self):
         """
@@ -1366,8 +1208,10 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        popup = TableWindow(size)
+        
+        popup = PU.TableWindow(size)
         popup.show()
+        #closes before matrix is saved
         popup.save.clicked.connect(lambda: self.closePopupMatrix(popup))       
 
     def openPopUpResults(self, model, Controller):
@@ -1389,7 +1233,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        self.resultView = ResultsWindow(model, Controller)
+        self.resultView = PU.TextWindow(model, Controller, None)
         self.resultView.show()
         self.resultView.closeResults.clicked.connect(lambda: self.resultView.close())
         
@@ -1407,7 +1251,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        popup = FailSafeWindow(msg)
+        popup = PU.TextWindow(None, None, msg)
         popup.show()
         popup.closeFailsafe.clicked.connect(lambda: popup.close())
 
