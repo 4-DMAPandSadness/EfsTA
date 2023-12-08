@@ -3,6 +3,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import Controller as Cont
+import Chirp
 import numpy as np
 import os as os
 import TTIMG
@@ -190,11 +191,21 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
+        # All
         self.ui.actionTheme.triggered.connect(self.changeTheme)
+        EfsTA.aboutToQuit.connect(self.onQuit) 
+        # Intro 
         self.ui.Exp_TA.clicked.connect(self.initTA)
         self.ui.Exp_trEPR.clicked.connect(self.initEPR)
+        # GDV
         self.ui.GVD_skip.clicked.connect(self.skip)
-        self.ui.GVD_correct.clicked.connect(self.skip)
+        self.ui.GVD_correct.clicked.connect(self.goChirp)
+        # Chirp
+        self.ui.Chirp_Browse_Sample.clicked.connect()
+        self.ui.Chirp_Browse_Solvent.clicked.connect()
+        self.ui.Chirp_Browse_Chirp.clicked.connect()
+        self.ui.Chirp_Done.clicked.connect(self.corrChirp)
+        # Analysis        
         self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(lambda: self.selectFolderPath("button"))
@@ -208,10 +219,29 @@ class MainWindow(QW.QMainWindow):
         self.ui.GTA_input_preset_model_tau.editingFinished.connect(lambda: self.summonRadio("preset"))
         self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
-        EfsTA.aboutToQuit.connect(self.onQuit)      
 
     def skip(self):
+        self.ui.UI_stack.setCurrentIndex(3)
+        
+    def goChirp(self):
         self.ui.UI_stack.setCurrentIndex(2)
+        
+    def corrChirp(self):
+        options = {"Exclude": self.ui.Chirp_Exclude.isChecked(),
+                  "Debug": self.ui.Chirp_Debug.isChecked(),
+                  "Save": self.ui.Chirp_Save.isChecked(),
+                  "Single": self.ui.Chirp_Single.isChecked(),
+                  "Scatter": self.ui.Chirp_Scatter.isChecked()}
+        
+        x = {"Sample_Dir": self.ui.Chirp_Sample_Dir.text(),
+             "Solvent_Dir": self.ui.Chirp_Solvent_Dir.text(),
+             "Chirp_Dir": self.ui.Chirp_Chirp_Dir.text(),
+             "Wave_Range":self.ui.Chirp_Wave_Range.text(),
+             "Scale": self.ui.Chirp_Scale.text(),
+             "Exc_Wave": self.ui.Chirp_Exclude_Wave.text(),
+             "Options": options
+            }
+        Chirp.correction(x)
 
     def initTA(self):
         self.ui.plot_type.addItems(["fsTA", "nsTA"])
@@ -226,7 +256,7 @@ class MainWindow(QW.QMainWindow):
         self.ui.plot_xAxis.setText("$B_0$ / mT")
         self.ui.plot_yAxis.setText("time / $\mu$s")
         self.ui.plot_zAxis.setText("d$\chi$'' / d$B_0$")
-        self.ui.UI_stack.setCurrentIndex(2)
+        self.ui.UI_stack.setCurrentIndex(3)
         self.ui.plot_type.currentIndexChanged.connect(lambda: self.setAxisEPR(self.ui.plot_type.currentIndex()))
 
 #####################################DATA######################################
