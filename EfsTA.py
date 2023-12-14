@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import PopUps as PU
 import Controller as Cont
-import Chirp
+import ChirpCorrector as CC
 import numpy as np
 import os as os
 import TTIMG
@@ -69,14 +69,18 @@ class MainWindow(QW.QMainWindow):
         self.ui.GVD_skip.clicked.connect(self.skipChirp)
         self.ui.GVD_correct.clicked.connect(self.goChirp)
         # Chirp
-        self.ui.Chirp_Browse_Sample.clicked.connect(self.getpaths)
-        self.ui.Chirp_Browse_Solvent.clicked.connect(self.getpaths)
-        self.ui.Chirp_Browse_Chirp.clicked.connect(self.getpaths)
-        self.ui.Chirp_Done.clicked.connect(self.corrChirp)
+        self.ui.Chirp_Browse_Sample.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Sample_Dir))
+        self.ui.Chirp_Browse_Solvent.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Solvent_Dir))
+        self.ui.Chirp_Browse_Chirp.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Chirp_Dir))
+        self.ui.Chirp_Sample_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Sample_Dir))
+        self.ui.Chirp_Solvent_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Solvent_Dir))
+        self.ui.Chirp_Chirp_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Chirp_Dir))
+        self.ui.Chirp_Done.clicked.connect(self.checkChirpFilesIfEmpty)
+        #self.ui.Chirp_Visually.clicked.connect(self.selectChirpRange)
         # Analysis        
-        self.ui.Data_directory.editingFinished.connect(lambda: self.selectFolderPath("text"))
+        self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
-        self.ui.Data_browse.clicked.connect(lambda: self.selectFolderPath("button"))
+        self.ui.Data_browse.clicked.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
@@ -87,30 +91,6 @@ class MainWindow(QW.QMainWindow):
         self.ui.GTA_input_preset_model_tau.editingFinished.connect(lambda: self.summonRadio("preset"))
         self.ui.GTA_input_custom_model_tau.editingFinished.connect(lambda: self.summonRadio("custom"))
         self.ui.GLA_input_tau.editingFinished.connect(lambda: self.summonRadio("gla"))
-
-    def skipChirp(self):
-        self.ui.UI_stack.setCurrentIndex(3)
-        
-    def goChirp(self):
-        self.ui.UI_stack.setCurrentIndex(2)
-        
-    def corrChirp(self):
-        options = {"Exclude": self.ui.Chirp_Exclude.isChecked(),
-                  "Debug": self.ui.Chirp_Debug.isChecked(),
-                  "Save": self.ui.Chirp_Save.isChecked(),
-                  "Single": self.ui.Chirp_Single.isChecked(),
-                  "Scatter": self.ui.Chirp_Scatter.isChecked()}
-        
-        x = {"Sample_Dir": self.ui.Chirp_Sample_Dir.text(),
-             "Solvent_Dir": self.ui.Chirp_Solvent_Dir.text(),
-             "Chirp_Dir": self.ui.Chirp_Chirp_Dir.text(),
-             "Wave_Range":self.ui.Chirp_Wave_Range.text(),
-             "Scale": self.ui.Chirp_Scale.text(),
-             "Exc_Wave": self.ui.Chirp_Exclude_Wave.text(),
-             "Options": options
-            }
-        CCorr = Chirp(x)
-        CCorr.correctData()
 
     def initTA(self):
         self.ui.plot_type.addItems(["fsTA", "nsTA"])
@@ -131,6 +111,20 @@ class MainWindow(QW.QMainWindow):
 ###################################Utility#####################################
 
     def readingSingleValues(self, UI_element):
+        '''
+        Take a QLineEdit, reads the text and returns the value as a float.
+
+        Parameters
+        ----------
+        UI_element : QLineEdit
+            The UI element from which the input is read..
+
+        Returns
+        -------
+        value : float
+            The converted input text.
+
+        '''
         text = UI_element.text()
         if text == "":
             value = None
@@ -139,7 +133,21 @@ class MainWindow(QW.QMainWindow):
         return value
     
     def readLists(self, UI_element):
-        text = UI_element.text().split()
+        '''
+        Take a QLineEdit, reads the text and returns a list of floats.
+
+        Parameters
+        ----------
+        UI_element : QLineEdit
+            The UI element from which the input is read..
+
+        Returns
+        -------
+        value : list
+            A list of the converted text elements.
+
+        '''
+        text = UI_element.text()
         if text == "":
             values = []
         else:
@@ -152,14 +160,93 @@ class MainWindow(QW.QMainWindow):
         return values
         
     
+    def getFolderPaths(self, input_type, UI_element):
+        '''
+        Opens a filedialog window for the user to select the folder directory, where the data is stored.
+
+        Returns
+        -------
+        None.
+
+        '''
+
+        if input_type == "button":
+            directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
+            UI_element.setText(directory)            
+        elif input_type == "text":
+            directory = UI_element.text()
+        
+        if UI_element == self.ui.Data_directory:
+            self.readData(directory)
     
-    
+    def getFilePaths(self, input_type, UI_element):
+        '''
+        Opens a filedialog window for the user to select a file.
+        Returns
+        -------
+        None.
+
+        '''
+
+        if input_type == "button":
+            directory = QW.QFileDialog.getOpenFileName(self, 'Select File')
+            UI_element.setText(directory[0])            
+        elif input_type == "text":
+            directory = UI_element.text()
+        
+        
 
 ####################################GVD########################################
 
-    def getpaths(self):
-        pass
+    def skipChirp(self):
+        self.ui.UI_stack.setCurrentIndex(3)
         
+    def goChirp(self):
+        self.ui.UI_stack.setCurrentIndex(2)
+        
+    def checkChirpFilesIfEmpty(self):
+        '''
+        NOT WORKING ALWAYS SKIPS FAILSAFE
+
+        Returns
+        -------
+        sample_dir : string
+            Sample measurement file path.
+        solvent_dir : string
+            Solvent measurement file path.
+        chirp_dir : string
+            Chirp/OKE measurement file path.
+
+        '''
+        sample_dir = self.ui.Chirp_Sample_Dir.text()
+        solvent_dir = self.ui.Chirp_Solvent_Dir.text()
+        chirp_dir = self.ui.Chirp_Chirp_Dir.text()
+        if (sample_dir == "" or 
+            solvent_dir == "" or 
+            chirp_dir == ""):
+            self.openFailSafe("Please provide paths for all necessary files.")
+            return
+        else:
+            self.corrChirp(sample_dir, solvent_dir, chirp_dir)
+        
+    def corrChirp(self, sample_dir, solvent_dir, chirp_dir):
+    
+        options = {"Exclude": self.ui.Chirp_Exclude.isChecked(),
+                  "Debug": self.ui.Chirp_Debug.isChecked(),
+                  "Save": self.ui.Chirp_Save.isChecked(),
+                  "Single": self.ui.Chirp_Single.isChecked(),
+                  "Scatter": self.ui.Chirp_Scatter.isChecked()}
+        
+        x = {"Sample_Dir": sample_dir,
+             "Solvent_Dir": solvent_dir,
+             "Chirp_Dir": chirp_dir,
+             "Wave_Range":self.readLists(self.ui.Chirp_Wave_Range),
+             "Scale": self.readingSingleValues(self.ui.Chirp_Scale),
+             "Exc_Wave": self.readLists(self.ui.Chirp_Exclude_Wave),
+             "Options": options
+            }
+        CCorr = CC.ChirpCorrector(x)
+        CCorr.correctData()
 
 
 #####################################DATA######################################
@@ -179,26 +266,12 @@ class MainWindow(QW.QMainWindow):
             self.openFailSafe("Please select a folder directory.")
             return True
 
-    def selectFolderPath(self,input_type):
-        '''
-        Opens a filedialog window for the user to select the folder directory, where the data is stored.
+    def readData(self, directory):
 
-        Returns
-        -------
-        None.
-
-        '''
-        if input_type == "button":
-            directory = QW.QFileDialog.getExistingDirectory(self, 'Select Folder')
-            self.ui.Data_directory.setText(directory)
-            
-        elif input_type == "text":
-            directory = self.ui.Data_directory.text()
-            
         self.finalInputs['Directory'] = directory
         
-        if self.ui.Data_directory.text() != "":
-            self.Controller = Cont.Controller(self.getFolderPath())
+        if directory != "":
+            self.Controller = Cont.Controller()
             path = self.Controller.path+"/"
             names = ["delays_filename","lambdas_filename", "spectra_filename"]
             if all(hasattr(self.Controller, attr) for attr in names) == False:
@@ -216,21 +289,8 @@ class MainWindow(QW.QMainWindow):
                 pickle = path + txt + ".dir"
                 if os.path.isfile(pickle):
                     self.setPickle()
-
-    def getFolderPath(self):
-        """
-        Checks if a folder directory was selected and returns it.
-
-        Returns
-        -------
-        self.ui.folderpath.text() : string
-            The folder directory.
-
-        """
-        if self.ui.Data_directory == "":
+        else: 
             self.openFailSafe("Please select a folder directory.")
-        else:
-            return self.ui.Data_directory.text()
         
     def getLowerDelayBound(self):
         """
@@ -824,7 +884,7 @@ class MainWindow(QW.QMainWindow):
             True if empty.
 
         """
-        if hasattr(self, 'custom_matrix') == False:
+        if hasattr(self, 'custom_Matrix') == False:
             self.openFailSafe("Please input a kinetic matrix.")
             return True
 
@@ -843,7 +903,7 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        self.custom_matrix = popup.custom_matrix
+        self.custom_Matrix = popup.custom_Matrix
         popup.close()
 
 #####################################PREPARE PARAMETERS########################
@@ -1188,7 +1248,7 @@ class MainWindow(QW.QMainWindow):
         
         elif self.GTA_radio_custom_matrix.isChecked() == True:
             model = "custom matrix"
-            K = self.custom_matrix
+            K = self.custom_Matrix
             self.calculationGTA(db,wb,model,K)
             self.plotting(ds,ws,model,False)
 
@@ -1212,7 +1272,7 @@ class MainWindow(QW.QMainWindow):
         popup = PU.TableWindow(size)
         popup.show()
         #closes before matrix is saved
-        popup.save.clicked.connect(lambda: self.closePopupMatrix(popup))       
+        popup.save.clicked.connect(lambda: self.closePopupMatrix(popup))    
 
     def openPopUpResults(self, model, Controller):
         """
@@ -1235,7 +1295,6 @@ class MainWindow(QW.QMainWindow):
         """
         self.resultView = PU.TextWindow(model, Controller, None)
         self.resultView.show()
-        self.resultView.closeResults.clicked.connect(lambda: self.resultView.close())
         
     def openFailSafe(self,msg):
         """
@@ -1253,7 +1312,6 @@ class MainWindow(QW.QMainWindow):
         """
         popup = PU.TextWindow(None, None, msg)
         popup.show()
-        popup.closeFailsafe.clicked.connect(lambda: popup.close())
 
     def presentInputs(self,ind):
         '''
@@ -1376,7 +1434,7 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs['Lower Wavelength/Field Bound'] = self.ui.Data_wavelength_input_lb.text()
         self.finalInputs['Upper Wavelength/Field Bound'] = self.ui.Data_wavelength_input_ub.text()
         self.finalInputs['Data Multiplier'] = self.ui.Data_input_multiplier.text()
-        self.finalInputs['Directory'] = self.getFolderPath()
+        self.finalInputs['Directory'] = self.ui.Data_directory.text()
         self.finalInputs['Lower Tau Bounds'] = self.ui.GTA_input_tau_lb.text()
         self.finalInputs['Upper Tau Bounds'] = self.ui.GTA_input_tau_ub.text()
         self.finalInputs['x-Axis'] = self.ui.plot_xAxis.text()
@@ -1413,8 +1471,8 @@ class MainWindow(QW.QMainWindow):
             self.finalInputs['Optimizer'] = self.ui.GTA_algorithm_optimize.currentText()
             self.finalInputs['Initial Value Problem Solver'] = self.ui.GTA_algorithm_initial_value_problem.currentText()
             self.finalInputs['Concentrations'] = self.ui.GTA_input_concentration.text()
-            if hasattr(self, "custom_matrix"):
-                self.finalInputs['Matrix'] = str(self.custom_matrix)
+            if hasattr(self, "custom_Matrix"):
+                self.finalInputs['Matrix'] = str(self.custom_Matrix)
             else:
                 self.finalInputs['Matrix'] = "Missing Input."
         self.finalInputs['Selected Plots'] = ""
@@ -1481,7 +1539,7 @@ class MainWindow(QW.QMainWindow):
             for i in range(len(models)):
                 self.ui.GTA_input_custom_model_saved_equations.addItem(models[i])
         if "Custom Matrix" in self.shelf:
-            self.custom_matrix = self.shelf["Matrix"]
+            self.custom_Matrix = self.shelf["Matrix"]
         if "Buttons" in self.shelf:
             buttons = self.shelf["Buttons"]
             

@@ -22,7 +22,7 @@ class TableWindow(QW.QWidget):
         self.matrix_Table.verticalHeader().setDefaultSectionSize(50)
 
         self.save = QW.QPushButton('Save', self)
-        self.save.clicked.connect(self.onSave)
+        self.save.clicked.connect(self.readTable)
 
         self.layout = QW.QGridLayout()
         self.layout.addWidget(self.matrix_Table, 0, 0, 1, 2)
@@ -47,26 +47,14 @@ class TableWindow(QW.QWidget):
         K = np.zeros((self.size, self.size))
         for i in range(self.size):
             for j in range(self.size):
-                if self.custom_Matrix.item(i,j) == None:
+                if self.matrix_Table.item(i,j) == None:
                     K[i][j] = 0
                 else:
-                    K[i][j] = float(self.custom_Matrix.item(i,j).text())
-        self.custom_matrix = K
-
-    def onSave(self):
-        """
-        Executes the readTable function and closes the popup window, when the 
-        user clicks the "Save"-Button.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.readTable()
-        self.close()
+                    K[i][j] = float(self.matrix_Table.item(i,j).text())
+        self.custom_Matrix = K
 
 class TextWindow(QW.QWidget):
+    
     def __init__(self, model, Controller, Message):
         super(QW.QWidget,self).__init__()
         self.model = model
@@ -75,7 +63,6 @@ class TextWindow(QW.QWidget):
         self.initUI() 
         
     def initUI(self):
-        self.setWindowTitle('Test')
         
         self.text_browser = QW.QTextBrowser()
         

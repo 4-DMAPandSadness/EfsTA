@@ -78,14 +78,14 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="Chirp">
        <layout class="QGridLayout" name="gridLayout_22">
-        <item row="1" column="4">
-         <widget class="QPushButton" name="Chirp_Browse_Solvent">
-          <property name="text">
-           <string>Browse</string>
+        <item row="1" column="0" colspan="5">
+         <widget class="QLineEdit" name="Chirp_Solvent_Dir">
+          <property name="placeholderText">
+           <string>Solvent Measurment Directory</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0" colspan="4">
+        <item row="0" column="0" colspan="5">
          <widget class="QLineEdit" name="Chirp_Sample_Dir">
           <property name="text">
            <string/>
@@ -95,56 +95,7 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <widget class="QCheckBox" name="Chirp_Debug">
-          <property name="text">
-           <string>Debug</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="2">
-         <widget class="QCheckBox" name="Chirp_Single">
-          <property name="text">
-           <string>Single</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QCheckBox" name="Chirp_Exclude">
-          <property name="text">
-           <string>Exclude</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QCheckBox" name="Chirp_Save">
-          <property name="text">
-           <string>Save</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLineEdit" name="Chirp_Wave_Range">
-          <property name="placeholderText">
-           <string>Wavelength Range</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QCheckBox" name="Chirp_Scatter">
-          <property name="text">
-           <string>Scatter</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLineEdit" name="Chirp_Scale">
-          <property name="placeholderText">
-           <string>Scale</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
+        <item row="9" column="0">
          <widget class="QLineEdit" name="Chirp_Exclude_Wave">
           <property name="text">
            <string/>
@@ -154,14 +105,86 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="4">
-         <widget class="QLineEdit" name="Chirp_Solvent_Dir">
-          <property name="placeholderText">
-           <string>Solvent Measurment Directory</string>
+        <item row="1" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Solvent">
+          <property name="text">
+           <string>Browse</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0" colspan="4">
+        <item row="4" column="0">
+         <widget class="QLineEdit" name="Chirp_Wave_Range">
+          <property name="placeholderText">
+           <string>Wavelength Range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QPushButton" name="Chirp_Done">
+          <property name="text">
+           <string>Correct the Data and move on to analysis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="5" rowspan="10">
+         <widget class="QGroupBox" name="Chirp_options">
+          <property name="title">
+           <string>Options</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_23">
+           <item row="0" column="1" colspan="2">
+            <widget class="QCheckBox" name="Chirp_Save">
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="Chirp_Scatter">
+             <property name="text">
+              <string>Scatter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCheckBox" name="Chirp_Debug">
+             <property name="text">
+              <string>Debug</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QCheckBox" name="Chirp_Exclude">
+             <property name="text">
+              <string>Exclude</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="Chirp_Single">
+             <property name="text">
+              <string>Single</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Sample">
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Chirp">
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="5">
          <widget class="QLineEdit" name="Chirp_Chirp_Dir">
           <property name="text">
            <string/>
@@ -171,24 +194,17 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="0" column="4">
-         <widget class="QPushButton" name="Chirp_Browse_Sample">
-          <property name="text">
-           <string>Browse</string>
+        <item row="6" column="0" rowspan="2">
+         <widget class="QLineEdit" name="Chirp_Scale">
+          <property name="placeholderText">
+           <string>Scale</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="4">
-         <widget class="QPushButton" name="Chirp_Browse_Chirp">
+        <item row="5" column="0">
+         <widget class="QPushButton" name="Chirp_Visually">
           <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QPushButton" name="Chirp_Done">
-          <property name="text">
-           <string>Correct the Data and move on to analysis</string>
+           <string>Set Range Visually</string>
           </property>
          </widget>
         </item>
