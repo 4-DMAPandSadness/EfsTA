@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 
 import ChirpSelector as CS
 
+import os
+
 def correction(parameters):
     pass
 
@@ -38,15 +40,24 @@ class ChirpCorrector():
         time = time.round() / 100
         spec = data[1:]
         spec = spec.T[1:]
-        self.time = time
-        return wave, spec
+        return wave, time, spec
 
-    def removeNaN(self, spec):
-        nan = np.isnan(spec)
-        cols, rows = np.where(nan)
-        spec = spec
-        if cols.any():
-            print("Warning: removeNaN() has detected and removed NaNs in spectra.")
+    def removeNaNinf(self, spec):
+        nan = ~np.isfinite(spec)
+        if nan.ndim == 1:
+            pos = np.where(nan)[0]
+            print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
+            for i, val in enumerate(pos):
+                if val == 0:
+                    spec[pos[i]] = spec[pos[i]+1]
+                elif val == len(spec)-1:
+                    spec[pos[i]] = spec[pos[i]-1]
+                else:
+                    new_value = (spec[pos[i]+1] + spec[pos[i]-1]) / 2
+                    spec[pos[i]] = new_value
+        elif nan.ndim == 2:
+            cols, rows = np.where(nan)
+            print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
             for i, val in enumerate(cols):
                 if val == 0:
                     spec[cols[i],rows[i]] = spec[cols[i]+1,rows[i]]
@@ -55,7 +66,9 @@ class ChirpCorrector():
                 else:
                     new_value = (spec[cols[i]-1,rows[i]] + spec[cols[i]+1,rows[i]]) / 2
                     spec[cols[i],rows[i]] = new_value
-        return spec.T
+        else:
+            spec = spec
+        return spec
     
     def genLV(self,wave):
         if self.wave_range != []:
@@ -81,7 +94,7 @@ class ChirpCorrector():
             centers[i] = chirp_t[ind]
         return centers
     
-    def fitCurve(self, centers):
+    def fitCurve(self,ns_wave, ns_centers):
         lb = [];
         ub = [];
         y0 = [3.1,-2.9,-1.8e4]
@@ -90,62 +103,69 @@ class ChirpCorrector():
         
         fitfun = lambda x, a1, a2, a3: a1 + 1e5*a2/x**2 + 1e6*a3/x**4 
         
-        self.popt, pcov = sco.curve_fit(fitfun, self.oke_wave ,centers, p0=y0)
-
-        shift = fitfun(self.oke_wave, *self.popt)
+        self.popt, pcov = sco.curve_fit(fitfun, ns_wave, ns_centers, p0=y0)
         
-        return shift
-    
-    def correctShift(self, shift):
-        data_c = self.sample_spec #' <- complex transponieren?
+        shift_plot = fitfun(ns_wave, *self.popt)
+        shift = fitfun(self.wave, *self.popt)
+        return shift_plot, shift
+        
+    def correctShift(self,shift):
+        data_c = self.sample_spec.T
         data_cc = np.zeros_like(data_c)
 
-        for i in len(data_c[0]):
+        # print(f"self.time: {self.time.shape} \n self.data: {data_c[0,:].shape} \n t_shift: {shift.shape}")
+        for i in range(len(data_c)):
             t_shift = self.time + shift[i]
-            data_cc[i,:] = sci.PchipInterpolator(self.time, data_c[i,:], t_shift)
-            #time oder t_shift? eins von beiden muss raus python implementation nur zwei argumente
-        return data_c
+            data_nn = self.removeNaNinf(data_c[i])
+            data_cc[i,:] = sci.pchip_interpolate(self.time, data_nn, t_shift)
+        return data_cc
         
 ###############################################################################
     
     def prepareSample(self):
         data = self.readData(self.sample_dir)
-        wave, spec = self.splitData(data)
-        spec_NN = self.removeNaN(spec)
+        wave,  self.time, spec= self.splitData(data)
+        spec_NN = self.removeNaNinf(spec).T
         spec_trunc = self.truncateSpec(spec_NN)
         self.sample_spec = self.removeBackground(spec_trunc, self.background)
         
     def prepareBackground(self):
         data = self.readData(self.solvent_dir)
-        wave, spec = self.splitData(data)
+        wave, bg_time, spec = self.splitData(data)
         self.genLV(wave)
-        spec_NN = self.removeNaN(spec)
+        spec_NN = self.removeNaNinf(spec).T
         self.background = self.truncateSpec(spec_NN)
 
     def prepareChirp(self):
         data = self.readData(self.chirp_dir)
-        wave, spec = self.splitData(data)
-        spec_NN = self.removeNaN(spec)
-        lv_t = (self.time >= -1) & (self.time <= 1)
-        chirp_t = self.time[lv_t]
+        wave, chirp_time, spec = self.splitData(data)
+        spec_NN = self.removeNaNinf(spec).T
+        lv_t = (chirp_time >= -1) & (chirp_time <= 1)
+        chirp_t = chirp_time[lv_t]
         chirp_spec = spec_NN[lv_t,:]
         
         selector = CS.ChirpSelector(wave, chirp_t, chirp_spec, self)
     
-    def removeSpikes(self):
-        pass
+    def removeSpikes(self,chirp_wave, centers):
+        diff = np.absolute(np.diff(centers))
+        diff = np.insert(diff, 0, diff[0])
+        lv = (diff < 0.1)
         
+        ns_wave = chirp_wave[lv]
+        ns_centers = centers[lv]
+        
+        return ns_wave, ns_centers
     
     def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
         centers = self.findMinima(chirp_wave, chirp_t, sel_spec)
-
+        ns_wave, ns_centers = self.removeSpikes(chirp_wave, centers)
+        shift_plot, shift = self.fitCurve(ns_wave, ns_centers)
         plt.plot(chirp_wave, centers, '.', markersize="10", mfc='none', color = "blue", label = "Centers with spikes", alpha = 0.5)
-        plt.plot(chirp_wave, no_spikes, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
-        plt.plot(chirp_wave, fitfun(wave, *self.popt), 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
+        plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
+        plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
         plt.show()
         plt.legend()
         
-        shift = self.fitCurve(centers)
         corr_spec = self.correctShift(shift)
         
         self.saveToTxt(self.wave, self.time, corr_spec)
@@ -153,11 +173,13 @@ class ChirpCorrector():
     def saveToTxt(self, corr_wave, corr_time, corr_spec):
         file = self.sample_dir.split("/")[-1].split(".")[0]
         path = "/".join(self.sample_dir.split("/")[:-1])
-        save_path = f"{path}/corrected_Data/{file}"
-        np.savetxt(f"{save_path}_taspectra.txt",'corr_spec','-ascii')
-        np.savetxt(f"{save_path}_delays.txt",'corr_time','-ascii')
-        np.savetxt(f"{save_path}_lambda.txt",'corr_wave','-ascii')
-        np.savetxt(f"{save_path}_curveFit_Parameters.txt",'self.popt','-ascii')
+        save_path = f"{path}/corrected_Data/"
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        np.savetxt(f"{save_path}{file}_taspectra.txt",corr_spec,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_delays.txt",corr_time,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_lambda.txt",corr_wave,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
         
     
     def correctData(self):

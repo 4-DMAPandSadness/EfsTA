@@ -80,7 +80,7 @@ class MainWindow(QW.QMainWindow):
         # Analysis        
         self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
-        self.ui.Data_browse.clicked.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
+        self.ui.Data_browse.clicked.connect(lambda: self.getFolderPaths("button", self.ui.Data_directory))
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
         self.ui.GTA_input_custom_model_saved_equations.currentIndexChanged.connect(lambda: self.setCustomModel(self.ui.GTA_input_custom_model_saved_equations.currentIndex()))
         self.ui.Data_clear_cache.clicked.connect(self.clearPickle)
@@ -271,7 +271,7 @@ class MainWindow(QW.QMainWindow):
         self.finalInputs['Directory'] = directory
         
         if directory != "":
-            self.Controller = Cont.Controller()
+            self.Controller = Cont.Controller(directory)
             path = self.Controller.path+"/"
             names = ["delays_filename","lambdas_filename", "spectra_filename"]
             if all(hasattr(self.Controller, attr) for attr in names) == False:

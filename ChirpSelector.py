@@ -4,8 +4,6 @@ import numpy as np
 from matplotlib.widgets import SpanSelector
 from matplotlib.widgets import Button
 
-#mpl.rcParams['toolbar'] = 'None'
-
 class ChirpSelector():
     
     def __init__(self, wave, time, spec, corrector):
@@ -42,8 +40,8 @@ class ChirpSelector():
         
         self.ax_Show = Button(self.axa, 'Show')
         self.ax_Undo = Button(self.axb, 'Undo')
-        self.ax_Res = Button(self.axc, 'Reset', color='red', hovercolor='red')
-        self.ax_Cont = Button(self.axd, 'Continue', color='green', hovercolor='green')
+        self.ax_Res = Button(self.axc, 'Reset', color='red')
+        self.ax_Cont = Button(self.axd, 'Continue', color='green')
         
         self.ax_Show.on_clicked(self.show)
         self.ax_Undo.on_clicked(self.undo)
