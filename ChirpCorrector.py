@@ -8,14 +8,6 @@ import ChirpSelector as CS
 
 import os
 
-def correction(parameters):
-    pass
-
-#for sample data / bg
-# getData -> splitData -> reemoveNaN -> truncate -> removeBG
-
-#for chirp
-# getData -> splitData ->
 
 class ChirpCorrector():
     
@@ -83,7 +75,10 @@ class ChirpCorrector():
         return spec
         
     def removeBackground(self, spec, background):
-        scale = (1-10**-self.scale) / (2.3*self.scale)
+        if self.scale == None:
+            scale = 1    
+        else:
+            scale = (1-10**-self.scale) / (2.3*self.scale)
         background = background[:,self.lv]
         return spec - (background * scale)
     
@@ -94,9 +89,47 @@ class ChirpCorrector():
             centers[i] = chirp_t[ind]
         return centers
     
+    def removeSpikes(self,chirp_wave, centers):
+        ns_wave = chirp_wave
+        ns_centers = centers
+        while True:
+            prev_length = len(ns_centers)
+            
+            diff = np.absolute(np.diff(ns_centers))
+            diff = np.insert(diff, 0, diff[0])
+            diff = self.sepSpikesAndFollowValues(diff, ns_centers)
+            lv = (diff < 0.2)
+            
+            ns_wave = chirp_wave[lv]
+            ns_centers = centers[lv]
+            
+            new_length = len(ns_centers)
+            
+            if prev_length == new_length:
+                break
+        
+        return ns_wave, ns_centers
+    
+    def sepSpikesAndFollowValues(self, diff, centers):
+        idx = 0 
+        diff_len = len(diff)
+        while idx < diff_len - 1:
+            if diff[idx] > 0.2:
+                temp_idx = idx + 1
+                
+                while temp_idx < diff_len and abs(centers[idx -1] - centers[temp_idx]) > 0.2:
+                    temp_idx += 1
+                
+                if temp_idx < diff_len and diff[temp_idx] != 0:
+                    diff[temp_idx] = 0
+                idx = temp_idx
+            else:
+                idx += 1
+        return diff
+    
     def fitCurve(self,ns_wave, ns_centers):
-        lb = [];
-        ub = [];
+        # lb = [];
+        # ub = [];
         y0 = [3.1,-2.9,-1.8e4]
         # options = optimset('MaxIter', 50, 'TolFun', 1e-17, 'TolX', 1e-16, ...
         #     'MaxFunEvals', 100, 'Display', 'off')
@@ -112,8 +145,6 @@ class ChirpCorrector():
     def correctShift(self,shift):
         data_c = self.sample_spec.T
         data_cc = np.zeros_like(data_c)
-
-        # print(f"self.time: {self.time.shape} \n self.data: {data_c[0,:].shape} \n t_shift: {shift.shape}")
         for i in range(len(data_c)):
             t_shift = self.time + shift[i]
             data_nn = self.removeNaNinf(data_c[i])
@@ -146,29 +177,87 @@ class ChirpCorrector():
         
         selector = CS.ChirpSelector(wave, chirp_t, chirp_spec, self)
     
-    def removeSpikes(self,chirp_wave, centers):
-        diff = np.absolute(np.diff(centers))
-        diff = np.insert(diff, 0, diff[0])
-        lv = (diff < 0.1)
-        
-        ns_wave = chirp_wave[lv]
-        ns_centers = centers[lv]
-        
-        return ns_wave, ns_centers
-    
     def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
         centers = self.findMinima(chirp_wave, chirp_t, sel_spec)
-        ns_wave, ns_centers = self.removeSpikes(chirp_wave, centers)
-        shift_plot, shift = self.fitCurve(ns_wave, ns_centers)
-        plt.plot(chirp_wave, centers, '.', markersize="10", mfc='none', color = "blue", label = "Centers with spikes", alpha = 0.5)
-        plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
-        plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
-        plt.show()
-        plt.legend()
+        np.savetxt("centers.txt", centers)
+        np.savetxt("wave.txt", chirp_wave)
+        # ns_wave, ns_centers = self.removeSpikes(chirp_wave, centers)
+        # shift_plot, shift = self.fitCurve(ns_wave, ns_centers)
         
-        corr_spec = self.correctShift(shift)
         
-        self.saveToTxt(self.wave, self.time, corr_spec)
+        # plt.figure()
+        # plt.plot(chirp_wave, centers, '.', markersize="10", mfc='none', color = "blue", label = "Centers with spikes", alpha = 0.5)
+        # plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
+        # plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 105*b / x2 + 106*c / x4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
+        # plt.show()
+        # plt.legend(loc='lower right')
+        
+        # corr_spec = self.correctShift(shift)
+        
+        # if self.options["Exclude"] == True:
+        #     corr_spec = self.scattering()
+        
+        # if self.options["Save"] == True:
+        #     self.saveToTxt(self.wave, self.time, corr_spec)
+        
+    def scattering(self, corr_spec):
+            exclude = self.exc_del
+        
+            pos = np.zeros(len(self.exc_del))
+        
+            for i in len(pos):
+                tmp = np.argwhere(abs(self.time - exclude(i)) <= 1e-14);
+            
+                if len(tmp) > 1:
+                    print('load_raw:exclude', 'Indicated delay corresponds to '
+                        'more than one spectrum. Decrease tolerance or/and check '
+                        'spectra for double occurence.')
+                    pos[i] = tmp[1]
+                
+                elif np.any(tmp) == False:
+                    print('load_raw:exclude', f"Indicated delay: {exclude[i]}, not found. Delay ignored.'")
+                    pos[i] = 0
+                else:
+                    pos[i] = tmp
+            
+            #pos(pos = 0) = []  ???
+        
+            corr_spec[:,pos] = []
+            self.time[pos] = []
+
+            # names = dict()
+            # for i in len(self.time):
+            #     names{i} = str(self.time[i])
+            
+            scatter = np.zeros(len(self.wave))
+            
+            if self.options["Scatter"] == True:
+                lv = (self.wave >= self.exc_wave-20) & (self.wave <= self.exc_wave+20)
+                
+                if self.options["Single"] == True:
+                    lv_t = self.time <= -0.4
+                    tmp_time = self.time(lv_t)
+                    nr_t = len(tmp_time)
+                    
+                    # names_bg = cell(nr_t,1);
+                    # for i = 1 : nr_t
+                    #     names_bg{i} = num2str(i);
+                    # end
+                    fig = plt.Figure()
+                    plt.plot(self.wave, corr_spec[:,1:nr_t])
+                    #legend(names_bg(1:end))
+                    
+                    scatter_bg = input('Indicate number of background spectrum to be subtracted: ');
+                    
+                    if np.any(scatter_bg == True):
+                        tmp = corr_spec[:,scatter_bg]
+                else:
+                    tmp = np.mean(corr_spec[:,-11:],axis=1)
+                scatter[lv] = tmp[lv]
+            
+            data_cc = corr_spec - np.tile(scatter,(1,len(self.time)))
+            
+            return data_cc
         
     def saveToTxt(self, corr_wave, corr_time, corr_spec):
         file = self.sample_dir.split("/")[-1].split(".")[0]
@@ -182,7 +271,7 @@ class ChirpCorrector():
         np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
         
     
-    def correctData(self):
+    def correctData(self, EfsTA):
         self.prepareBackground()
         self.prepareSample()
         self.prepareChirp()

@@ -78,24 +78,97 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="Chirp">
        <layout class="QGridLayout" name="gridLayout_22">
-        <item row="1" column="0" colspan="5">
-         <widget class="QLineEdit" name="Chirp_Solvent_Dir">
-          <property name="placeholderText">
-           <string>Solvent Measurment Directory</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0" colspan="5">
          <widget class="QLineEdit" name="Chirp_Sample_Dir">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the sample measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]sample_1_raw.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="placeholderText">
-           <string>Sample Measurment Directory</string>
+           <string>Sample Measurment Path</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="11" column="0">
+         <widget class="QLineEdit" name="Chirp_Wave_Range">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the upper and lower bound for the wavelength range of interest.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Data measured from 200 to 900 nm but relevant range is only from 350 to 800 nm.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;350, 800&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="placeholderText">
+           <string>Wavelength Range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QPushButton" name="Chirp_Visually">
+          <property name="text">
+           <string>Set Range Visually</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Solvent">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the file containing the solvent/background measurment data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="16" column="0">
+         <widget class="QPushButton" name="Chirp_Done">
+          <property name="text">
+           <string>Correct the Data and move on to analysis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Sample">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the file containing the sample measurment data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="5">
+         <widget class="QLineEdit" name="Chirp_Solvent_Dir">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the background / pure solvent measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]solvent.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="placeholderText">
+           <string>Solvent Measurment Path</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QPushButton" name="Chirp_Browse_Chirp">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the file containing the chirp/OKE measurment data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="5">
+         <widget class="QLineEdit" name="Chirp_Chirp_Dir">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the chirp / OKE measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]GATE.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>Chirp Measurment Path</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
          <widget class="QLineEdit" name="Chirp_Exclude_Wave">
           <property name="text">
            <string/>
@@ -105,106 +178,76 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="1" column="5">
-         <widget class="QPushButton" name="Chirp_Browse_Solvent">
-          <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLineEdit" name="Chirp_Wave_Range">
-          <property name="placeholderText">
-           <string>Wavelength Range</string>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="0">
-         <widget class="QPushButton" name="Chirp_Done">
-          <property name="text">
-           <string>Correct the Data and move on to analysis</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="5" rowspan="10">
+        <item row="3" column="5" rowspan="15">
          <widget class="QGroupBox" name="Chirp_options">
           <property name="title">
            <string>Options</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_23">
-           <item row="0" column="1" colspan="2">
-            <widget class="QCheckBox" name="Chirp_Save">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
+           <item row="0" column="1">
             <widget class="QCheckBox" name="Chirp_Scatter">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only select if Exclude is also selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
               <string>Scatter</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QCheckBox" name="Chirp_Debug">
-             <property name="text">
-              <string>Debug</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
+           <item row="0" column="0">
             <widget class="QCheckBox" name="Chirp_Exclude">
              <property name="text">
               <string>Exclude</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item row="3" column="1">
+            <widget class="QCheckBox" name="Chirp_Save">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If selected, a new folder will be created and the corrected data will be saved in the correct format for the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Save</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
             <widget class="QCheckBox" name="Chirp_Single">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only select if Exclude and Scatter are also selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="text">
               <string>Single</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="Chirp_Debug">
+             <property name="text">
+              <string>Debug</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="5">
-         <widget class="QPushButton" name="Chirp_Browse_Sample">
-          <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="5">
-         <widget class="QPushButton" name="Chirp_Browse_Chirp">
-          <property name="text">
-           <string>Browse</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="5">
-         <widget class="QLineEdit" name="Chirp_Chirp_Dir">
-          <property name="text">
-           <string/>
-          </property>
+        <item row="6" column="0">
+         <widget class="QLineEdit" name="Chirp_Exclude_Delay">
           <property name="placeholderText">
-           <string>Chirp Measurment Directory</string>
+           <string>Exclude Delay</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="0" rowspan="2">
+        <item row="9" column="0">
          <widget class="QLineEdit" name="Chirp_Scale">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the &lt;span style=&quot; font-style:italic;&quot;&gt;OD&lt;/span&gt;-value for the calculation of the scaling factor for the background/solvent measurement using formula (a) according to [1].&lt;/p&gt;&lt;p&gt;(a)&lt;span style=&quot; font-style:italic;&quot;&gt; f&lt;/span&gt; = (1-10&lt;span style=&quot; font-style:italic; vertical-align:super;&quot;&gt;-OD&lt;/span&gt;) / (2.3 * &lt;span style=&quot; font-style:italic;&quot;&gt;OD&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The OD-value is 0.171.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;0.171&lt;/p&gt;&lt;p&gt;[1] Lorenc, M., Ziolek, M., Naskrecki, R. &lt;span style=&quot; font-style:italic;&quot;&gt;et al.Appl Phys B &lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2002, &lt;/span&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;74&lt;/span&gt;, 19–27.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
           <property name="placeholderText">
            <string>Scale</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QPushButton" name="Chirp_Visually">
-          <property name="text">
-           <string>Set Range Visually</string>
           </property>
          </widget>
         </item>
@@ -215,7 +258,7 @@ p, li { white-space: pre-wrap; }
         <item row="0" column="0">
          <widget class="QTabWidget" name="Analysis_stack">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="Introduction">
            <attribute name="title">
@@ -229,13 +272,13 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;To start your analysis, go through all the tabs and make your various inputs. You have to choose between GLA and GTA but after one is complete you can alwasy go back und do the other one.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;To start your analysis, go through all the tabs and make your various inputs. You have to choose between GLA and GTA but after one is complete you can always go back und do the other one.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;Multiple input parameters NEED to be separated by a comma except if it is stated otherwise. For decimal points use a dot. If anything is unclear, you can read the manual &lt;/span&gt;&lt;a href=&quot;https://github.com/4-DMAPandSadness/EfsTA/blob/main/User%20Guide.md&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#0055ff;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or hover with your mouse over any interactable object in this user interface and a tooltip will show up and explain what you have to do or show you an example.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Data&amp;quot; tab you can select the directory in which the measured data are saved and, if necessary, specify the data range which should be analysed. &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;The data &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-weight:600;&quot;&gt;need&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; to be separated into &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-weight:600;&quot;&gt;three&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; files ending with &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;time.* &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;or&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt; delays.*&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;field&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; or &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;lambda.*&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; and ta&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;spectra.* &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;or&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt; eprspectra.*&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;, depending on which kind of data you want to analyse&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt; font-style:italic;&quot;&gt;.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;The results will be saved in the data directory. You will find a new folder called &amp;quot;analysis&amp;quot;, which will contain all the plots and the reconstructed spectra.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;GLA&amp;quot; or &amp;quot;GTA&amp;quot; tab you can select the analysis method and input various parameters. For Global Target Analysis (GTA) there are three options:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(i) You can choose one of the eight preset kinetic models&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(i) you can choose one of the eight preset kinetic models&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(ii) you can input and save your own kinetic model in form of a simple transition equation&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;(iii) you can skip all the models and input a kinetic matrix directly&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:11pt;&quot;&gt;In the &amp;quot;Plotting&amp;quot; tab you can select from a variety of different plots for your data. You can also use this tab to plot the raw data, to help you determine your lifetime guesses.&lt;/span&gt;&lt;/p&gt;
@@ -256,7 +299,7 @@ p, li { white-space: pre-wrap; }
             <item row="0" column="0" colspan="2">
              <widget class="QLineEdit" name="Data_directory">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the directory of the folder containing the data or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/sample_1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the directory of the folder containing the data or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/sample_1&lt;/p&gt;&lt;p&gt;If the raw data was chirp corrected using this program, no action is needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="whatsThis">
                <string/>
@@ -269,7 +312,7 @@ p, li { white-space: pre-wrap; }
             <item row="0" column="2">
              <widget class="QPushButton" name="Data_browse">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the data directory. There should be three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt-&lt;/span&gt;files ending with &lt;span style=&quot; font-weight:600;&quot;&gt;spectra.txt, delays.txt &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda.txt&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open a directory dialog and select the data directory. There should be only three &lt;span style=&quot; font-style:italic;&quot;&gt;.txt-&lt;/span&gt;files ending with &lt;span style=&quot; font-weight:600;&quot;&gt;taspectra.txt, delays.txt &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; lambda.txt &lt;/span&gt;for TA or &lt;span style=&quot; font-weight:600;&quot;&gt;eprspectra.txt, time.txt &lt;/span&gt;and&lt;span style=&quot; font-weight:600;&quot;&gt; field.txt&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;If the raw data was chirp corrected using this program, no action is needed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>Browse</string>
@@ -1524,6 +1567,81 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>Exp_Introduction</tabstop>
+  <tabstop>Exp_TA</tabstop>
+  <tabstop>Exp_trEPR</tabstop>
+  <tabstop>GVD_explaination</tabstop>
+  <tabstop>GVD_correct</tabstop>
+  <tabstop>GVD_skip</tabstop>
+  <tabstop>Chirp_Sample_Dir</tabstop>
+  <tabstop>Chirp_Solvent_Dir</tabstop>
+  <tabstop>Chirp_Chirp_Dir</tabstop>
+  <tabstop>Chirp_Browse_Sample</tabstop>
+  <tabstop>Chirp_Browse_Solvent</tabstop>
+  <tabstop>Chirp_Browse_Chirp</tabstop>
+  <tabstop>Chirp_Exclude_Wave</tabstop>
+  <tabstop>Chirp_Exclude_Delay</tabstop>
+  <tabstop>Chirp_Scale</tabstop>
+  <tabstop>Chirp_Wave_Range</tabstop>
+  <tabstop>Chirp_Visually</tabstop>
+  <tabstop>Chirp_Exclude</tabstop>
+  <tabstop>Chirp_Scatter</tabstop>
+  <tabstop>Chirp_Single</tabstop>
+  <tabstop>Chirp_Debug</tabstop>
+  <tabstop>Chirp_Save</tabstop>
+  <tabstop>Chirp_Done</tabstop>
+  <tabstop>Analysis_stack</tabstop>
+  <tabstop>Quick_Tutorial</tabstop>
+  <tabstop>Data_directory</tabstop>
+  <tabstop>Data_browse</tabstop>
+  <tabstop>Data_delay_input_lb</tabstop>
+  <tabstop>Data_delay_input_ub</tabstop>
+  <tabstop>Data_wavelength_input_lb</tabstop>
+  <tabstop>Data_wavelength_input_ub</tabstop>
+  <tabstop>Data_input_multiplier</tabstop>
+  <tabstop>Data_clear_cache</tabstop>
+  <tabstop>GLA_radio</tabstop>
+  <tabstop>GLA_algorithm_optimize</tabstop>
+  <tabstop>GLA_input_tau</tabstop>
+  <tabstop>GTA_radio_custom_matrix</tabstop>
+  <tabstop>GTA_radio_custom_model</tabstop>
+  <tabstop>GTA_radio_preset_model</tabstop>
+  <tabstop>GTA_input_custom_model_equation</tabstop>
+  <tabstop>GTA_custom_model_save</tabstop>
+  <tabstop>GTA_custom_model_del</tabstop>
+  <tabstop>GTA_input_custom_model_tau</tabstop>
+  <tabstop>GTA_input_custom_model_saved_equations</tabstop>
+  <tabstop>GTA_algorithm_optimize</tabstop>
+  <tabstop>GTA_algorithm_initial_value_problem</tabstop>
+  <tabstop>GTA_input_preset_model_tau</tabstop>
+  <tabstop>GTA_preset_model_selection</tabstop>
+  <tabstop>GTA_input_concentration</tabstop>
+  <tabstop>GTA_input_tau_ub</tabstop>
+  <tabstop>GTA_input_tau_lb</tabstop>
+  <tabstop>GTA_input_rows_and_columns</tabstop>
+  <tabstop>GTA_open_table</tabstop>
+  <tabstop>plot_residuals</tabstop>
+  <tabstop>plot_concentrations</tabstop>
+  <tabstop>plot_delay_slices</tabstop>
+  <tabstop>plot_wavelength_slices</tabstop>
+  <tabstop>plot_heatmap</tabstop>
+  <tabstop>plot_threed_contour</tabstop>
+  <tabstop>plot_das_sas</tabstop>
+  <tabstop>plot_three_in_one</tabstop>
+  <tabstop>Plotting_raw</tabstop>
+  <tabstop>plot_input_vmin</tabstop>
+  <tabstop>plot_input_vmax</tabstop>
+  <tabstop>plot_input_contour</tabstop>
+  <tabstop>plot_input_wavelength_slices</tabstop>
+  <tabstop>plot_input_delay_slices</tabstop>
+  <tabstop>plot_type</tabstop>
+  <tabstop>plot_xAxis</tabstop>
+  <tabstop>plot_yAxis</tabstop>
+  <tabstop>plot_zAxis</tabstop>
+  <tabstop>input_tree</tabstop>
+  <tabstop>input_confirm</tabstop>
+ </tabstops>
  <resources>
   <include location="Tooltip_images_resources.qrc"/>
  </resources>

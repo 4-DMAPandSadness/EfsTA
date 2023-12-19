@@ -57,7 +57,7 @@ class ChirpSelector():
         
         ax_full = self.fig.add_subplot(self.gs[0, :])
         
-        ax_full.contourf(X,Y, self.spec, cmap="jet")
+        ax_full.contourf(X,Y, self.spec, cmap="seismic")
         
         ax_full.set_title("OKE Measurement")
         
@@ -82,30 +82,39 @@ class ChirpSelector():
         ax_text.text(0.5, 0.5, text, ha='center', va='center', fontsize=12)
     
     def onselect(self,xmin, xmax):
-        self.bounds.append([xmin, xmax])
+        if xmax-xmin > 1:
+            self.bounds.append([xmin, xmax])
     
     def undo(self, event):
+        print(f"ax: {len(self.axes)} \n bounds: {self.bounds} \n all_lv: {len(self.all_lv)}")
         if len(self.bounds) != 0:
             ax = self.axes.pop()
             self.fig.delaxes(ax)
             self.bounds.pop()
             self.all_lv.pop()
+            if hasattr(self, "plotgrid"):
+                for i in range(self.plotgrid.nrows -1):
+                    self.plotgrid[0,i].remove()
             self.fig.canvas.draw_idle()
-            print(self.bounds)
         
     def reset(self, event):
         if len(self.bounds) != 0:
             self.bounds = []
             self.all_lv = []
-            for ax in self.axes:
+        if self.axes:
+            while self.axes:
+                ax = self.axes.pop()
                 self.fig.delaxes(ax)
             self.fig.canvas.draw_idle()
 
     def show(self, event):
-        if hasattr(self, "plotgrid"):
-            for i in range(self.plotgrid.nrows -1):
-                self.plotgrid[0,i].remove()
-        self.plotgrid = self.gs[3,:].subgridspec(1, len(self.bounds))
+        if self.axes:
+            while self.axes:
+                ax = self.axes.pop()
+                self.fig.delaxes(ax)
+            self.fig.canvas.draw_idle()
+        if self.bounds:
+            self.plotgrid = self.gs[3,:].subgridspec(1, len(self.bounds))
         for ind, pair in enumerate(self.bounds):
             #create data
             lv = (self.wave >= pair[0]) & (self.wave <= pair[1])
@@ -138,38 +147,3 @@ class ChirpSelector():
         # ax.set_xlim(self.sel_wave[0], self.sel_wave[-1])
         # ax.set_ylim(self.time[0], self.time[-1])
         # self.fig.canvas.draw_idle()
-
-# data = np.genfromtxt("/home/hackerman/Documents/Python Tests/gate.dat")
-
-# x = data[0][1:]
-
-# t = data.T[0][1:]
-# t = t*100
-# t = t.round()
-# t = t/100
-
-# lv_t = (t >= -1) & (t <= 1)
-# y = t[lv_t]
-
-# spec = data[1:]
-# spec = spec.T[1:]
-
-# nan = np.isnan(spec)
-# cols, rows = np.where(nan)
-# spec = spec
-
-# if cols.any():
-#     print("Warning: removeNan() has detected and removed NaNs in spectra.")
-#     for i in range(len(cols)):
-#         if cols[i] == 0:
-#             spec[cols[i],rows[i]] = spec[cols[i]+1,rows[i]]
-#         elif cols[i] == len(spec[0]):
-#             spec[cols[i],rows[i]] = spec[cols[i]-1,rows[i]]
-#         else:
-#             new_value = (spec[cols[i]-1,rows[i]] + spec[cols[i]+1,rows[i]]) / 2
-#             spec[cols[i],rows[i]] = new_value
-# trans = spec.T
-
-# trans = trans[lv_t, :]
-
-# selector = ChirpSelector(x,y,trans)

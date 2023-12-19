@@ -228,9 +228,23 @@ class MainWindow(QW.QMainWindow):
             return
         else:
             self.corrChirp(sample_dir, solvent_dir, chirp_dir)
+            
+    def checkWaveRange(self):
+        return self.readLists(self.ui.Chirp_Wave_Range)
+    
+    def checkScale(self):
+        scale = self.readingSingleValues(self.ui.Chirp_Scale)
+        if scale == None:
+            self.openFailSafe("Please provide a scaling factor for the background measurment.")
+        else:
+            return scale
+    
+    def checkExcludeWave(self):
+        return self.readLists(self.ui.Chirp_Exclude_Wave)
+        
         
     def corrChirp(self, sample_dir, solvent_dir, chirp_dir):
-    
+        self.ui.UI_stack.setCurrentIndex(3)
         options = {"Exclude": self.ui.Chirp_Exclude.isChecked(),
                   "Debug": self.ui.Chirp_Debug.isChecked(),
                   "Save": self.ui.Chirp_Save.isChecked(),
@@ -241,12 +255,12 @@ class MainWindow(QW.QMainWindow):
              "Solvent_Dir": solvent_dir,
              "Chirp_Dir": chirp_dir,
              "Wave_Range":self.readLists(self.ui.Chirp_Wave_Range),
-             "Scale": self.readingSingleValues(self.ui.Chirp_Scale),
+             "Scale": self.checkScale(),
              "Exc_Wave": self.readLists(self.ui.Chirp_Exclude_Wave),
              "Options": options
             }
         CCorr = CC.ChirpCorrector(x)
-        CCorr.correctData()
+        CCorr.correctData(self)
 
 
 #####################################DATA######################################
