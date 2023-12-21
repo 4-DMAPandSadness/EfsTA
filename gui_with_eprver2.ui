@@ -84,7 +84,7 @@ p, li { white-space: pre-wrap; }
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the sample measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]sample_1_raw.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
-           <string/>
+           <string>/home/hackerman/Documents/Bachelor of Science/efsta chrip/00_dataAlt/old eval/export_Rohdaten_15NPDI_TEMPO_tol.dat</string>
           </property>
           <property name="placeholderText">
            <string>Sample Measurment Path</string>
@@ -140,6 +140,9 @@ p, li { white-space: pre-wrap; }
           <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the background / pure solvent measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]solvent.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
+          <property name="text">
+           <string>/home/hackerman/Documents/Bachelor of Science/efsta chrip/00_dataAlt/old eval/export_Rohdaten_LM_tol_530.dat</string>
+          </property>
           <property name="placeholderText">
            <string>Solvent Measurment Path</string>
           </property>
@@ -161,7 +164,7 @@ p, li { white-space: pre-wrap; }
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the filepath of the chirp / OKE measurement or use the &amp;quot;Browse&amp;quot;-button on the right.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;/home/user/documents/fsta_measurements/[...]GATE.dat / .txt etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
-           <string/>
+           <string>/home/hackerman/Documents/Bachelor of Science/efsta chrip/00_dataAlt/old eval/export_Rohdaten_GATE_LM_tol_530.dat</string>
           </property>
           <property name="placeholderText">
            <string>Chirp Measurment Path</string>
@@ -194,26 +197,6 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="Chirp_Exclude">
-             <property name="text">
-              <string>Exclude</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QCheckBox" name="Chirp_Save">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If selected, a new folder will be created and the corrected data will be saved in the correct format for the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Save</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="2">
             <widget class="QCheckBox" name="Chirp_Single">
              <property name="toolTip">
@@ -231,6 +214,42 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
+           <item row="3" column="1">
+            <widget class="QCheckBox" name="Chirp_Save">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If selected, a new folder will be created and the corrected data will be saved in the correct format for the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Save</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="Chirp_Exclude">
+             <property name="text">
+              <string>Exclude</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QCheckBox" name="Chirp_Manually">
+             <property name="toolTip">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If selected points for the curve fit can be selected manually with a lasso, otherwise points will be selected automatically and data spikes will be removed automatically.&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If chirp is rather scattered, it is recommended to select the points manually.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Manually</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -245,6 +264,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QLineEdit" name="Chirp_Scale">
           <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input the &lt;span style=&quot; font-style:italic;&quot;&gt;OD&lt;/span&gt;-value for the calculation of the scaling factor for the background/solvent measurement using formula (a) according to [1].&lt;/p&gt;&lt;p&gt;(a)&lt;span style=&quot; font-style:italic;&quot;&gt; f&lt;/span&gt; = (1-10&lt;span style=&quot; font-style:italic; vertical-align:super;&quot;&gt;-OD&lt;/span&gt;) / (2.3 * &lt;span style=&quot; font-style:italic;&quot;&gt;OD&lt;/span&gt;)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The OD-value is 0.171.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;0.171&lt;/p&gt;&lt;p&gt;[1] Lorenc, M., Ziolek, M., Naskrecki, R. &lt;span style=&quot; font-style:italic;&quot;&gt;et al.Appl Phys B &lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2002, &lt;/span&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;74&lt;/span&gt;, 19–27.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>0.171</string>
           </property>
           <property name="placeholderText">
            <string>Scale</string>
@@ -398,6 +420,13 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>Clear Cache</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="Data_backToChirp">
+              <property name="text">
+               <string>Back To Chirp</string>
               </property>
              </widget>
             </item>

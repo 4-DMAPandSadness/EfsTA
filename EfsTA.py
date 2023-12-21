@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import PopUps as PU
 import Controller as Cont
-import ChirpCorrector as CC
 import numpy as np
 import os as os
 import TTIMG
@@ -79,6 +78,7 @@ class MainWindow(QW.QMainWindow):
         #self.ui.Chirp_Visually.clicked.connect(self.selectChirpRange)
         # Analysis        
         self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
+        self.ui.Data_backToChirp.clicked.connect(self.goChirp)
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
         self.ui.Data_browse.clicked.connect(lambda: self.getFolderPaths("button", self.ui.Data_directory))
         self.ui.input_confirm.clicked.connect(self.finalCheck)      
@@ -259,7 +259,12 @@ class MainWindow(QW.QMainWindow):
              "Exc_Wave": self.readLists(self.ui.Chirp_Exclude_Wave),
              "Options": options
             }
-        CCorr = CC.ChirpCorrector(x)
+        
+        if self.ui.Chirp_Manually.isChecked() == True:
+            import ChirpCorrectorAlt as CC
+        else:
+            import ChirpCorrector as CC
+        CCorr = CC.ChirpCorrector(x, self)
         CCorr.correctData(self)
 
 

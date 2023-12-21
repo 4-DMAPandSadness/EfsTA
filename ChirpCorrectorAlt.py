@@ -8,6 +8,69 @@ import ChirpSelector as CS
 
 import os
 
+from matplotlib import path
+from matplotlib.widgets import Lasso, Button
+
+from matplotlib import colors as mcolors
+
+class LassoManager:
+    def __init__(self,spec_wave, chirp_wave, centers, corr):
+        self.corr = corr
+        self.fig = plt.figure(figsize=(6, 5.5), layout="constrained")
+        self.gs = self.fig.add_gridspec(2, 1)
+        self.ax = self.fig.add_subplot(self.gs[0, 0])
+        self.ax_button = self.fig.add_subplot(self.gs[1, 0])
+        self.collection = self.ax.scatter(chirp_wave, centers, marker='o')
+        self.collection.set(alpha=0.5,clim=[0,1], cmap=mcolors.ListedColormap(["tab:blue", "tab:red"]),edgecolor="black", label="centers")
+        self.ax.legend(loc='lower right')
+        self.spec_wave = spec_wave
+        self.ax_done = Button(self.ax_button, 'Done')
+        self.ax_done.ax.set_position([0.4, 0.3, 0.1, 0.075])
+        
+        self.ax_done.on_clicked(self.done)
+        
+        canvas = self.ax.figure.canvas
+        canvas.mpl_connect('button_press_event', self.on_press)
+        canvas.mpl_connect('button_release_event', self.on_release)
+
+    def done(self, event):
+        self.corr.removeShift(self.shift, self.popt)
+        plt.close(self.fig)
+
+    def callback(self, verts):
+        data = self.collection.get_offsets()
+        self.collection.set_array(path.Path(verts).contains_points(data))
+        canvas = self.collection.figure.canvas
+        canvas.draw_idle()
+        if self.collection.get_array().any():
+            self.fitCurve(data[self.collection.get_array()].T)
+        del self.lasso
+
+    def on_press(self, event):
+        canvas = self.collection.figure.canvas
+        if event.inaxes is not self.collection.axes or canvas.widgetlock.locked():
+            return
+        self.lasso = Lasso(event.inaxes, (event.xdata, event.ydata), self.callback)
+        canvas.widgetlock(self.lasso)
+
+    def on_release(self, event):
+        canvas = self.collection.figure.canvas
+        if hasattr(self, 'lasso') and canvas.widgetlock.isowner(self.lasso):
+            canvas.widgetlock.release(self.lasso)
+    
+    def fitCurve(self,centers):
+        y0 = [3.1,-2.9,-1.8e4]
+        if len(self.ax.lines) > 1:
+            self.ax.lines.clear()
+
+        fitfun = lambda x, a1, a2, a3: a1 + 1e5*a2/x**2 + 1e6*a3/x**4 
+        
+        self.popt, pcov = sco.curve_fit(fitfun, centers[0] ,centers[1], p0=y0)
+
+        self.shift = fitfun(self.spec_wave, *self.popt)
+        
+        self.ax.plot(centers[0], fitfun(centers[0], *self.popt), 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
+        self.ax.legend(loc='lower right')
 
 class ChirpCorrector():
     
@@ -91,55 +154,7 @@ class ChirpCorrector():
         return centers
     
     def removeSpikes(self,chirp_wave, centers):
-        ns_wave = chirp_wave
-        ns_centers = centers
-        while True:
-            prev_length = len(ns_centers)
-            
-            diff = np.absolute(np.diff(ns_centers))
-            diff = np.insert(diff, 0, diff[0])
-            diff = self.sepSpikesAndFollowValues(diff, ns_centers)
-            lv = (diff < 0.2)
-            ns_wave = ns_wave[lv]
-            ns_centers = ns_centers[lv]
-            
-            new_length = len(ns_centers)
-            
-            if prev_length == new_length:
-                break
-        
-        return ns_wave, ns_centers
-    
-    def sepSpikesAndFollowValues(self, diff, centers):
-        idx = 0 
-        diff_len = len(diff)
-        while idx < diff_len - 1:
-            if diff[idx] > 0.2:
-                temp_idx = idx + 1
-                
-                while temp_idx < diff_len and abs(centers[idx -1] - centers[temp_idx]) > 0.2:
-                    temp_idx += 1
-                
-                if temp_idx < diff_len and diff[temp_idx] != 0:
-                    diff[temp_idx] = 0
-                idx = temp_idx
-            else:
-                idx += 1
-        return diff
-    
-    def fitCurve(self,ns_wave, ns_centers):
-        # lb = [];
-        # ub = [];
-        y0 = [3.1,-2.9,-1.8e4]
-        # options = optimset('MaxIter', 50, 'TolFun', 1e-17, 'TolX', 1e-16, ...
-        #     'MaxFunEvals', 100, 'Display', 'off')
-        
-        fitfun = lambda x, a1, a2, a3: a1 + 1e5*a2/x**2 + 1e6*a3/x**4 
-        
-        self.popt, pcov = sco.curve_fit(fitfun, ns_wave, ns_centers, p0=y0)
-        shift_plot = fitfun(ns_wave, *self.popt)
-        shift = fitfun(self.wave, *self.popt)
-        return shift_plot, shift
+      self.manager = LassoManager(self.wave, chirp_wave, centers, self)
         
     def correctShift(self,shift):
         data_c = self.sample_spec.T
@@ -149,7 +164,7 @@ class ChirpCorrector():
             data_nn = self.removeNaNinf(data_c[i])
             data_cc[i,:] = sci.pchip_interpolate(self.time, data_nn, t_shift)
         return data_cc
-    
+        
 ###############################################################################
     
     def prepareSample(self):
@@ -178,19 +193,12 @@ class ChirpCorrector():
     
     def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
         centers = self.findMinima(chirp_wave, chirp_t, sel_spec)
-        ns_wave, ns_centers = self.removeSpikes(chirp_wave, centers)
-        shift_plot, shift = self.fitCurve(ns_wave, ns_centers)
+        self.removeSpikes(chirp_wave, centers)
         
-        
-        plt.figure()
-        plt.plot(chirp_wave, centers, '.', markersize="10", mfc='none', color = "blue", label = "Centers with spikes", alpha = 0.5)
-        plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
-        plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 105*b / x2 + 106*c / x4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
-        plt.show()
-        plt.legend(loc='lower right')
-        
+    
+    def removeShift(self, shift, popt):
         corr_spec = self.correctShift(shift)
-        
+        self.popt = popt
         if self.options["Exclude"] == True:
             corr_spec = self.scattering()
         
@@ -257,15 +265,15 @@ class ChirpCorrector():
             return data_cc
         
     def saveToTxt(self, corr_wave, corr_time, corr_spec):
-        file = self.sample_dir.split("/")[-1].split(".")[0]
-        path = "/".join(self.sample_dir.split("/")[:-1])
+        file = self.chirp_dir.split("/")[-1].split(".")[0] # chirp -> sample#
+        path = "/".join(self.chirp_dir.split("/")[:-1]) ###dito
         save_path = f"{path}/corrected_Data/"
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        np.savetxt(f"{save_path}{file}_taspectra.txt",corr_spec,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_delays.txt",corr_time,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_lambda.txt",corr_wave,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_alt_taspectra.txt",corr_spec,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_alt_delays.txt",corr_time,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_alt_lambda.txt",corr_wave,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_alt_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
         
         self.mainwindow.ui.Data_directory.setText(save_path)
         self.mainwindow.readData(save_path)

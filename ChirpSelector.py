@@ -86,7 +86,6 @@ class ChirpSelector():
             self.bounds.append([xmin, xmax])
     
     def undo(self, event):
-        print(f"ax: {len(self.axes)} \n bounds: {self.bounds} \n all_lv: {len(self.all_lv)}")
         if len(self.bounds) != 0:
             ax = self.axes.pop()
             self.fig.delaxes(ax)

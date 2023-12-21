@@ -33,6 +33,27 @@ class TableWindow(QW.QWidget):
         self.resize(self.size*50 + 55, self.size * 50 + 80)
         
         self.setWindowModality(Qt.ApplicationModal)
+        
+        self.matrix_Table.setToolTip(
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Here you have to input the values for your custom kinetic matrix. How this matrix should look like and how to get there from the transition equation will be explained through the following example:</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/Tooltips/images/tooltips/reaction example wt.png\" /></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">In this photochemical process there are three different species with different lifetimes τ<span style=\" font-style:italic; vertical-align:sub;\">i</span><span style=\" font-style:italic;\">. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">There is an equilibrium between species <span style=\" color:#0000ff;\">A</span> &amp; <span style=\" color:#0000ff;\">B</span>, species <span style=\" color:#0000ff;\">A</span> decays into two species, <span style=\" color:#0000ff;\">B</span> &amp; <span style=\" color:#0000ff;\">C</span> and finally species <span style=\" color:#0000ff;\">C</span> decays back to the ground state.</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The resulting 3x3 kinetic matrix for this example would look like this:</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/Tooltips/images/tooltips/matrix example.png\" /></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The position highlighted in red describes the decay of species <span style=\" color:#0000ff;\">A</span>. </p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The transition equation shows that species <span style=\" color:#0000ff;\">A</span> decays with τ<span style=\" vertical-align:sub;\">1</span> to species <span style=\" color:#0000ff;\">B</span> and with τ<span style=\" vertical-align:sub;\">5</span> to species <span style=\" color:#0000ff;\">C</span>, therefore the negative sum of the two lifetimes describes the decay of species <span style=\" color:#0000ff;\">A</span>.</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The position highlighted in blue shows the dependence of species <span style=\" color:#0000ff;\">B</span> from species <span style=\" color:#0000ff;\">C</span>. Since there is no decay from species <span style=\" color:#0000ff;\">C</span> back to species <span style=\" color:#0000ff;\">B</span> the value is 0.</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; text-decoration: underline;\">Input:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">-31 |    3 | 0 </p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">   1 | -83 | 0 </p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> 30 |  80 | -4000 </p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Note:</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This program transforms the lifetimes automatically into the corresponding rate constants for the calculation, so the input in each field in this table should be the guessed lifetime τ.</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The values along the main diagonal must always be negative! All other values must be positive!<br /></p></body></html>")
 
     def readTable(self):
         """
@@ -115,3 +136,5 @@ class TextWindow(QW.QWidget):
         self.text_browser.clear()
         self.text_browser.append(self.Message)
         self.setWindowModality(Qt.ApplicationModal)
+    
+import TTIMG
