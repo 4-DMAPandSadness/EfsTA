@@ -172,7 +172,11 @@ class ChirpCorrector():
         wave,  self.time, spec= self.splitData(data)
         spec_NN = self.removeNaNinf(spec).T
         spec_trunc = self.truncateSpec(spec_NN)
-        self.sample_spec = self.removeBackground(spec_trunc, self.background)
+        if self.options["rmBG"] == True:
+            self.prepareBackground()
+            self.sample_spec = self.removeBackground(spec_trunc, self.background)
+        else:
+            self.sample_spec = spec_trunc
         
     def prepareBackground(self):
         data = self.readData(self.solvent_dir)
@@ -265,15 +269,15 @@ class ChirpCorrector():
             return data_cc
         
     def saveToTxt(self, corr_wave, corr_time, corr_spec):
-        file = self.chirp_dir.split("/")[-1].split(".")[0] # chirp -> sample#
-        path = "/".join(self.chirp_dir.split("/")[:-1]) ###dito
+        file = self.sample_dir.split("/")[-1].split(".")[0]
+        path = "/".join(self.sample_dir.split("/")[:-1])
         save_path = f"{path}/corrected_Data/"
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        np.savetxt(f"{save_path}{file}_alt_taspectra.txt",corr_spec,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_alt_delays.txt",corr_time,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_alt_lambda.txt",corr_wave,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_alt_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_man_taspectra.txt",corr_spec,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_man_delays.txt",corr_time,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_man_lambda.txt",corr_wave,encoding = '-ascii')
+        np.savetxt(f"{save_path}{file}_man_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
         
         self.mainwindow.ui.Data_directory.setText(save_path)
         self.mainwindow.readData(save_path)

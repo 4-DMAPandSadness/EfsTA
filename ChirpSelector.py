@@ -78,7 +78,7 @@ class ChirpSelector():
         ax_text.spines['left'].set_visible(False)
         ax_text.xaxis.set_ticks([])
         ax_text.yaxis.set_ticks([])
-        text = "Please select the data range to use for the chirp fitting. You can select one or more areas with your mouse. \n Click 'Show' to show all selected areas, 'Undo' remove the last selected area, 'Reset' to remove all selected areas and 'Continue' once you are finished to start the fitting process."
+        text = "Please select the data range to use for the chirp fitting. \n You can select one or more areas with your mouse by left-clicking on the figure, holding and draging your mouse. \n Click 'Show' to show all selected areas, 'Undo' remove the last selected area, \n 'Reset' to remove all selected areas and 'Continue' once you are finished to start the fitting process."
         ax_text.text(0.5, 0.5, text, ha='center', va='center', fontsize=12)
     
     def onselect(self,xmin, xmax):
@@ -133,13 +133,14 @@ class ChirpSelector():
         self.fig.canvas.draw_idle()
             
     def cont(self, event):
-        full_lv = np.array(self.all_lv).any(axis=0)
-        
-        self.sel_wave = self.wave[full_lv]
-        self.sel_spec = self.spec[:,full_lv]
-        
-        self.corr.prepareFitting(self.sel_wave, self.time, self.sel_spec)
-        plt.close(self.fig)
+        if self.axes:
+            full_lv = np.array(self.all_lv).any(axis=0)
+            
+            self.sel_wave = self.wave[full_lv]
+            self.sel_spec = self.spec[:,full_lv]
+            
+            self.corr.prepareFitting(self.sel_wave, self.time, self.sel_spec)
+            plt.close(self.fig)
         # ax = self.fig.add_subplot(self.gs[3, :])
         # X, Y = np.meshgrid(self.sel_wave,self.time)
         # ax.contourf(X,Y, self.sel_spec, cmap="seismic")

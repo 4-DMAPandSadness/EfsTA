@@ -95,7 +95,7 @@ class Model:
         Returns
         -------
         name : string
-            Name of the mesured data.
+            Name of the measured data.
 
         """
         temp = delays_filename[::-1]

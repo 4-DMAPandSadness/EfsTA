@@ -3,6 +3,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
 import PopUps as PU
+import ChirpCorrector as CC
 import Controller as Cont
 import numpy as np
 import os as os
@@ -75,6 +76,7 @@ class MainWindow(QW.QMainWindow):
         self.ui.Chirp_Solvent_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Solvent_Dir))
         self.ui.Chirp_Chirp_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Chirp_Dir))
         self.ui.Chirp_Done.clicked.connect(self.checkChirpFilesIfEmpty)
+        # self.ui.Chirp_ViewData.clicked.connect(self.plotraw)
         #self.ui.Chirp_Visually.clicked.connect(self.selectChirpRange)
         # Analysis        
         self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
@@ -193,8 +195,6 @@ class MainWindow(QW.QMainWindow):
             UI_element.setText(directory[0])            
         elif input_type == "text":
             directory = UI_element.text()
-        
-        
 
 ####################################GVD########################################
 
@@ -221,35 +221,40 @@ class MainWindow(QW.QMainWindow):
         sample_dir = self.ui.Chirp_Sample_Dir.text()
         solvent_dir = self.ui.Chirp_Solvent_Dir.text()
         chirp_dir = self.ui.Chirp_Chirp_Dir.text()
-        if (sample_dir == "" or 
-            solvent_dir == "" or 
-            chirp_dir == ""):
-            self.openFailSafe("Please provide paths for all necessary files.")
+        rmBG = True
+        OKE = True
+        if sample_dir == "":
+            self.openFailSafe("Please provide a sample file.")
             return
-        else:
-            self.corrChirp(sample_dir, solvent_dir, chirp_dir)
+        if solvent_dir == "":
+            rmBG = False
+            self.openFailSafe("Warning! No background provided. Correction will proceede without background subtraction.")
+        if chirp_dir == "":
+            self.openFailSafe("Warning! No chirp/OKE measurment provided. Correction quality will be lower.")
+            OKE = False
+            self.ui.Chirp_Manually.setChecked(False)
+        self.corrChirp(sample_dir, solvent_dir, chirp_dir, rmBG, OKE)
             
     def checkWaveRange(self):
         return self.readLists(self.ui.Chirp_Wave_Range)
     
     def checkScale(self):
         scale = self.readingSingleValues(self.ui.Chirp_Scale)
-        if scale == None:
-            self.openFailSafe("Please provide a scaling factor for the background measurment.")
-        else:
-            return scale
+        return scale
     
     def checkExcludeWave(self):
         return self.readLists(self.ui.Chirp_Exclude_Wave)
         
         
-    def corrChirp(self, sample_dir, solvent_dir, chirp_dir):
+    def corrChirp(self, sample_dir, solvent_dir, chirp_dir, rmBG, OKE):
         self.ui.UI_stack.setCurrentIndex(3)
         options = {"Exclude": self.ui.Chirp_Exclude.isChecked(),
                   "Debug": self.ui.Chirp_Debug.isChecked(),
-                  "Save": self.ui.Chirp_Save.isChecked(),
-                  "Single": self.ui.Chirp_Single.isChecked(),
-                  "Scatter": self.ui.Chirp_Scatter.isChecked()}
+                  "Scatter": self.ui.Chirp_Scatter.isChecked(),
+                  "Manually": self.ui.Chirp_Manually.isChecked(),
+                  "rmBG": rmBG,
+                  "OKE": OKE
+                  }
         
         x = {"Sample_Dir": sample_dir,
              "Solvent_Dir": solvent_dir,
@@ -257,17 +262,14 @@ class MainWindow(QW.QMainWindow):
              "Wave_Range":self.readLists(self.ui.Chirp_Wave_Range),
              "Scale": self.checkScale(),
              "Exc_Wave": self.readLists(self.ui.Chirp_Exclude_Wave),
+             "Exc_Time": self.readLists(self.ui.Chirp_Exclude_Delay),
+             "Header": self.ui.Chirp_Header.value(),
              "Options": options
             }
         
-        if self.ui.Chirp_Manually.isChecked() == True:
-            import ChirpCorrectorAlt as CC
-        else:
-            import ChirpCorrector as CC
         CCorr = CC.ChirpCorrector(x, self)
-        CCorr.correctData(self)
-
-
+        CCorr.correctData()
+        
 #####################################DATA######################################
 
     def checkIfBrowseEmpty(self):
@@ -1290,7 +1292,6 @@ class MainWindow(QW.QMainWindow):
         
         popup = PU.TableWindow(size)
         popup.show()
-        #closes before matrix is saved
         popup.save.clicked.connect(lambda: self.closePopupMatrix(popup))    
 
     def openPopUpResults(self, model, Controller):
@@ -1329,8 +1330,11 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        popup = PU.TextWindow(None, None, msg)
-        popup.show()
+        if hasattr(self, "popup"):
+            self.popup.text_browser.append(f"\n{msg}")
+        else:
+            self.popup = PU.TextWindow(None, None, msg)
+            self.popup.show()
 
     def presentInputs(self,ind):
         '''
@@ -1654,8 +1658,12 @@ class MainWindow(QW.QMainWindow):
             
 if __name__ == '__main__':
     import sys
-    EfsTA = QW.QApplication(sys.argv)
+    if not QW.QApplication.instance():
+        EfsTA = QW.QApplication(sys.argv)
+    else:
+        EfsTA = QW.QApplication.instance()
     EfsTA.setStyle('Fusion')
     mainwindow = MainWindow()
+    EfsTA.setQuitOnLastWindowClosed(True)
     mainwindow.show()
     sys.exit(EfsTA.exec_())
