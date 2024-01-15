@@ -13,9 +13,8 @@ plt.style.use('./AK_Richert.mplstyle')
 #plt.style.use('default')
 plt.ion()
 
-class Model:
 
-    # Initiation Of The Class
+class Model:
 
     def __init__(self, delays_filename, spectra_filename, lambdas_filename,
                  d_limits, l_limits, model, opt_method, ivp_method):
@@ -73,14 +72,14 @@ class Model:
         """
         values = np.genfromtxt(filename)
         borders = [0, 1]
-        if limits == None:
+        if limits is None:
             limits = [None, None]
-        if limits[0] == None:
+        if limits[0] is None:
             limits[0] = min(values)
-        if limits[1] == None:
+        if limits[1] is None:
             limits[1] = max(values)
-        borders[0] = round(np.absolute(values-limits[0]).argmin(),2)
-        borders[1] = round(np.absolute(values-limits[1]).argmin(),2)
+        borders[0] = round(np.absolute(values - limits[0]).argmin(), 2)
+        borders[1] = round(np.absolute(values - limits[1]).argmin(), 2)
         return borders
 
     def findName(self, delays_filename):
@@ -95,16 +94,16 @@ class Model:
         Returns
         -------
         name : string
-            Name of the mesured data.
+            Name of the measured data.
 
         """
         temp = delays_filename[::-1]
         temp = temp.index("/")
         name = delays_filename[-temp:-11]
         path = delays_filename[:-temp]
-        if not os.path.exists(path+'analysis'):
-            os.makedirs(path+'analysis')
-        self.path = delays_filename[:-temp]+"analysis/"
+        if not os.path.exists(path + 'analysis'):
+            os.makedirs(path + 'analysis')
+        self.path = delays_filename[:-temp] + "analysis/"
         return name
 
     def initDelays(self, delays_filename):
@@ -259,7 +258,7 @@ class Model:
 
         """
         Z = scint.solve_ivp(self.calcdCdt, [min(self.delays), max(self.delays)],
-            self.C_0, t_eval=self.delays, method=ivp_method)
+                            self.C_0, t_eval=self.delays, method=ivp_method)
         C_t = Z.get("y")
         return C_t
 
@@ -285,18 +284,17 @@ class Model:
             Tau = self.regenM(tau)
             n = Tau.shape[0]
             ones = np.full(Tau.shape, 1)
-            K = np.divide(ones, Tau, out=np.zeros_like(Tau),
-                                where=Tau!=0)
+            K = np.divide(ones, Tau, out=np.zeros_like(Tau), where=Tau != 0)
         else:
             ones = np.full(np.array(tau).shape, 1)
             k = np.divide(ones, tau, out=np.zeros_like(tau, dtype='float64'),
-                          where=tau!=0)
+                          where=tau != 0)
             mod = Models(k)
             K, n = mod.getK(self.model)
         self.n = n
         self.K = K
         return K, n
-    
+
     def getM_lin(self, tau_guess):
         """
         Transforms the custom matrix for the SAS in a linear list and a matrix
@@ -316,20 +314,20 @@ class Model:
         """
         ones = np.full(tau_guess.shape, 1)
         k_guess = np.divide(ones, tau_guess, out=np.zeros_like(tau_guess),
-                            where=tau_guess!=0)
+                            where=tau_guess != 0)
         M_lin = []
         M_ones = np.zeros(k_guess.shape)
         for i in range(k_guess.shape[0]):
             for j in range(k_guess.shape[1]):
-                if i == j and i != k_guess.shape[0]-1:
+                if i == j and i != k_guess.shape[0] - 1:
                     k_guess[i][j] = 0
                 if k_guess[i][j] != 0:
                     M_ones[i][j] = 1
                     M_lin.append(abs(k_guess[i][j]))
-        tau = 1/np.array(M_lin)
+        tau = 1 / np.array(M_lin)
         self.M_ones = M_ones
         return tau
-        
+
     def regenM(self, tau_guess):
         """
         Regenerates the custom matrix with the fitted values found in x_guess.
@@ -352,12 +350,12 @@ class Model:
             for j in range(self.M_ones.shape[1]):
                 if self.M_ones[i][j] == 1:
                     M[i][j] = tau_guess[a]
-                    if j != self.M_ones.shape[0]-1:
+                    if j != self.M_ones.shape[0] - 1:
                         M[j][j] -= tau_guess[a]
                     a += 1
         M[-1][-1] *= -1
         return M
-    
+
     def setTauBounds(self, tau_low, tau_high, tau):
         """
         Responsible for the setting of the bounds to be used in the optimizing
@@ -384,7 +382,7 @@ class Model:
         if tau_high == []:
             tau_high = [None for i in tau]
         for i in range(len(tau_low)):
-            if tau_low[i] == 0 or tau_low[i] == None:
+            if tau_low[i] == 0 or tau_low[i] is None:
                 tau_low[i] = 0.01
         self.tau_low = tau_low
         self.tau_high = tau_high
@@ -410,31 +408,31 @@ class Model:
             bounds = list(zip(self.tau_low, self.tau_high))
         return bounds
 
-    def getM(self, tau):    
-       """
-       Outputs the matrix which will be used in the matrix reconstruction
-       algorithm to obtain the fitted spectra A_fit. For the DAS it is the
-       matrix E_tau and for SAS it is the matrix C_t from the solved
-       differential equation.
+    def getM(self, tau):
+        """
+        Outputs the matrix which will be used in the matrix reconstruction
+        algorithm to obtain the fitted spectra A_fit. For the DAS it is the
+        matrix E_tau and for SAS it is the matrix C_t from the solved
+        differential equation.
 
-       Parameters
-       ----------
-       tau : list, np.array
-           An array containing the decay constants tau.
+        Parameters
+        ----------
+        tau : list, np.array
+            An array containing the decay constants tau.
 
-       Returns
-       -------
-       M : np.array
-           The matrix for the matrix reconstruction algorithm.
+        Returns
+        -------
+        M : np.array
+            The matrix for the matrix reconstruction algorithm.
 
-       """
-       if self.model == 0:  # GLA
-           M = self.genE_tau(tau)
-           self.n = len(tau)
-       else:  # GTA
-           self.K, n = self.getK(tau)
-           M = self.solveDiff(self.ivp_method)
-       return M
+        """
+        if self.model == 0:  # GLA
+            M = self.genE_tau(tau)
+            self.n = len(tau)
+        else:  # GTA
+            self.K, n = self.getK(tau)
+            M = self.solveDiff(self.ivp_method)
+        return M
 
     def calcD_tau(self, tau):
         """
@@ -498,11 +496,11 @@ class Model:
         self.M = self.getM(tau_sum)
         difference = self.calcA_tau(tau_sum) - self.spectra
         return difference
-    
+
     def findTau_fit(self, preparam, opt_method):
         """
         The function takes the variable tau_guess and optimizes their values,
-        so that ChiSquare takes a minimal value. It outputs a list of the 
+        so that ChiSquare takes a minimal value. It outputs a list of the
         optimized tau values and the non-varied ones, if GLA was used.
 
         Parameters
@@ -525,8 +523,8 @@ class Model:
         self.tau_fit = []
         bounds = self.getTauBounds(preparam)
         for i in range(len(preparam)):
-            params.add('tau'+str(i), preparam[i][0],
-                           min=bounds[i][0], max=bounds[i][1],vary=preparam[i][1])
+            params.add('tau' + str(i), preparam[i][0],
+                       min=bounds[i][0], max=bounds[i][1], vary=preparam[i][1])
         res_fit = minimize(self.getDifference, params, method=opt_method)
         fit_rep = fit_report(res_fit)
         if hasattr(res_fit, "success"):
@@ -658,7 +656,7 @@ class Model:
             mini = np.argmin(abs(data - x[i]))
             x[i] = mini
         return x
-    
+
     def log_tick_formatter(self, val, pos=None):
         '''
         A logarithmic tick formatter for the 3D contour plot.
@@ -675,7 +673,7 @@ class Model:
 
         '''
         return r"$10^{{{:.0f}}}$".format(val)
-    
+
     def plot1(self, grid, wave, wave_index, spectra, mul, labels):
         """
         Plots a subplot of delays against absorption change for chosen
@@ -704,7 +702,6 @@ class Model:
         dot = ""
         if mul != 1:
             dot = f" $\cdot 10^{ltx}$"
-        
         ax1 = plt.subplot(grid[0, 0])
         ax1.set_yscale("log")
         ax1.set_xlabel(labels[2] + dot)
@@ -716,9 +713,8 @@ class Model:
                 self.delays,
                 label=f"{wave[i]} {unit}"
             )
-        ax1.axvline(0, color="black",lw = 0.5 , alpha=0.75)
-        temp = np.concatenate([spectra[i]
-                              for i in wave_index])
+        ax1.axvline(0, color="black", lw=0.5, alpha=0.75)
+        temp = np.concatenate([spectra[i] for i in wave_index])
         ax1.axis(
             [
                 1.05 * min(np.array(temp)),
@@ -730,7 +726,7 @@ class Model:
         ax1.set_xticks(())
         ax1.tick_params(bottom=False)
         ax1.legend(loc="upper left", frameon=False, labelcolor="linecolor",
-                   handlelength=0,fontsize=11)
+                   handlelength=0, fontsize=11)
 
     def plot2(self, grid, wave, time, v_min, v_max, spectra, add, cont, mul, labels):
         """
@@ -795,7 +791,7 @@ class Model:
         ax2.clabel(contours, inline=False, fontsize=0)
 
         for i in wave:
-            ax2.axvline(i,color="black", linestyle="-.")
+            ax2.axvline(i, color="black", linestyle="-.")
 
         for i in time:
             ax2.axhline(i, color="black", linestyle="dotted")
@@ -809,7 +805,6 @@ class Model:
             ]
         )
         ax2.set_yticks(())
-        
         return ax2, cb
 
     def plot3(self, grid, time, time_index, spectra, mul, labels):
@@ -855,17 +850,17 @@ class Model:
             ax3.plot(self.lambdas, y, color="black")
             ax3.annotate(
                 f"{time[i]} {unit}", (0.5 * (min(self.lambdas) +
-                                 max(self.lambdas)), hoehe)
+                                             max(self.lambdas)), hoehe)
             )
-            ax3.axhline(hoehe, color="black", lw = 0.5, alpha = 0.75)
+            ax3.axhline(hoehe, color="black", lw=0.5, alpha=0.75)
             hoehe += 1.1 * (abs(max(temp)) + abs(min(temp)))
         ax3.axis([min(self.lambdas), max(self.lambdas), 1.1 * mini,
                   1.1 * max(y)])
         ax3.set_yticks(())
-        
-    def plot3D(self, spectra,v_min, v_max, mul, labels, add=""):
+
+    def plot3D(self, spectra, v_min, v_max, mul, labels, add=""):
         """
-        Allows for the creation of a 3D contour plot. Just because I can.        
+        Allows for the creation of a 3D contour plot.
 
         Parameters
         ----------
@@ -889,7 +884,7 @@ class Model:
         None.
 
         """
-        fig, ax = plt.subplots(figsize=(11.2,8),subplot_kw={"projection" : "3d"})
+        fig, ax = plt.subplots(figsize=(11.2, 8), subplot_kw={"projection": "3d"})
         log_delay = np.log10(abs(self.delays))
         ltx = str(mul).count("0")
         dot = ""
@@ -900,9 +895,9 @@ class Model:
         if v_max is None:
             v_max = self.setv_max(spectra, mul)
         X, Y = np.meshgrid(self.lambdas, log_delay)
-        Z = spectra.T*mul
+        Z = spectra.T * mul
         ax = plt.axes(projection='3d')
-        ax.contour3D(X,Y,Z,80,cmap='seismic')
+        ax.contour3D(X, Y, Z, 80, cmap='seismic')
         ax.set_xlabel(labels[0])
         ax.set_ylabel(labels[1])
         ax.set_zlabel(labels[0] + dot)
@@ -910,9 +905,9 @@ class Model:
         yticks = np.linspace(min(log_delay), max(log_delay), 4)
         yticks[0] = -1
         ax.set_yticks(yticks)
-        ax.view_init(20,250)
+        ax.view_init(20, 250)
         plt.savefig(self.path + self.name + "3DContour" + ".png")
-        
+
     def plotCustom(self, spectra, wave, time, v_min, v_max, custom, cont, mul, labels,
                    add=""):
         """
@@ -1001,20 +996,20 @@ class Model:
         grid = plt.GridSpec(1, 3, wspace=space, width_ratios=[w1, w2, w3])
 
         if w1 != 0:
-            self.plot1(grid, wave, wave_index, spectra*mul, mul, labels)
+            self.plot1(grid, wave, wave_index, spectra * mul, mul, labels)
         if w2 != 0:
             ax2, cb = self.plot2(grid, wave, time, v_min,
-                                 v_max, spectra*mul, add, cont, mul, labels)
+                                 v_max, spectra * mul, add, cont, mul, labels)
             if w3 == 0:
                 cb.set_label(labels[2] + dot)
             if w2 == 4.7:
                 ax2.yaxis.set_major_locator(mticker.LogLocator())
                 ax2.set_ylabel(labels[1])
         if w3 != 0:
-            self.plot3(grid, time, time_index, spectra*mul, mul, labels)
+            self.plot3(grid, time, time_index, spectra * mul, mul, labels)
         grid.tight_layout(fig)
-        plt.savefig(self.path + self.name + add  + ".png",
-            bbox_inches="tight")
+        plt.savefig(self.path + self.name + add + ".png",
+                    bbox_inches="tight")
 
     def plotSolo(self, spectra, wave, time, v_min, v_max, solo, cont, mul, labels, add=""):
         """
@@ -1042,7 +1037,7 @@ class Model:
             The default is 1.
         add : string, optional
             Addition to the title of the subplot. The default is "".
-            
+
         Returns
         -------
         None.
@@ -1054,7 +1049,7 @@ class Model:
             self.plotDSlices(time, spectra, mul, labels, add)
         if solo == "H":
             self.plotHeat(wave, time, v_min, v_max, spectra, cont, mul, labels, add)
-            
+
     def plotData(self, x, y, x_label, y_label, label, add=""):
         """
         Allows for the plotting of any 2D data.
@@ -1094,16 +1089,15 @@ class Model:
         ax.set_ylabel(y_label)
         if add == "_GTA_kin" or add == "_GLA_kin":
             ax.set_xscale("log")
-            fig.set_size_inches(7.6,4)
+            fig.set_size_inches(7.6, 4)
         else:
-            ax.axhline(0, color="black", lw=0.5, alpha = 0.75)
-        if label != None:
+            ax.axhline(0, color="black", lw=0.5, alpha=0.75)
+        if label is not None:
             ax.legend(label, frameon=False, labelcolor="linecolor",
-                       handlelength=0, loc="lower right")
-        plt.savefig(self.path + self.name + add  + ".png",
+                      handlelength=0, loc="lower right")
+        plt.savefig(self.path + self.name + add + ".png",
                     bbox_inches="tight")
-        
-        
+
     def plotWSlices(self, wave, spectra, mul, labels, add):
         """
         Plots a subplot of delays against absorption change for chosen
@@ -1123,7 +1117,7 @@ class Model:
         None.
 
         """
-        fig,ax = plt.subplots()
+        fig, ax = plt.subplots()
         wave_index = self.findNearestIndex(wave, self.lambdas)
         ltx = str(mul).count("0")
         unit = ""
@@ -1132,19 +1126,16 @@ class Model:
         dot = ""
         if mul != 1:
             dot = f" $\cdot 10^{ltx}$"
-        
         ax.set_xscale("log")
         ax.set_ylabel(labels[2] + dot)
         ax.set_xlabel(labels[1])
-
         for i, ind in enumerate(wave_index):
             plt.plot(
                 self.delays,
                 spectra[ind],
                 label=f"{wave[i]} {unit}"
             )
-        temp = np.concatenate([spectra[i]
-                              for i in wave_index])
+        temp = np.concatenate([spectra[i] for i in wave_index])
         ax.axis(
             [
                 min(self.delays),
@@ -1153,13 +1144,13 @@ class Model:
                 1.05 * max(temp)
             ]
         )
-        ax.axhline(0, color="black", lw=0.5, alpha = 0.75)
+        ax.axhline(0, color="black", lw=0.5, alpha=0.75)
         ax.set_yticks(())
         ax.tick_params(bottom=False)
         ax.legend(loc="upper right", frameon=False, labelcolor="linecolor",
-                   handlelength=0)
+                  handlelength=0)
         plt.savefig(self.path + self.name + "Wavelength_Slices" + ".png")
-        
+
     def plotHeat(self, wave, time, v_min, v_max, spectra, cont, mul, labels, add):
         """
         Plots a subplot with a heatmap of the absorption change in delays
@@ -1191,7 +1182,7 @@ class Model:
         None.
 
         """
-        fig, ax = plt.subplots(figsize = (7.6,4))
+        fig, ax = plt.subplots(figsize=(7.6, 4))
         ltx = str(mul).count("0")
         dot = ""
         if mul != 1:
@@ -1199,7 +1190,7 @@ class Model:
         ax.set_yscale("log")
         ax.set_xlabel(labels[0])
         ax.set_ylabel(labels[1])
-        A_t = spectra.T*mul
+        A_t = spectra.T * mul
         pcm = ax.pcolormesh(
             self.lambdas,
             self.delays,
@@ -1225,13 +1216,10 @@ class Model:
             linestyles="solid",
         )
         ax.clabel(contours, inline=False, fontsize=0)
-
         for i in wave:
-            ax.axvline(i,color="black", linestyle="-.")
-
+            ax.axvline(i, color="black", linestyle="-.")
         for i in time:
             ax.axhline(i, color="black", linestyle="dotted")
-
         ax.axis(
             [
                 min(self.lambdas),
@@ -1245,7 +1233,7 @@ class Model:
             plt.savefig(self.path + self.name + "Residuals" + ".png")
         else:
             plt.savefig(self.path + self.name + "Heatmap" + ".png")
-        
+
     def plotDSlices(self, time, spectra, mul, labels, add):
         """
         Plots a subplot of absorption change against wavelenghts for chosen
@@ -1277,10 +1265,10 @@ class Model:
         ax.set_ylabel(labels[2] + dot)
         ax.set_xlabel(labels[0])
         for i, ind in enumerate(time_index):
-            plt.plot(self.lambdas,spectra.T[ind], label=f"{time[i]} {unit}")
+            plt.plot(self.lambdas, spectra.T[ind], label=f"{time[i]} {unit}")
         ax.tick_params(bottom=False)
         ax.legend(loc="upper left", frameon=False, labelcolor="linecolor",
-                   handlelength=0)
+                  handlelength=0)
         temp = np.concatenate([spectra.T[i]
                               for i in time_index])
         ax.axis(
@@ -1292,5 +1280,5 @@ class Model:
             ]
         )
         ax.set_yticks(())
-        ax.axhline(0, color="black", lw=0.5, alpha = 0.75)
+        ax.axhline(0, color="black", lw=0.5, alpha=0.75)
         plt.savefig(self.path + self.name + "Delay_Slices" + ".png")

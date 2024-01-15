@@ -1,17 +1,29 @@
 import numpy as np
-import scipy.optimize as sco 
 import scipy.interpolate as sci
-
-import matplotlib.pyplot as plt
-
 import ChirpSelector as CS
-
+import CurvePrep as CP
 import os
 
 
 class ChirpCorrector():
-    
     def __init__(self, parameters, mainwindow):
+        """
+        Initializes the ChirpCorrector object which handles the correction of
+        the chirped data.
+
+        Parameters
+        ----------
+        parameters : dict
+            A dictionary containing all the input parameters.
+        mainwindow : MainWindow
+            The mainwindow of the program to continue the analysis after the
+            correction is finished.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sample_dir = parameters["Sample_Dir"]
         self.solvent_dir = parameters["Solvent_Dir"]
         self.chirp_dir = parameters["Chirp_Dir"]
@@ -19,259 +31,372 @@ class ChirpCorrector():
         self.scale = parameters["Scale"]
         self.options = parameters["Options"]
         self.exc_wave = parameters["Exc_Wave"]
+        self.header = parameters["Header"]
         self.mainwindow = mainwindow
+        self.popt = []
 
-######################Basis Funktionen#########################################
+    def readData(self, path):
+        """
+        Reads the data
 
-    def readData(self, directory):
-        data = np.genfromtxt(directory, delimiter = ' ') #, skip_header=10
+        Parameters
+        ----------
+        path : string
+            The path to the file containing the raw data.
+
+        Returns
+        -------
+        data : np.ndarray
+            The raw data in a single array as read by the readData function..
+
+        """
+        data = np.genfromtxt(path, delimiter=' ', skip_header=self.header)
         return data
 
     def splitData(self, data):
+        """
+        Splits the original np.ndarray containing all the data into three
+        separate np.array containing only wavelengths, delays and absorptions
+        respectively.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            The raw data in a single array as read by the readData function.
+
+        Returns
+        -------
+        wave : np.array
+            The wavelength data of the measurement.
+        time : np.array
+            The delay data of the measurement.
+        spec : np.ndarray
+            The absorption data of the measurement.
+
+        """
         wave = data[0][1:]
-        time = data.T[0][1:]*100
+        time = data.T[0][1:] * 100
         time = time.round() / 100
         spec = data[1:]
         spec = spec.T[1:]
         return wave, time, spec
 
     def removeNaNinf(self, spec):
+        """
+        Checks the data for NaN, -inf and inf values and removes the by
+        replacing them with previous/following values.
+
+        Parameters
+        ----------
+        spec : np.ndarray
+            The absorption data of the measurement.
+
+        Returns
+        -------
+        spec : np.ndarray
+            The absorption data of the measurement without invalid values.
+
+        """
         nan = ~np.isfinite(spec)
         if nan.ndim == 1:
-            pos = np.where(nan)[0]
             print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
+            pos = np.where(nan)[0]
             for i, val in enumerate(pos):
                 if val == 0:
-                    spec[pos[i]] = spec[pos[i]+1]
-                elif val == len(spec)-1:
-                    spec[pos[i]] = spec[pos[i]-1]
+                    spec[pos[i]] = spec[pos[i] + 1]
+                elif val == len(spec) - 1:
+                    spec[pos[i]] = spec[pos[i] - 1]
                 else:
-                    new_value = (spec[pos[i]+1] + spec[pos[i]-1]) / 2
+                    new_value = (spec[pos[i] + 1] + spec[pos[i] - 1]) / 2
                     spec[pos[i]] = new_value
         elif nan.ndim == 2:
             cols, rows = np.where(nan)
-            print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
             for i, val in enumerate(cols):
                 if val == 0:
-                    spec[cols[i],rows[i]] = spec[cols[i]+1,rows[i]]
-                elif val == len(spec)-1:
-                    spec[cols[i],rows[i]] = spec[cols[i]-1,rows[i]]
+                    spec[cols[i], rows[i]] = spec[cols[i] + 1, rows[i]]
+                elif val == len(spec) - 1:
+                    spec[cols[i], rows[i]] = spec[cols[i] - 1, rows[i]]
                 else:
-                    new_value = (spec[cols[i]-1,rows[i]] + spec[cols[i]+1,rows[i]]) / 2
-                    spec[cols[i],rows[i]] = new_value
+                    new_value = (spec[cols[i] - 1, rows[i]] + spec[cols[i] + 1, rows[i]]) / 2
+                    spec[cols[i], rows[i]] = new_value
         else:
             spec = spec
         return spec
-    
-    def genLV(self,wave):
+
+    def genLV(self, wave):
+        """
+        Generates a logical vector for the wavelenth and absorption
+        data using the bounds input by the user
+        and truncates the wavelength data.
+
+        Parameters
+        ----------
+        wave : np.array
+            The wavelength data of the measurement.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.wave_range != []:
             self.lv = (wave >= self.wave_range[0]) & (wave <= self.wave_range[1])
             self.wave = wave[self.lv]
         else:
-            self.lv = wave >= 0
+            self.lv = (wave >= 0)
             self.wave = wave[self.lv]
-    
+
     def truncateSpec(self, spec):
-        spec = spec[:,self.lv]
+        """
+        Truncates the absorption data using the logical vector created in the
+        genLV function.
+
+        Parameters
+        ----------
+        spec : np.ndarray
+            The absorption data of the measurement.
+
+        Returns
+        -------
+        spec : np.ndarray
+            The truncated absorption data of the measurement.
+
+        """
+        spec = spec[:, self.lv]
         return spec
-        
+
     def removeBackground(self, spec, background):
-        if self.scale == None:
-            scale = 1    
+        """
+        If provided scales the background measurement and subtracts it from the
+        other measurements. The scaling factor is calculated according to:
+        Lorenc, M., Ziolek, M., Naskrecki, R. et al.Appl Phys B 2002, 74, 19–27.
+
+        Parameters
+        ----------
+        spec : np.ndarray
+            The sample or OKE measurement.
+        background : np.ndarray
+            The background measurement.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.scale is None:
+            scale = 1
         else:
-            scale = (1-10**-self.scale) / (2.3*self.scale)
-        background = background[:,self.lv]
+            scale = (1 - 10**-self.scale) / (2.3 * self.scale)
         return spec - (background * scale)
-    
-    def findMinima(self,chirp_wave, chirp_t, chirp_spec):
+
+    def findMinima(self, chirp_wave, chirp_t, chirp_spec):
+        """
+        Finds and returns the minima of the spectrum of each wavelength of the
+        OKE / Chirp measurement.
+
+        Parameters
+        ----------
+        chirp_wave : np.array
+            The wavelengths of the measured spectra.
+        chirp_t : np.array
+            The delays of the measured spectra.
+        chirp_spec : np.ndarray
+            The OKE / Chirp measurement.
+
+        Returns
+        -------
+        centers : np.array
+            The the minima of the spectrum of each wavelength of the
+            OKE / Chirp measurement.
+
+        """
         centers = np.zeros(len(chirp_wave))
-        for i in range(len(chirp_wave)-1):
-            ind = np.argmin(chirp_spec[:,i])
+        for i in range(len(chirp_wave) - 1):
+            ind = np.argmin(chirp_spec[:, i])
             centers[i] = chirp_t[ind]
         return centers
-    
-    def removeSpikes(self,chirp_wave, centers):
-        ns_wave = chirp_wave
-        ns_centers = centers
-        while True:
-            prev_length = len(ns_centers)
-            
-            diff = np.absolute(np.diff(ns_centers))
-            diff = np.insert(diff, 0, diff[0])
-            diff = self.sepSpikesAndFollowValues(diff, ns_centers)
-            lv = (diff < 0.2)
-            ns_wave = ns_wave[lv]
-            ns_centers = ns_centers[lv]
-            
-            new_length = len(ns_centers)
-            
-            if prev_length == new_length:
-                break
-        
-        return ns_wave, ns_centers
-    
-    def sepSpikesAndFollowValues(self, diff, centers):
-        idx = 0 
-        diff_len = len(diff)
-        while idx < diff_len - 1:
-            if diff[idx] > 0.2:
-                temp_idx = idx + 1
-                
-                while temp_idx < diff_len and abs(centers[idx -1] - centers[temp_idx]) > 0.2:
-                    temp_idx += 1
-                
-                if temp_idx < diff_len and diff[temp_idx] != 0:
-                    diff[temp_idx] = 0
-                idx = temp_idx
-            else:
-                idx += 1
-        return diff
-    
-    def fitCurve(self,ns_wave, ns_centers):
-        # lb = [];
-        # ub = [];
-        y0 = [3.1,-2.9,-1.8e4]
-        # options = optimset('MaxIter', 50, 'TolFun', 1e-17, 'TolX', 1e-16, ...
-        #     'MaxFunEvals', 100, 'Display', 'off')
-        
-        fitfun = lambda x, a1, a2, a3: a1 + 1e5*a2/x**2 + 1e6*a3/x**4 
-        
-        self.popt, pcov = sco.curve_fit(fitfun, ns_wave, ns_centers, p0=y0)
-        shift_plot = fitfun(ns_wave, *self.popt)
-        shift = fitfun(self.wave, *self.popt)
-        return shift_plot, shift
-        
-    def correctShift(self,shift):
+
+    def correctShift(self, shift):
+        """
+        Corrects the temporal shift of the spectral data.
+
+        Parameters
+        ----------
+        shift : np.array
+            The shift for each wavelength calculated in the CurvePrep class.
+
+        Returns
+        -------
+        None.
+
+        """
         data_c = self.sample_spec.T
         data_cc = np.zeros_like(data_c)
         for i in range(len(data_c)):
             t_shift = self.time + shift[i]
             data_nn = self.removeNaNinf(data_c[i])
-            data_cc[i,:] = sci.pchip_interpolate(self.time, data_nn, t_shift)
-        return data_cc
-    
-###############################################################################
-    
+            data_cc[i, :] = sci.pchip_interpolate(self.time, data_nn, t_shift)
+        self.saveToTxt(self.wave, self.time, data_cc)
+
     def prepareSample(self):
+        """
+        Prepares the sample data by reading, splitting, truncating and
+        subtracting the background as well as removing any NaN values.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.readData(self.sample_dir)
-        wave,  self.time, spec= self.splitData(data)
+        wave, self.time, spec = self.splitData(data)
+        self.genLV(wave)
+        if self.options["Scatter"] is True and self.exc_wave is not None:
+            spec = self.scattering(spec)
         spec_NN = self.removeNaNinf(spec).T
         spec_trunc = self.truncateSpec(spec_NN)
-        self.sample_spec = self.removeBackground(spec_trunc, self.background)
-        
+        if self.options["rmBG"] is True:
+            self.prepareBackground()
+            self.sample_spec = self.removeBackground(spec_trunc, self.background)
+        else:
+            self.sample_spec = spec_trunc
+
     def prepareBackground(self):
+        """
+        Prepares the background data by reading, splitting and truncating
+        as well as removing any NaN values.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.readData(self.solvent_dir)
         wave, bg_time, spec = self.splitData(data)
-        self.genLV(wave)
         spec_NN = self.removeNaNinf(spec).T
         self.background = self.truncateSpec(spec_NN)
 
     def prepareChirp(self):
-        data = self.readData(self.chirp_dir)
-        wave, chirp_time, spec = self.splitData(data)
-        spec_NN = self.removeNaNinf(spec).T
-        lv_t = (chirp_time >= -1) & (chirp_time <= 1)
-        chirp_t = chirp_time[lv_t]
-        chirp_spec = spec_NN[lv_t,:]
-        
-        selector = CS.ChirpSelector(wave, chirp_t, chirp_spec, self)
-    
-    def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
-        centers = self.findMinima(chirp_wave, chirp_t, sel_spec)
-        ns_wave, ns_centers = self.removeSpikes(chirp_wave, centers)
-        shift_plot, shift = self.fitCurve(ns_wave, ns_centers)
-        
-        
-        plt.figure()
-        plt.plot(chirp_wave, centers, '.', markersize="10", mfc='none', color = "blue", label = "Centers with spikes", alpha = 0.5)
-        plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color = "red", label = "Centers without spikes", alpha = 0.7)
-        plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 105*b / x2 + 106*c / x4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
-        plt.show()
-        plt.legend(loc='lower right')
-        
-        corr_spec = self.correctShift(shift)
-        
-        if self.options["Exclude"] == True:
-            corr_spec = self.scattering()
-        
-        if self.options["Save"] == True:
-            self.saveToTxt(self.wave, self.time, corr_spec)
-        
-    def scattering(self, corr_spec):
-            exclude = self.exc_del
-        
-            pos = np.zeros(len(self.exc_del))
-        
-            for i in len(pos):
-                tmp = np.argwhere(abs(self.time - exclude(i)) <= 1e-14);
-            
-                if len(tmp) > 1:
-                    print('load_raw:exclude', 'Indicated delay corresponds to '
-                        'more than one spectrum. Decrease tolerance or/and check '
-                        'spectra for double occurence.')
-                    pos[i] = tmp[1]
-                
-                elif np.any(tmp) == False:
-                    print('load_raw:exclude', f"Indicated delay: {exclude[i]}, not found. Delay ignored.'")
-                    pos[i] = 0
-                else:
-                    pos[i] = tmp
-            
-            #pos(pos = 0) = []  ???
-        
-            corr_spec[:,pos] = []
-            self.time[pos] = []
+        """
+        Reads and prepares the OKE / Chirp data.
+        If no OKE / Chirp measurement is provided initiates a CurveClicker
+        object to manually define the Chirp.
+        If an OKE / Chirp measurement is provided initiates a ChirpSelector
+        object to select the Chirp area.
 
-            # names = dict()
-            # for i in len(self.time):
-            #     names{i} = str(self.time[i])
-            
-            scatter = np.zeros(len(self.wave))
-            
-            if self.options["Scatter"] == True:
-                lv = (self.wave >= self.exc_wave-20) & (self.wave <= self.exc_wave+20)
-                
-                if self.options["Single"] == True:
-                    lv_t = self.time <= -0.4
-                    tmp_time = self.time(lv_t)
-                    nr_t = len(tmp_time)
-                    
-                    # names_bg = cell(nr_t,1);
-                    # for i = 1 : nr_t
-                    #     names_bg{i} = num2str(i);
-                    # end
-                    fig = plt.Figure()
-                    plt.plot(self.wave, corr_spec[:,1:nr_t])
-                    #legend(names_bg(1:end))
-                    
-                    scatter_bg = input('Indicate number of background spectrum to be subtracted: ');
-                    
-                    if np.any(scatter_bg == True):
-                        tmp = corr_spec[:,scatter_bg]
-                else:
-                    tmp = np.mean(corr_spec[:,-11:],axis=1)
-                scatter[lv] = tmp[lv]
-            
-            data_cc = corr_spec - np.tile(scatter,(1,len(self.time)))
-            
-            return data_cc
-        
+        Returns
+        -------
+        None.
+
+        """
+        if self.options["OKE"] is False:
+            lv_t = (self.time >= -1) & (self.time <= 1)
+            t = self.time[lv_t]
+            select_spec = self.sample_spec[lv_t, :]
+            self.CPC = CP.CurveClicker(self.wave, t, select_spec, self)
+        else:
+            data = self.readData(self.chirp_dir)
+            wave, chirp_time, spec = self.splitData(data)
+            spec_NN = self.removeNaNinf(spec).T
+            lv_t = (chirp_time >= -1) & (chirp_time <= 1)
+            chirp_t = chirp_time[lv_t]
+            chirp_spec = spec_NN[lv_t, :]
+            selector = CS.ChirpSelector(wave, chirp_t, chirp_spec, self)
+
+    def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
+        """
+        Allows for the automatic removal of data spikes or for the manual
+        selection of viable data points.
+
+        Parameters
+        ----------
+        chirp_wave : np.array
+            The wavelengths of the measured spectra.
+        chirp_t : np.array
+            The delays of the measured spectra.
+        sel_spec : np.ndarray
+            The selected ranges of the OKE / Chirp measurement.
+
+        Returns
+        -------
+        None.
+
+        """
+        centers = self.findMinima(chirp_wave, chirp_t, sel_spec)
+        if self.options["Manually"] is True:
+            self.CPL = CP.LassoSelector(self.wave, chirp_wave, centers, self)
+        else:
+            CPA = CP.AutoSelector(self.wave, chirp_wave, centers)
+            ns_wave, ns_centers = CPA.removeSpikes()
+            shift, self.popt = CPA.fitCurve(ns_wave, ns_centers)
+            self.correctShift(shift)
+
+    def scattering(self, spec):
+        """
+        Corrects scattering around the excitation wavelength by averaging the
+        first few spectra around +- 20 nm of the excitation wavelength.
+
+        Parameters
+        ----------
+        spec : np.ndarray
+            The spectral measurement data of the sample.
+
+        Returns
+        -------
+        data : np.ndarray
+            The scatter corrected spectral measurement data of the sample.
+
+        """
+        scatter = np.zeros(len(self.wave))
+        lv = (self.wave >= self.exc_wave - 20) & (self.wave <= self.exc_wave + 20)
+        tmp = np.mean(spec[:, -11:], axis=1)
+        scatter[lv] = tmp[lv]
+        data = spec - np.tile(scatter, (1, len(self.time)))
+        return data
+
     def saveToTxt(self, corr_wave, corr_time, corr_spec):
+        """
+        Saves the corrected and truncated wavelengths, delays, spectral data
+        and the curveFit_Parameters as *.txt files in the format expected by
+        the EfsTA standard import function. Hands over the new directory of the
+        corrected data to the EfsTA object and reads the data, so that an
+        anaysis may be performed.
+
+        Parameters
+        ----------
+        corr_wave : np.array
+            The corrected and truncated wavelengths.
+        corr_time : np.array
+            The corrected and truncated delays.
+        corr_spec : np.ndarray
+            The corrected and truncated spectral data.
+
+        Returns
+        -------
+        None.
+
+        """
         file = self.sample_dir.split("/")[-1].split(".")[0]
         path = "/".join(self.sample_dir.split("/")[:-1])
         save_path = f"{path}/corrected_Data/"
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        np.savetxt(f"{save_path}{file}_taspectra.txt",corr_spec,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_delays.txt",corr_time,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_lambda.txt",corr_wave,encoding = '-ascii')
-        np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt",self.popt,encoding = '-ascii')
-        
+        np.savetxt(f"{save_path}{file}_taspectra.txt", corr_spec, encoding='-ascii')
+        np.savetxt(f"{save_path}{file}_delays.txt", corr_time, encoding='-ascii')
+        np.savetxt(f"{save_path}{file}_lambda.txt", corr_wave, encoding='-ascii')
+        np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt", self.popt, encoding='-ascii')
         self.mainwindow.ui.Data_directory.setText(save_path)
         self.mainwindow.readData(save_path)
-        
-    
-    def correctData(self, EfsTA):
-        self.prepareBackground()
+        self.mainwindow.ui.UI_stack.setCurrentIndex(3)
+
+    def correctData(self):
+        """
+        Starts the data correction process.
+
+        Returns
+        -------
+        None.
+
+        """
         self.prepareSample()
         self.prepareChirp()

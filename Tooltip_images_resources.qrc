@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Plots">
+    <file>images/example plots/Chirp_Example.png</file>
     <file>images/example plots/ex_3D.png</file>
     <file>images/example plots/ex_all.png</file>
     <file>images/example plots/ex_DASSAS.png</file>

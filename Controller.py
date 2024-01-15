@@ -5,8 +5,8 @@ from datetime import datetime
 import shelve
 from Importers import RichertImport as RI
 
-class Controller():
 
+class Controller():
     def __init__(self, path):
         """
         Initiates the controller and loads the data from the given path.
@@ -33,8 +33,8 @@ class Controller():
         Parameters
         ----------
         preparam : list
-            A list containing tuples with the lifetime and a boolean stating if the 
-            lifetime will be varied.
+            A list containing tuples with the lifetime and a boolean stating
+            if the lifetime will be varied.
         d_limits : list with two int/float elements
             Lower and upper limits for the delay values.
         l_limits : list with two int/float elements
@@ -54,12 +54,10 @@ class Controller():
         D_fit : np.array
             Matrix D with the fitted values for x.
         fit_report : string
-           Fitting results and other fit statistics created by lmfit. 
+           Fitting results and other fit statistics created by lmfit.
 
         """
         tau = [tau[0] for tau in preparam]
-        
-        
         self.DAS = Model(self.delays_filename, self.spectra_filename,
                          self.lambdas_filename, d_limits, l_limits, 0, opt_method, None)
         self.DAS.M = self.DAS.getM(tau)
@@ -83,8 +81,8 @@ class Controller():
         K : np.array
             The kinetic matrix for a custom model.
         preparam : list
-            A list containing tuples with the lifetime and a boolean stating if the 
-            lifetime will be varied.
+            A list containing tuples with the lifetime and a boolean stating
+            if the lifetime will be varied.
         C_0 : list
             The list that contains values for C_0 set by the user.
             Can be empty.
@@ -103,7 +101,7 @@ class Controller():
             The algorithm used by the minimize function.
         ivp_method : string
             The algorithm used by the initial value problem solver.
-            
+
         Returns
         -------
         tau_fit : list
@@ -116,28 +114,28 @@ class Controller():
         D_fit : np.array
             Matrix D with the fitted values for tau.
         fit_report : string
-           Fitting results and other fit statistics created by lmfit. 
+           Fitting results and other fit statistics created by lmfit.
 
         """
         tau = [tau[0] for tau in preparam]
         self.SAS = Model(self.delays_filename, self.spectra_filename,
-                         self.lambdas_filename, d_limits, l_limits, model, 
+                         self.lambdas_filename, d_limits, l_limits, model,
                          opt_method, ivp_method)
         if (model == "custom model" or model == "custom matrix"):
             M_lin = self.SAS.getM_lin(K)
-            K,n = self.SAS.getK(M_lin)
+            K, n = self.SAS.getK(M_lin)
             self.SAS.setTauBounds(tau_low, tau_high, M_lin)
             if model == "custom matrix":
-                preparam = [(tau,True) for tau in M_lin]
+                preparam = [(tau, True) for tau in M_lin]
         else:
-            self.SAS.setTauBounds(tau_low, tau_high, tau)   
-            K,n = self.SAS.getK(tau)                    
+            self.SAS.setTauBounds(tau_low, tau_high, tau)
+            K, n = self.SAS.getK(tau)
         self.SAS.setInitialConcentrations(C_0)
         self.SAS.solveDiff(ivp_method)
         tau_fit, fit_report = self.SAS.findTau_fit(preparam, opt_method)
         D_fit = self.SAS.calcD_fit()
         spec = self.SAS.calcA_fit()
-        res = self.SAS.calcResiduals()        
+        res = self.SAS.calcResiduals()
         self.saveResults(model, tau, tau_fit, l_limits, d_limits, spec, D_fit,
                          self.SAS.getTauBounds(tau), self.SAS.lambdas,
                          self.SAS.delays, self.SAS.spectra, fit_report)
@@ -171,7 +169,6 @@ class Controller():
         Returns
         -------
         None.
-        
         """
         if len(list(wave)) <= 0:
             if len(list(time)) <= 0:
@@ -183,8 +180,8 @@ class Controller():
         else:
             custom = "1+2+3"
         self.origData.plotCustom(self.origData.spectra, wave, time,
-                            v_min, v_max, custom, cont, mul, self.labels)
-    
+                                 v_min, v_max, custom, cont, mul, self.labels)
+
     def plot3DOrigData(self, v_min, v_max, mul):
         """
         Allows the plotting of the original data in a 3D contour plot.
@@ -203,7 +200,7 @@ class Controller():
 
         """
         self.origData.plot3D(self.origData.spectra, v_min, v_max, mul, self.labels)
-    
+
     def plot3FittedData(self, wave, time, v_min, v_max, model, cont, mul):
         """
         Allows the plotting of the fitted data in a 3-in-1 plot.
@@ -250,9 +247,9 @@ class Controller():
                                 v_min, v_max, custom, cont, mul, self.labels, add="_GLA")
         else:
             self.SAS.plotCustom(self.SAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, self.labels ,add="_GTA")
-        
-    def plot3DFittedData(self,v_min, v_max, model, mul):
+                                v_min, v_max, custom, cont, mul, self.labels, add="_GTA")
+
+    def plot3DFittedData(self, v_min, v_max, model, mul):
         """
         Allows the plotting of the original data in a 3D contour plot.
 
@@ -267,17 +264,17 @@ class Controller():
             number 1-8, "custom model" or "custom matrix.
         mul : float
             The value by which data will be multiplied.
-            
+
         Returns
         -------
         None.
 
         """
         if model == 0:
-            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, self.labels ,add="_GLA")
+            self.DAS.plot3D(self.DAS.spec, v_min, v_max, mul, self.labels, add="_GLA")
         else:
-            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, self.labels ,add="_GTA")
-            
+            self.SAS.plot3D(self.SAS.spec, v_min, v_max, mul, self.labels, add="_GTA")
+
     def createOrigData(self, d_limits, l_limits, opt_method, ivp_method):
         """
         Creates an object origData to allow the plotting of the original data.
@@ -298,8 +295,9 @@ class Controller():
 
         """
         self.origData = Model(self.delays_filename, self.spectra_filename,
-                         self.lambdas_filename, d_limits, l_limits, None, opt_method, ivp_method)
-            
+                              self.lambdas_filename, d_limits, l_limits, None,
+                              opt_method, ivp_method)
+
     def plotCustom(self, wave, time, v_min, v_max, model, cont, custom, mul,
                    add=""):
         """
@@ -333,21 +331,20 @@ class Controller():
         None.
 
         """
-        if model == None:
+        if model is None:
             self.origData.plotCustom(self.origData.spectra, wave, time,
-                                v_min, v_max, custom, cont, mul,self.labels ,
-                                add="_"+add)
+                                     v_min, v_max, custom, cont, mul, self.labels,
+                                     add="_" + add)
         elif model == 0:
             self.DAS.plotCustom(self.DAS.spec, wave, time,
-                                v_min, v_max, custom, cont, mul, self.labels ,
-                                add="_GLA"+"_"+add)
+                                v_min, v_max, custom, cont, mul, self.labels,
+                                add="_GLA" + "_" + add)
         else:
             self.SAS.plotCustom(self.SAS.spec, wave, time,
                                 v_min, v_max, custom, cont, mul,
-                                add="_GTA"+"_"+add)
-        
-    def plotSolo(self, wave, time, v_min, v_max, model, cont, solo, mul,
-                   add=""):
+                                add="_GTA" + "_" + add)
+
+    def plotSolo(self, wave, time, v_min, v_max, model, cont, solo, mul, add=""):
         """
         Allows for the creation of single plots.
 
@@ -379,18 +376,18 @@ class Controller():
         None.
 
         """
-        if model == None:
+        if model is None:
             self.origData.plotSolo(self.origData.spectra, wave, time,
-                                v_min, v_max, solo, cont, mul, self.labels,
-                                add="_"+add)
+                                   v_min, v_max, solo, cont, mul, self.labels,
+                                   add="_" + add)
         elif model == 0:
             self.DAS.plotSolo(self.DAS.spec, wave, time,
-                                v_min, v_max, solo, cont, mul, self.labels,
-                                add="_GLA"+"_"+add)
+                              v_min, v_max, solo, cont, mul, self.labels,
+                              add="_GLA" + "_" + add)
         else:
             self.SAS.plotSolo(self.SAS.spec, wave, time,
-                                v_min, v_max, solo, cont, mul, self.labels,
-                                add="_GTA"+"_"+add)
+                              v_min, v_max, solo, cont, mul, self.labels,
+                              add="_GTA" + "_" + add)
 
     def plot1Dresiduals(self, model, mul):
         """
@@ -404,7 +401,6 @@ class Controller():
             number 1-8 ,"custom model" or "custom matrix".
         mul : float
             The value by which data will be multiplied.
-            
 
         Returns
         -------
@@ -417,13 +413,13 @@ class Controller():
             dot = " \cdot " + "10^" + str(ltx) + "$"
         if model == 0:
             self.DAS.plotData(self.DAS.delays, self.DAS.residuals.T,
-                              self.labels[1], self.labels[2]+ dot,
+                              self.labels[1], self.labels[2] + dot,
                               add="_GLA_Residuals_")
         else:
             self.SAS.plotData(self.SAS.delays, self.SAS.residuals.T,
-                              self.labels[1], self.labels[2]+ dot,
+                              self.labels[1], self.labels[2] + dot,
                               add="_GTA_Residuals_")
-         
+
     def plot2Dresiduals(self, v_min, v_max, model, cont, mul):
         """
         Allows for the ploting of the residuals in a 2D plot.
@@ -451,11 +447,11 @@ class Controller():
         """
         if model == 0:
             self.DAS.plotHeat([], [], None, None, self.DAS.residuals, cont, mul,
-                              self.labels,  add="_GLA_Residuals")
+                              self.labels, add="_GLA_Residuals")
         else:
             self.SAS.plotHeat([], [], None, None, self.SAS.residuals, cont, mul,
-                               self.labels, add="_GTA_Residuals")
-        
+                              self.labels, add="_GTA_Residuals")
+
     def plotKinetics(self, model):
         """
         This method will plot the concentration against the time for the DAS
@@ -475,11 +471,11 @@ class Controller():
         """
         if model == 0:
             self.DAS.plotData(self.DAS.delays, self.DAS.M.T, self.labels[1],
-                              "concentration",label = None, add="_GLA_kin")
+                              "concentration", label=None, add="_GLA_kin")
         else:
             self.SAS.plotData(self.SAS.delays, self.SAS.M.T, self.labels[1],
-                              "concentration",label = None, add="_GTA_kin")
-        
+                              "concentration", label=None, add="_GTA_kin")
+
     def plotDAS(self, model, tau, mul):
         """
         Allows the plotting of the DAS or SAS with the indicated tau_fit
@@ -505,37 +501,37 @@ class Controller():
         unit = self.labels[1].split("/")[1]
         for i, t in enumerate(tau):
             if t < 1:
-                tau[i] = round(t,3)
+                tau[i] = round(t, 3)
             elif t < 10 and t > 1:
-                tau[i] = round(t,2)
+                tau[i] = round(t, 2)
             elif t < 100 and t > 10:
-                tau[i] = round(t,1)
+                tau[i] = round(t, 1)
             else:
                 tau[i] = round(t)
         if model == 0:
             label = []
-            for ind,tau in enumerate(tau):
+            for ind, tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {tau}{unit}")
             self.DAS.plotData(self.DAS.lambdas, self.DAS.D_fit,
-                              self.labels[0], self.labels[2] + dot, 
-                              label = label, add="_DAS")
+                              self.labels[0], self.labels[2] + dot,
+                              label=label, add="_DAS")
         elif (model == "custom model" or model == "custom matrix"):
             custom_tau = list(self.SAS.getM_lin(np.array(tau)))
             label = []
-            for ind,tau in enumerate(tau):
+            for ind, tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {custom_tau}{unit}")
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
                               self.labels[0], self.labels[2] + dot,
-                              label = label, add="_SAS")
+                              label=label, add="_SAS")
         else:
             label = []
-            for ind,tau in enumerate(tau):
+            for ind, tau in enumerate(tau):
                 label.append(f"$\\tau_{ind}=$ {tau}{unit}")
             if model == 2:
                 label.append("inf")
             self.SAS.plotData(self.SAS.lambdas, self.SAS.D_fit,
-                              self.labels[0], self.labels[2] + dot, 
-                              label= label, add="_SAS") 
+                              self.labels[0], self.labels[2] + dot,
+                              label=label, add="_SAS")
 
     def saveResults(self, model, tau_start, tau_fit, l_limits, d_limits, A_fit,
                     D_fit, bounds, lambdas, delays, spectra, fit_report):
@@ -567,55 +563,49 @@ class Controller():
         None.
 
         """
-        for i,n in enumerate(tau_fit):
-            tau_fit[i] = round(n,2)
+        for i, n in enumerate(tau_fit):
+            tau_fit[i] = round(n, 2)
         time_unit = self.labels[1].split("/")[1]
         x_axis_unit = self.labels[0].split("/")[1]
         if model == 0:
             path = self.DAS.path
-            name = self.DAS.name+"_GLA"
-            txt = name+"_results.txt"
+            name = self.DAS.name + "_GLA"
+            txt = name + "_results.txt"
         else:
             path = self.SAS.path
-            name = self.SAS.name+"_GTA"
-            txt = name+"_results.txt"
-        
-        myfile = Path(path+txt)
+            name = self.SAS.name + "_GTA"
+            txt = name + "_results.txt"
+
+        myfile = Path(path + txt)
         myfile.touch(exist_ok=True)
         f = open(myfile, "w")
-        
         if (model != "custom model" or model != "custom matrix"):
-            k_fit = 1/np.array(tau_fit)
+            k_fit = 1 / np.array(tau_fit)
         else:
             ones = np.full(tau_fit.shape, 1)
-            k_fit = np.divide(ones, tau_fit, out=np.zeros_like(tau_fit), where=tau_fit!=0)
-        
+            k_fit = np.divide(ones, tau_fit, out=np.zeros_like(tau_fit), where=tau_fit != 0)
         now = datetime.now()
         dt_string = now.strftime("%d.%m.%Y %H:%M:%S")
-        
-        f.write(dt_string + "\n" + name + "\nSolver: scipy.optimize.minimize"+
-            "\nModel: " + str(model) + "\nStarting Parameters: "+
-            str(tau_start) + "\nBounds: "+ str(bounds) +
-            "\nWavelength/Field range: " + str(l_limits[0])+" - "+str(l_limits[1]) +
-            " " + x_axis_unit + "\ndelay range: " + str(d_limits[0])+" - "
-            + str(d_limits[1]) + " " + time_unit + "\n\nTime constants / " + 
-            time_unit + ": " + str(tau_fit) + "\nRate constants / " + time_unit +
-            "^-1: " + str(k_fit) + "\n" + "\n" + 
-            "lmfit fit_report:" + "\n" + "\n" + fit_report + "\n" + "\n" + 
-            "All results and plots can be found here:" + "\n" + "\n" + 
-            str(path)) 
-        
-        np.savetxt(path+name+"_A_fit.txt", A_fit)
+        f.write(
+            f"{dt_string}\n{name}\nSolver: scipy.optimize.minimize\n"
+            f"Model: {model}\nStarting Parameters: {tau_start}\n"
+            f"Bounds: {bounds}\nWavelength/Field range: {l_limits[0]} - {l_limits[1]} {x_axis_unit}\n"
+            f"delay range: {d_limits[0]} - {d_limits[1]} {time_unit}\n\n"
+            f"Time constants / {time_unit}: {tau_fit}\n"
+            f"Rate constants / {time_unit}^-1: {k_fit}\n\n"
+            f"lmfit fit_report:\n\n{fit_report}\n\n"
+            f"All results and plots can be found here:\n\n{path}"
+        )
+        np.savetxt(path + name + "_A_fit.txt", A_fit)
         if model == 0:
-            np.savetxt(path+name+"_DAS.txt", D_fit)
+            np.savetxt(path + name + "_DAS.txt", D_fit)
         else:
-            np.savetxt(path+name+"_SAS.txt", D_fit)
-        np.savetxt(path+name+"_limited_lambda.txt", lambdas)
-        np.savetxt(path+name+"_limited_delays.txt", delays)
-        np.savetxt(path+name+"_limited_spectra.txt", spectra)
-        
+            np.savetxt(path + name + "_SAS.txt", D_fit)
+        np.savetxt(path + name + "_limited_lambda.txt", lambdas)
+        np.savetxt(path + name + "_limited_delays.txt", delays)
+        np.savetxt(path + name + "_limited_spectra.txt", spectra)
         f.close()
-    
+
     def getResults(self, model):
         """
         Reads the results txt file in a string variable.
@@ -634,19 +624,19 @@ class Controller():
         """
         if model == 0:
             path = self.DAS.path
-            name = self.DAS.name+"_GLA"
-            txt = name+"_results.txt"
+            name = self.DAS.name + "_GLA"
+            txt = name + "_results.txt"
         else:
             path = self.SAS.path
-            name = self.SAS.name+"_GTA"
-            txt = name+"_results.txt"
-        with open(path+txt) as f:
+            name = self.SAS.name + "_GTA"
+            txt = name + "_results.txt"
+        with open(path + txt) as f:
             text = f.read()
         return text
-    
+
     def pickleData(self, dict_):
         """
-        This method saves the given data in the shelve. 
+        This method saves the given data in the shelve.
         Keyword arguments must be given as key=value.
 
         Parameters
@@ -679,17 +669,17 @@ class Controller():
         None.
 
         """
-        path = self.path+"/"
+        path = self.path + "/"
         temp = self.delays_filename[::-1]
         temp = temp.index("/")
         name = self.delays_filename[-temp:-11]
-        txt = name+"_input_backup"
-        s = shelve.open(path+txt, writeback=True)
+        txt = name + "_input_backup"
+        s = shelve.open(path + txt, writeback=True)
         s.clear()
         for key, value in dict_.items():
             s[key] = value
         s.close()
-        
+
     def getPickle(self):
         """
         Transforms the shelve in a dictionary which can be accessed to obtain
@@ -702,12 +692,12 @@ class Controller():
             programm.
 
         """
-        path = self.path+"/"
+        path = self.path + "/"
         temp = self.delays_filename[::-1]
         temp = temp.index("/")
         name = self.delays_filename[-temp:-11]
-        txt = name+"_input_backup"
-        s = shelve.open(path+txt, writeback=False)
+        txt = name + "_input_backup"
+        s = shelve.open(path + txt, writeback=False)
         shelf = dict(s).copy()
         s.close()
         return shelf

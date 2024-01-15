@@ -16,9 +16,6 @@ import numpy as np
 
 
 class Models:
-
-    # Initiator
-
     def __init__(self, ks):
         '''
 
@@ -37,8 +34,6 @@ class Models:
 
         '''
         self.k = ks
-
-    # General models
 
     def getK(self, model):
         if model == 1:
@@ -80,7 +75,7 @@ class Models:
 
         '''
         k_main_diagonal = np.array(self.k) * (-1)
-        k_lower_diagonal = k_main_diagonal.copy()*(-1)
+        k_lower_diagonal = k_main_diagonal.copy() * (-1)
         k_lower_diagonal = np.delete(k_lower_diagonal, -1)
         K = np.diag(k_lower_diagonal, k=-1)
         np.fill_diagonal(K, k_main_diagonal)
@@ -108,14 +103,12 @@ class Models:
 
         '''
         k_main_diagonal = np.array(self.k) * (-1)
-        k_lower_diagonal = k_main_diagonal.copy()*(-1)
+        k_lower_diagonal = k_main_diagonal.copy() * (-1)
         K = np.diag(k_lower_diagonal, k=-1)
         np.fill_diagonal(K, k_main_diagonal)
         K[-1, -1] = 0
-        n = len(self.k)+1
+        n = len(self.k) + 1
         return K, n
-
-    # Specific models
 
     def model3(self):
         '''
@@ -140,7 +133,6 @@ class Models:
             for an equilibrium reaction.
 
         '''
-        
         k_main_diagonal = np.array(self.k) * (-1)
         k_main_diagonal[-1] = 0
         k_lower_diagonal = np.delete(np.array(self.k), -1)
@@ -174,7 +166,6 @@ class Models:
             for an equilibrium reaction.
 
         '''
-        
         k_main_diagonal = np.array(self.k) * (-1)
         k_main_diagonal[-1] = 0
         k_lower_diagonal = np.delete(np.array(self.k), -1)
@@ -208,7 +199,6 @@ class Models:
             for an equilibrium reaction.
 
         '''
-        
         k_main_diagonal = np.array(self.k) * (-1)
         k_main_diagonal[-1] = 0
         k_lower_diagonal = np.delete(np.array(self.k), -1)
@@ -241,7 +231,6 @@ class Models:
             A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
-        
         k_main_diagonal = np.array(self.k) * (-1)
         k_main_diagonal[-1] = 0
         k_lower_diagonal = np.delete(np.array(self.k), -1)
@@ -269,7 +258,6 @@ class Models:
             A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
-        
         K = np.zeros((3, 3))
         K[0][0] = (self.k[0] + self.k[1]) * (-1)
         K[1][0] = self.k[0]
@@ -295,7 +283,6 @@ class Models:
             A 2D array which corresponds to the reaction rate constant matrix.
 
         '''
-        
         K = np.zeros((4, 4))
         K[0][0] = self.k[0] * (-1)
         K[1][0] = self.k[0]
