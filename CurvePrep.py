@@ -6,7 +6,6 @@ from matplotlib.widgets import Lasso
 from matplotlib import colors as mcolors
 
 
-class LassoSelector:
     def __init__(self, spec_wave, chirp_wave, centers, corr):
         """
         Initializes a LassoSelector object containing a figure displaying
@@ -144,7 +143,6 @@ class LassoSelector:
                 self.fitCurve(self.data[self.collection.get_array()].T)
                 self.corr.popt = self.popt
                 self.corr.correctShift(self.shift)
-
 
 class AutoSelector:
     def __init__(self, spec_wave, chirp_wave, centers):

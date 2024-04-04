@@ -4,7 +4,6 @@ import ChirpSelector as CS
 import CurvePrep as CP
 import os
 
-
 class ChirpCorrector():
     def __init__(self, parameters, mainwindow):
         """
@@ -275,7 +274,7 @@ class ChirpCorrector():
         wave, bg_time, spec = self.splitData(data)
         spec_NN = self.removeNaNinf(spec).T
         self.background = self.truncateSpec(spec_NN)
-
+   
     def prepareChirp(self):
         """
         Reads and prepares the OKE / Chirp data.

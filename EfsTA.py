@@ -84,7 +84,13 @@ class MainWindow(QW.QMainWindow):
         self.ui.Chirp_Solvent_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Solvent_Dir))
         self.ui.Chirp_Chirp_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Chirp_Dir))
         self.ui.Chirp_Done.clicked.connect(self.checkChirpFilesIfEmpty)
+<<<<<<< HEAD
         # Analysis
+=======
+        # self.ui.Chirp_ViewData.clicked.connect(self.plotraw)
+        #self.ui.Chirp_Visually.clicked.connect(self.selectChirpRange)
+        # Analysis        
+>>>>>>> 7afbd527bf6476eaafa6784894651a97b05b2c97
         self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
         self.ui.Data_backToChirp.clicked.connect(lambda: self.ui.UI_stack.setCurrentIndex(2))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)

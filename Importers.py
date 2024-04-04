@@ -51,7 +51,6 @@ class RichertImport():
                 new = i[:-3] + "txt"
                 os.rename(i, new)
                 spectra_filename = new
-
         return lambdas_filename, delays_filename, spectra_filename
 
 
