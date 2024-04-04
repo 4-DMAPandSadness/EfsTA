@@ -54,6 +54,20 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QWidget" name="GVD">
        <layout class="QGridLayout" name="gridLayout_20">
+        <item row="1" column="1">
+         <widget class="QPushButton" name="GVD_skip">
+          <property name="text">
+           <string>Skip Correction</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="GVD_correct">
+          <property name="text">
+           <string>Correct Data</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0" colspan="2">
          <widget class="QTextBrowser" name="GVD_explaination">
           <property name="html">
@@ -82,17 +96,10 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="GVD_correct">
+        <item row="0" column="2">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>Correct Data</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="GVD_skip">
-          <property name="text">
-           <string>Skip Correction</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Plots/images/example plots/Chirp_Example.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>

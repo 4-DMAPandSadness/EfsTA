@@ -13,16 +13,9 @@ import TTIMG
 class MainWindow(QW.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.ui = loadUi("gui_with_eprver2.ui", self)
+        self.ui = loadUi("gui.ui", self)
         self.startUp()
         self.functionality()
-        
-        self.im = QPixmap("./images/example plots/Chirp_Example.png")
-        self.label = QW.QLabel()
-        self.label.setPixmap(self.im)
-
-        self.ui.gridLayout_20.addWidget(self.label, 0, 2)
-
 
     def startUp(self):
         """
