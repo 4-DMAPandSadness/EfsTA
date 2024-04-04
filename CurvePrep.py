@@ -5,7 +5,7 @@ from matplotlib import path
 from matplotlib.widgets import Lasso
 from matplotlib import colors as mcolors
 
-
+class LassoSelector:
     def __init__(self, spec_wave, chirp_wave, centers, corr):
         """
         Initializes a LassoSelector object containing a figure displaying
