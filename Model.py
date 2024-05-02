@@ -788,7 +788,6 @@ class Model:
             linewidths=0.7,
             linestyles="solid",
         )
-        ax2.clabel(contours, inline=False, fontsize=0)
 
         for i in wave:
             ax2.axvline(i, color="black", linestyle="-.")
@@ -1215,7 +1214,6 @@ class Model:
             linewidths=0.7,
             linestyles="solid",
         )
-        ax.clabel(contours, inline=False, fontsize=0)
         for i in wave:
             ax.axvline(i, color="black", linestyle="-.")
         for i in time:
