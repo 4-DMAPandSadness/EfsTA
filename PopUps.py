@@ -3,7 +3,6 @@ from PyQt5.QtCore import Qt
 import numpy as np
 import TTIMG
 
-
 class TableWindow(QW.QWidget):
     def __init__(self, size):
         super(QW.QWidget, self).__init__()

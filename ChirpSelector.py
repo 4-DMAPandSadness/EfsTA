@@ -45,7 +45,7 @@ class ChirpSelector():
         None.
 
         """
-        self.fig = plt.figure(figsize=(6, 5.5), layout="constrained")
+        self.fig = plt.figure(layout="constrained")
         self.gs = self.fig.add_gridspec(4, 4)
         self.axa = self.fig.add_subplot(self.gs[1, 0])
         self.axb = self.fig.add_subplot(self.gs[1, 1])

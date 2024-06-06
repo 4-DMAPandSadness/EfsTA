@@ -1,14 +1,15 @@
 from PyQt5 import QtWidgets as QW
 from PyQt5.uic import loadUi
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
+
 import PopUps as PU
 import ChirpCorrector as CC
 import Controller as Cont
 import numpy as np
 import os as os
 import TTIMG
-
+import Settings as SET
 
 class MainWindow(QW.QMainWindow):
     def __init__(self):
@@ -60,16 +61,14 @@ class MainWindow(QW.QMainWindow):
         None.
 
         """
-        # All
         self.ui.actionTheme.triggered.connect(self.changeTheme)
+        self.ui.actionOptions.triggered.connect(self.options)
         EfsTA.aboutToQuit.connect(self.onQuit)
-        # Intro
         self.ui.Exp_TA.clicked.connect(self.initTA)
         self.ui.Exp_trEPR.clicked.connect(self.initEPR)
-        # GDV
         self.ui.GVD_skip.clicked.connect(lambda: self.ui.UI_stack.setCurrentIndex(3))
         self.ui.GVD_correct.clicked.connect(lambda: self.ui.UI_stack.setCurrentIndex(2))
-        # Chirp
+        self.ui.GVD_back.clicked.connect(lambda: self.ui.UI_stack.setCurrentIndex(0))
         self.ui.Chirp_Browse_Sample.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Sample_Dir))
         self.ui.Chirp_Browse_Solvent.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Solvent_Dir))
         self.ui.Chirp_Browse_Chirp.clicked.connect(lambda: self.getFilePaths("button", self.ui.Chirp_Chirp_Dir))
@@ -77,6 +76,7 @@ class MainWindow(QW.QMainWindow):
         self.ui.Chirp_Solvent_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Solvent_Dir))
         self.ui.Chirp_Chirp_Dir.editingFinished.connect(lambda: self.getFilePaths("text", self.ui.Chirp_Chirp_Dir))
         self.ui.Chirp_Done.clicked.connect(self.checkChirpFilesIfEmpty)
+        self.ui.Chirp_Scatter.clicked.connect(lambda: self.ui.Chirp_Exclude_Wave.setEnabled(self.ui.Chirp_Scatter.isChecked()))
         self.ui.Data_directory.editingFinished.connect(lambda: self.getFolderPaths("text", self.ui.Data_directory))
         self.ui.Data_backToChirp.clicked.connect(lambda: self.ui.UI_stack.setCurrentIndex(2))
         self.ui.Analysis_stack.currentChanged.connect(self.presentInputs)
@@ -741,58 +741,17 @@ class MainWindow(QW.QMainWindow):
             lifetime imputs.
 
         '''
-        #dictionary used to convert species names to corresponding matrix coordinates
-        letterstonumbers = {"A": 0,
-                            "B": 1,
-                            "C": 2,
-                            "D": 3,
-                            "E": 4,
-                            "F": 5,
-                            "G": 6,
-                            "H": 7,
-                            "I": 8,
-                            "J": 9,
-                            "K": 10,
-                            "L": 11,
-                            "M": 12,
-                            "N": 13,
-                            "O": 14,
-                            "P": 15,
-                            "Q": 16,
-                            "R": 17,
-                            "S": 18,
-                            "T": 19,
-                            "U": 20,
-                            "V": 21,
-                            "W": 22,
-                            "X": 23,
-                            "Y": 24,
-                            "Z": 25,
-                            "v": -1  #not a coordinate just a way to identify void decays
-                            }
         #GUI input
         eq = self.getCustomModelEquation()
         tau = self.getGTACustomModelTaus()
-        #checks if the equation used arrows
-        arrow = False
-        if "->" in eq:
-            arrow = True
-        #checks if there are any void transitions
-        void = False
-        if "v" in eq:
-            void = True
+        eq = eq.replace("->", "")
         #splitting different decay paths
         eq_split = eq.split(";")
         #splitting each path into involved species
         separated_species = []
-        if arrow is True:
-            for string in eq_split:
-                temp = string.split("->")
-                separated_species.append(temp)
-        else:
-            for string in eq_split:
-                temp = list(string)
-                separated_species.append(temp)
+        for string in eq_split:
+            temp = list(string)
+            separated_species.append(temp)
         #forming pairs of two to set up matrix input
         paired_species = []
         for list_ in separated_species:
@@ -801,13 +760,16 @@ class MainWindow(QW.QMainWindow):
         #converting species names to numbers for matrix coordinates
         for list_ in paired_species:
             for i in range(len(list_)):
-                list_[i] = letterstonumbers[list_[i]]
+                if list_[i] == "v":
+                    list_[i] = -1   #signifies "void" decay back to groundstate
+                else:
+                    list_[i] = ord(list_[i])%32-1
         #determining and creating the matrix dimensions by unique species
-        all_letters = np.array(paired_species).flatten()
-        if void is False:
-            species = len(np.unique(all_letters))
+        all_numbers = np.array(paired_species).flatten()
+        if -1 in all_numbers:
+            species = len(np.unique(all_numbers)) - 1
         else:
-            species = len(np.unique(all_letters)) - 1
+            species = len(np.unique(all_numbers))
         M = np.zeros((species, species))
         #filling the matrix with the lifetimes using the determined coordinates
         tau_index = 0
@@ -1389,6 +1351,9 @@ class MainWindow(QW.QMainWindow):
         else:
             EfsTA.setPalette(self.darkmode[0])
             self.darkmode[1] = "active"
+
+    def options(self):
+        self.settings_manager = SET.SettingsManager()
 
 #####################################PICKLE####################################
 

@@ -10,7 +10,6 @@ from models import Models
 
 mpl.use("QtAgg")
 plt.style.use('./AK_Richert.mplstyle')
-#plt.style.use('default')
 plt.ion()
 
 

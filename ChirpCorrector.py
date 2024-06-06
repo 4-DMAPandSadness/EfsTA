@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.interpolate as sci
 import ChirpSelector as CS
+import betterchripselect as bcs
 import CurvePrep as CP
 import os
 
@@ -49,7 +50,7 @@ class ChirpCorrector():
             The raw data in a single array as read by the readData function..
 
         """
-        data = np.genfromtxt(path, delimiter=' ', skip_header=self.header)
+        data = np.genfromtxt(path, skip_header=self.header)
         return data
 
     def splitData(self, data):
@@ -289,7 +290,7 @@ class ChirpCorrector():
 
         """
         if self.options["OKE"] is False:
-            lv_t = (self.time >= -1) & (self.time <= 1)
+            lv_t = (self.time >= -5) & (self.time <= 5)
             t = self.time[lv_t]
             select_spec = self.sample_spec[lv_t, :]
             self.CPC = CP.CurveClicker(self.wave, t, select_spec, self)
@@ -297,11 +298,14 @@ class ChirpCorrector():
             data = self.readData(self.chirp_dir)
             wave, chirp_time, spec = self.splitData(data)
             spec_NN = self.removeNaNinf(spec).T
+            spec_NN = self.truncateSpec(spec_NN)
             lv_t = (chirp_time >= -1) & (chirp_time <= 1)
             chirp_t = chirp_time[lv_t]
             chirp_spec = spec_NN[lv_t, :]
-            selector = CS.ChirpSelector(wave, chirp_t, chirp_spec, self)
-
+            #selector = CS.ChirpSelector(self.wave, chirp_t, chirp_spec, self)
+            self.selector = bcs.ChirpSelector(self.wave, chirp_t, chirp_spec, self)
+            self.selector.show()
+            
     def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
         """
         Allows for the automatic removal of data spikes or for the manual
