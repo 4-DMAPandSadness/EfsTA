@@ -16,26 +16,11 @@ import numpy as np
 
 
 class Models:
-    def __init__(self, ks):
-        '''
-
-        The Initiator generates the objects with the necessary parameters and
-        data.
-
-        Parameters
-        ----------
-        k : np.array
-            A onedimensional numpy array which containes the given reaction
-            rate constants, with which the species 'decay'.
-
-        Returns
-        -------
-        None.
-
-        '''
-        self.k = ks
-
-    def getK(self, model):
+    def __init__(self):
+        pass
+        
+    @staticmethod
+    def get_k(self, model, ks):
         if model == 1:
             K, n = self.model1()
         elif model == 2:
@@ -54,7 +39,8 @@ class Models:
             K, n = self.model8()
         return K, n
 
-    def model1(self):
+    @staticmethod
+    def model1(self, k):
         '''
 
         Model 1: A -> B -> C ... -> Z -> 0
@@ -81,8 +67,9 @@ class Models:
         np.fill_diagonal(K, k_main_diagonal)
         n = len(self.k)
         return K, n
-
-    def model2(self):
+    
+    @staticmethod
+    def model2(self, k):
         '''
 
         Model 2: A -> B -> C ... -> Z
@@ -93,7 +80,7 @@ class Models:
         the main diagonal, which corresponds to the gain in concentration for
         each species. Then generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
 
         Returns
         -------
@@ -109,8 +96,9 @@ class Models:
         K[-1, -1] = 0
         n = len(self.k) + 1
         return K, n
-
-    def model3(self):
+    
+    @staticmethod
+    def model3(self, k):
         '''
 
         Model 3: A -> B -> C -> D
@@ -123,7 +111,7 @@ class Models:
         each species. Adds the additional elements, which deviate from the
         normal linear pathway. Then generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY four reaction rate constants are allowed.
 
         Returns
@@ -142,8 +130,9 @@ class Models:
         K[3][1] = self.k[3]
         n = 4
         return K, n
-
-    def model4(self):
+    
+    @staticmethod
+    def model4(self, k):
         '''
 
         Model 4: A -> B -> C -> D -> E
@@ -156,7 +145,7 @@ class Models:
         each species. Adds the additional elements, which deviate from the
         normal linear pathway. Then generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY five reaction rate constants are allowed.
 
         Returns
@@ -176,7 +165,8 @@ class Models:
         n = 5
         return K, n
 
-    def model5(self):
+    @staticmethod
+    def model5(self, k):
         '''
 
         Model 5: A -> B -> C -> D -> E
@@ -189,7 +179,7 @@ class Models:
         each species. Adds the additional elements, which deviate from the
         normal linear pathway. Then generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY five reaction rate constants are allowed.
 
         Returns
@@ -208,8 +198,9 @@ class Models:
         K[4][2] = self.k[4]
         n = 5
         return K, n
-
-    def model6(self):
+    
+    @staticmethod
+    def model6(self, k):
         '''
 
         Model 6: A -> B -> C -> D -> E -> F
@@ -222,7 +213,7 @@ class Models:
         each species. Adds the additional elements, which deviate from the
         normal linear pathway. Then generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY six reaction rate constants are allowed.
 
         Returns
@@ -240,8 +231,9 @@ class Models:
         K[5][2] = self.k[5]
         n = 6
         return K, n
-
-    def model7(self):
+    
+    @staticmethod
+    def model7(self, k):
         '''
 
         Model 9: A -> B
@@ -249,7 +241,7 @@ class Models:
 
         Generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY two reaction rate constants are allowed.
 
         Returns
@@ -264,8 +256,9 @@ class Models:
         K[2][0] = self.k[1]
         n = 3
         return K, n
-
-    def model8(self):
+    
+    @staticmethod
+    def model8(self, k):
         '''
 
         Model 8: A -> B
@@ -274,7 +267,7 @@ class Models:
 
         Generates the matrix K.
 
-        In this model the last species does not react any further.
+        In this model the last species does not decay any further.
         ONLY three reaction rate constants are allowed.
 
         Returns

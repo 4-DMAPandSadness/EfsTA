@@ -2,24 +2,9 @@ import os
 import numpy as np
 
 
-class RichertImport():
-    def __init__(self, path):
-        """
-        Initiates the controller and loads the data from the given path.
-
-        Parameters
-        ----------
-        path : string
-            Path where the folder containing the data is located.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.path = path
-
-    def get_Data(self):
+class RichertImport:
+    @staticmethod
+    def get_files(path):
         """
         Method that loads the needed data from the given folder path for the
         Controller object.
@@ -27,51 +12,62 @@ class RichertImport():
         Returns
         -------
         lambdas_filename : string
-            DESCRIPTION.
+            A path to a file containing the wavelength data.
         delays_filename : string
-            DESCRIPTION.
+            A path to a file containing the delay data.
         spectra_filename : string
-            DESCRIPTION.
+            A path to a file containing the absorption data.
 
         """
         file_paths = []
-        content = os.listdir(self.path)
+        content = os.listdir(path)
         for file in content:
-            file_paths.append(f'{self.path}/{file}')
+            file_paths.append(f'{path}/{file}')
         for i in file_paths:
             if "lambda" in i or "field" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                lambdas_filename = new
+                lambdas_filename = i
             elif "delays" in i or "time" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                delays_filename = new
+                delays_filename = i
             elif "taspectra" in i or "eprspectra" in i:
-                new = i[:-3] + "txt"
-                os.rename(i, new)
-                spectra_filename = new
+                spectra_filename = i
         return lambdas_filename, delays_filename, spectra_filename
-
-
-class RichertOKEImport():
-    def __init__(self, path):
+    
+    @staticmethod
+    def get_data(files):
+        values = []
+        for file in files:
+            values.append(np.genfromtxt(file))
+        return values
+    
+    @staticmethod
+    def get_name(file):
         """
-        Initiates the controller and loads the data from the given path.
+        Find the name of the mesured data.
 
         Parameters
         ----------
-        path : string
-            The path of the file containing the data.
+        delays_filename : string
+            The path to the file for the delay values.
 
         Returns
         -------
-        None.
+        name : string
+            Name of the measured data.
 
         """
-        self.path = path
+        temp = file[::-1]
+        temp = temp.index("/")
+        name = file[-temp:-11]
+        path = file[:-temp]
+        if not os.path.exists(path + 'analysis'):
+            os.makedirs(path + 'analysis')
+        path = file[:-temp] + "analysis/"
+        return name
 
-    def readData(self):
+
+class RichertOKEImport:
+    @staticmethod
+    def get_data(path, header):
         """
         Reads the data
 
@@ -81,10 +77,11 @@ class RichertOKEImport():
             The measurment data.
 
         """
-        data = np.genfromtxt(self.path, delimiter=' ', skip_header=self.header)
+        data = np.genfromtxt(path, skip_header=header)
         return data
-
-    def splitData(self, data):
+    
+    @staticmethod
+    def split_data(data):
         wave = data[0][1:]
         time = data.T[0][1:] * 100
         time = time.round() / 100

@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QValidator
 import re
 
-class EquationValidator(QValidator):
+class Equation_Validator(QValidator):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -20,7 +20,7 @@ class EquationValidator(QValidator):
     def fixup(self, input):
         pass
 
-class EmptyListValidator(QValidator):
+class Incomplete_List_Validator(QValidator):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -41,7 +41,7 @@ class EmptyListValidator(QValidator):
     def fixup(self, input):
         pass
     
-class ListValidator(QValidator):
+class List_Validator(QValidator):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -62,7 +62,7 @@ class ListValidator(QValidator):
     def fixup(self, input):
         pass
 
-class ValueValidator(QValidator):
+class Value_Validator(QValidator):
     def __init__(self, parent=None):
         super().__init__(parent)
 

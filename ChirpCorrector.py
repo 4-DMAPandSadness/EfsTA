@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.interpolate as sci
 import ChirpSelector as CS
-import betterchripselect as bcs
 import CurvePrep as CP
 import os
 
@@ -99,7 +98,7 @@ class ChirpCorrector():
         """
         nan = ~np.isfinite(spec)
         if nan.ndim == 1:
-            print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
+            #print("Warning: removeNaNinf() has detected and removed NaNs / infs in spectra.")
             pos = np.where(nan)[0]
             for i, val in enumerate(pos):
                 if val == 0:
@@ -290,7 +289,7 @@ class ChirpCorrector():
 
         """
         if self.options["OKE"] is False:
-            lv_t = (self.time >= -5) & (self.time <= 5)
+            lv_t = (self.time >= -1) & (self.time <= 1)
             t = self.time[lv_t]
             select_spec = self.sample_spec[lv_t, :]
             self.CPC = CP.CurveClicker(self.wave, t, select_spec, self)
@@ -302,8 +301,7 @@ class ChirpCorrector():
             lv_t = (chirp_time >= -1) & (chirp_time <= 1)
             chirp_t = chirp_time[lv_t]
             chirp_spec = spec_NN[lv_t, :]
-            #selector = CS.ChirpSelector(self.wave, chirp_t, chirp_spec, self)
-            self.selector = bcs.ChirpSelector(self.wave, chirp_t, chirp_spec, self)
+            self.selector = CS.ChirpSelector(self.wave, chirp_t, chirp_spec, self)
             self.selector.show()
             
     def prepareFitting(self, chirp_wave, chirp_t, sel_spec):
@@ -389,7 +387,7 @@ class ChirpCorrector():
         np.savetxt(f"{save_path}{file}_lambda.txt", corr_wave, encoding='-ascii')
         np.savetxt(f"{save_path}{file}_curveFit_Parameters.txt", self.popt, encoding='-ascii')
         self.mainwindow.ui.Data_directory.setText(save_path)
-        self.mainwindow.readData(save_path)
+        self.mainwindow.read_data(save_path)
         self.mainwindow.ui.UI_stack.setCurrentIndex(3)
 
     def correctData(self):

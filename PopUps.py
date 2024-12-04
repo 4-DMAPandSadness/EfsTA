@@ -2,6 +2,8 @@ from PyQt5 import QtWidgets as QW
 from PyQt5.QtCore import Qt
 import numpy as np
 import TTIMG
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from Animator import Animation_Controller
 
 class TableWindow(QW.QWidget):
     def __init__(self, size):
@@ -121,3 +123,100 @@ class TextWindow(QW.QWidget):
         self.text_browser.clear()
         self.text_browser.append(self.Message)
         self.setWindowModality(Qt.ApplicationModal)
+
+
+class Plot_Display(QW.QDialog):
+    def __init__(self, fig, text):
+        super(QW.QDialog, self).__init__()
+        self.setMinimumSize(640, 480)
+        self.fig = fig
+        self.layout = QW.QVBoxLayout()
+        self.setLayout(self.layout)
+        if text:
+            self.text = QW.QTextBrowser()
+            self.text.setText(text)
+            self.layout.addWidget(self.text)
+            self.done = QW.QPushButton("Done")
+            self.layout.addWidget(self.done)
+            self.done.clicked.connect(self.no_func)
+
+        self.canvas = FigureCanvas(fig)
+        self.canvas.draw_idle()
+        self.layout.addWidget(self.canvas)
+
+    def no_func(self):
+        print("no functionality yet")
+
+class Animation_Display(QW.QWidget):
+    def __init__(self, data, log, x, y):
+        super(QW.QWidget, self).__init__()
+        self.path = "/home/hackerman/Desktop"
+        self.setMinimumSize(640, 480)
+        self.control = Animation_Controller(data, log, x, y, self)
+        self.init_ui()
+
+
+    def init_ui(self):
+        self.layout = QW.QGridLayout()
+        self.setLayout(self.layout)
+        self.setWindowTitle("Animation")
+        self.pause_button = QW.QPushButton("Pause Animation")
+        self.pause_button.clicked.connect(self.on_pause)
+        self.layout.addWidget(self.pause_button,2,0,1,1)
+
+        self.resume_button = QW.QPushButton("Resume Animation")
+        self.resume_button.clicked.connect(self.on_resume)
+        self.layout.addWidget(self.resume_button,2,1,1,1)
+
+        self.save_button = QW.QPushButton("Save Animation")
+        self.save_button.clicked.connect(self.on_save)
+        self.layout.addWidget(self.save_button,2,2,1,1)
+
+        self.rate_slider = QW.QSlider(Qt.Horizontal)
+        self.rate_slider.setRange(33, 500)
+        self.rate_slider.setValue(200)
+        self.rate_slider.valueChanged.connect(self.change_framerate)
+        self.layout.addWidget(self.rate_slider,3,0,1,2)
+
+        self.frame_slider = QW.QSlider(Qt.Horizontal)
+        self.frame_slider.valueChanged.connect(self.change_frame)
+        self.frame_slider.setRange(0, self.control.n_zpoints-1)
+        self.frame_slider.setTickPosition(QW.QSlider.NoTicks)
+        self.layout.addWidget(self.frame_slider,1,0,1,2)
+
+        self.rate_label = QW.QLabel(f"Current Frame Interval: {self.rate_slider.value()} ms.\n"
+                                 f"Current Framerate: {round(1000/self.rate_slider.value(),2)} FPS.")
+        self.layout.addWidget(self.rate_label,3,2,1,1)
+
+        self.frame_label = QW.QLabel(f"Current Frame: {self.frame_slider.value()}.")
+        self.layout.addWidget(self.frame_label,1,2,1,1)
+
+        self.canvas = FigureCanvas(self.control.fig)
+        self.layout.addWidget(self.canvas,0,0,1,3)
+
+        self.control.init_animation()
+
+    def on_save(self):
+        self.control.save_animation(self.path+"/test.mp4")
+
+    def on_pause(self):
+        self.control.pause_animation()
+
+    def on_resume(self):
+        self.control.resume_animation()
+
+    def change_framerate(self):
+        new_framerate = self.rate_slider.value()
+        self.control.set_framerate(new_framerate)
+        self.rate_label.setText(f"Current Frame Interval: {new_framerate} ms.\n"
+                                f"Current Framerate: {round(1000/new_framerate,2)} FPS.")
+
+    def change_frame(self):
+        new_frame = self.frame_slider.value()
+        self.control.set_frame(new_frame)
+        self.frame_label.setText(f"Current Frame: {new_frame}.")
+
+# class Group_Velocity_Dispersion(QW.Dialog):
+#     def __init__(self):
+#         super(QW.QDialog, self).__init__()
+#         self.setMinimumSize(640, 480)

@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib import path
 from matplotlib.widgets import Lasso
 from matplotlib import colors as mcolors
+from matplotlib.backend_bases import MouseButton
+from PopUps import Plot_Display
+
 
 class LassoSelector:
     def __init__(self, spec_wave, chirp_wave, centers, corr):
@@ -122,6 +125,8 @@ class LassoSelector:
         self.ax.plot(centers[0], fitfun(centers[0], *self.popt), 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(self.popt[0])}, b = {round(self.popt[1])}, c = {round(self.popt[2])}")
         self.ax.legend(loc='lower right')
         self.fig.canvas.draw_idle()
+        self.popup = Plot_Display(self.fig, None)
+        self.popup.show()
 
     def on_Enter(self, event):
         """
@@ -255,12 +260,13 @@ class AutoSelector:
         popt, pcov = sco.curve_fit(fitfun, ns_wave, ns_centers)
         shift_plot = fitfun(ns_wave, *popt)
         shift = fitfun(self.spec_wave, *popt)
-        plt.figure()
-        plt.plot(self.chirp_wave, self.centers, '.', markersize="10", mfc='none', color="blue", label="Centers with spikes", alpha=0.5)
-        plt.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color="red", label="Centers without spikes", alpha=0.7)
-        plt.plot(ns_wave, shift_plot, 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(popt[0])}, b = {round(popt[1])}, c = {round(popt[2])}")
-        plt.show()
-        plt.legend(loc='lower right')
+        self.fig, ax = plt.subplots()
+        ax.plot(self.chirp_wave, self.centers, '.', markersize="10", mfc='none', color="blue", label="Centers with spikes", alpha=0.5)
+        ax.plot(ns_wave, ns_centers, '.', markersize="10", mfc='none', color="red", label="Centers without spikes", alpha=0.7)
+        ax.plot(ns_wave, shift_plot, 'k-', label=f"a + 10**5*b/x**2 + 10**6*c/x**4 \n a = {round(popt[0])}, b = {round(popt[1])}, c = {round(popt[2])}")
+        ax.legend(loc='lower right')
+        self.popup = Plot_Display(self.fig, None)
+        self.popup.show()
         return shift, popt
 
 
@@ -293,10 +299,19 @@ class CurveClicker:
         self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1)
         X, Y = np.meshgrid(self.wave, time)
         self.ax1.contourf(X, Y, spec, cmap="seismic")
-        self.ax1.set_yscale('symlog')
-        self.ax1.set_title("Sample Measurement from -1 to +1 ps \n Please select multiple points along the chirp by left-clicking. \n Press ENTER once you are finished.")
+        #self.ax1.set_yscale('symlog')
+        y_lim = self.ax1.get_ylim()
+        self.ax1.set_title("Manual Chirp Selection")
+        text = (f"Sample Measurement from {y_lim[0]} to {y_lim[1]} ps.\n"
+                "Please select multiple points along the chirp by left-clicking.\n"
+                "Right-clicking removes the latest point.\n"
+                "Click Done once you are finished.")
+        self.scatter = self.ax1.scatter([], [], color="black", marker='o')
         self.fig.canvas.mpl_connect('key_press_event', self.on_Enter)
         self.fig.canvas.mpl_connect('button_press_event', self.on_Click)
+        self.popup = Plot_Display(self.fig, text)
+        self.popup.show()
+        self.popup.done.clicked.connect(self.on_Enter)
 
     def on_Click(self, event):
         """
@@ -313,12 +328,17 @@ class CurveClicker:
         None.
 
         """
-        if event.xdata is not None and event.ydata is not None:
-            self.chirp.append([event.xdata, event.ydata])
-            self.ax1.scatter(event.xdata, event.ydata, color="black", marker='o')
-            self.fig.canvas.draw_idle()
+        if event.button == MouseButton.RIGHT and self.chirp:
+            self.chirp.pop()
+            self.update_scatter_plot()
+            
+        elif event.button == MouseButton.LEFT:
+            if event.xdata is not None and event.ydata is not None:
+                self.chirp.append([event.xdata, event.ydata])
+                self.update_scatter_plot()
 
-    def on_Enter(self, event):
+
+    def on_Enter(self):
         """
         Plots all selected points in another axes and fits a curve to them.
 
@@ -332,14 +352,20 @@ class CurveClicker:
         None.
 
         """
-        if event.key == "enter":
-            self.chirp = np.array(self.chirp)
-            self.chirp = self.chirp.T
-            self.ax2.scatter(self.chirp[0], self.chirp[1])
+        print("debug")
+        self.chirp.sort(key = lambda x: x[0])
+        self.chirp = np.array(self.chirp)
+        self.chirp = self.chirp.T
+        self.ax2.scatter(self.chirp[0], self.chirp[1])
+        self.fig.canvas.draw_idle()
+        shift = self.fitCurve(self.chirp[0], self.chirp[1])
+        self.corr.correctShift(shift)
+        
+    def update_scatter_plot(self):
+        if self.chirp:
+            self.scatter.set_offsets(self.chirp)
             self.fig.canvas.draw_idle()
-            shift = self.fitCurve(self.chirp[0], self.chirp[1])
-            self.corr.correctShift(shift)
-
+        
     def fitCurve(self, xs, ys):
         """
         Fits a curve to the selected data points and plots the curve.

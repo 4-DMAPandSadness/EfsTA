@@ -2,7 +2,6 @@
 lines.linewidth: 2            # line width in points
 lines.linestyle: -            # solid line
 
-
 # LaTex
 font.family:  sans-serif
 font.sans-serif: cmbright
