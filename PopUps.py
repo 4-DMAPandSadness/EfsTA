@@ -154,7 +154,7 @@ class Animation_Display(QW.QWidget):
         self.setMinimumSize(640, 480)
         self.control = Animation_Controller(data, log, x, y, self)
         self.init_ui()
-
+        self.control.startup()
 
     def init_ui(self):
         self.layout = QW.QGridLayout()

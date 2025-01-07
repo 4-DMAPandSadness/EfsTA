@@ -33,12 +33,6 @@ class Main(QWidget):
         self.popup = pu.Animation_Display(data, log, x, y)
         self.popup.show()
 
-
-    # def test(self):
-    #     self.popup = pu.Plot_Display(self.fig)
-    #     self.popup.show()
-
-
 if __name__ == '__main__':
     if not QApplication.instance():
         app = QApplication(sys.argv)

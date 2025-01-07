@@ -11,10 +11,11 @@ class Animation_Controller:
         self.n_zpoints = len(self.z_points)
         self.current_frame = 0
         self.init_axes(log, x_label, y_label)
+
+    def startup(self):
         self.ani = FuncAnimation(self.fig, self.update_animation,
                                  frames=self.n_zpoints,
                                  init_func=self.init_animation, blit=True)
-        
 
     def update_animation(self, frame):
         self.window.frame_slider.setValue(frame)
@@ -27,10 +28,10 @@ class Animation_Controller:
         self.line.set_data([], [])
         self.ax.legend()
         return self.line, self.ax.get_legend()
-    
+
     def init_axes(self, log, x_label, y_label):
         self.ax.set_xlim(np.min(self.x_points), np.max(self.x_points))
-        self.ax.set_ylim (np.min(self.y_points.flatten()), #*1.5 um clippen von Legende an 
+        self.ax.set_ylim (np.min(self.y_points.flatten()), #*1.5 um clippen von Legende an
                           np.max(self.y_points.flatten())) #*1.5 fixierter position zu verhindern
         self.ax.set_xlabel(x_label)
         self.ax.set_ylabel(y_label)
@@ -47,7 +48,7 @@ class Animation_Controller:
 
     def pause_animation(self):
         self.ani.pause()
-        
+
     def resume_animation(self):
         self.ani.resume()
 
@@ -60,8 +61,8 @@ class Animation_Controller:
         self.ani.event_source.stop()
         self.ani._stop()
         self.ani = FuncAnimation(self.fig, self.update_animation,
-                                 frames=range(self.current_frame,
-                                              self.n_zpoints),
-                                 init_func=self.init_animation, blit=True,
-                                 interval=frame_interval)
+                                  frames=self.n_zpoints,
+                                  init_func=self.init_animation, blit=True,
+                                  interval=frame_interval)
+        self.ani.frame_seq = iter(range(self.current_frame, self.n_zpoints))
         self.ani.event_source.start()
