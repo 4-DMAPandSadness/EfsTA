@@ -49,7 +49,7 @@ class Controller:
         self.MOD.calcA_fit()
         self.MOD.calcResiduals()
         self.save_results(model,
-                         tau, 
+                         tau,
                          tau_fit,
                          self.MOD.getTauBounds(tau),
                          self.MOD.lambdas,
@@ -84,7 +84,7 @@ class Controller:
             plot = Plotter.plot_3d(self.MOD.spec, v_min, v_max, mul, self.labels, add="_GLA")
         else:
             plot = Plotter.plot_3d(self.MOD.spec, v_min, v_max, mul, self.labels, add="_GTA")
-            
+
         return plot
 
     def plot_solo(self, plot_params, data,  model, solo):
@@ -94,7 +94,7 @@ class Controller:
         v_max = plot_params["vmax"]
         cont = plot_params["cont"]
         mul = plot_params["mul"]
-        
+
         if model is None:
             plot = Plotter.plot_solo(data, v_min, v_max, solo, cont, mul, self.labels, add="_RAW")
         elif model == 0:
@@ -141,15 +141,9 @@ class Controller:
         if mul != 1:
             dot = f" $\cdot 10^{ltx}$"
         unit = self.labels[1].split("/")[1]
-        for i, t in enumerate(tau):
-            if t < 1:
-                tau[i] = round(t, 3)
-            elif t < 10 and t > 1:
-                tau[i] = round(t, 2)
-            elif t < 100 and t > 10:
-                tau[i] = round(t, 1)
-            else:
-                tau[i] = round(t)
+        tau = [np.format_float_positional(t, precision=3, unique=False,
+                                          fractional=False, trim='k')
+              for t in tau]
         if model == 0:
             label = []
             for ind, tau in enumerate(tau):
@@ -173,9 +167,9 @@ class Controller:
                 label.append("inf")
             plot = Plotter.plotData(self.MOD.lambdas, self.MOD.D_fit,
                               self.labels[0], self.labels[2] + dot,
-                              label=label, add="_SAS")    
+                              label=label, add="_SAS")
         return plot
-    
+
     def create_animation(self):
         pass
 

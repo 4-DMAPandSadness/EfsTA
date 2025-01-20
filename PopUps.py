@@ -145,7 +145,59 @@ class Plot_Display(QW.QDialog):
         self.layout.addWidget(self.canvas)
 
     def no_func(self):
-        print("no functionality yet")
+        self.line
+
+class Multi_Plot_Display(QW.QDialog):
+    def __init__(self, figs):
+        super(QW.QDialog, self).__init__()
+        self.setMinimumSize(640, 480)
+        self.layout = QW.QGridLayout()
+        self.setLayout(self.layout)
+        self.delslide = QW.QSlider(Qt.Orientation.Vertical)
+        self.delslide.setMinimum(0)
+        self.delslide.setMaximum(1000)
+        self.layout.addWidget(self.delslide,0,1)
+        self.waveslide = QW.QSlider(Qt.Orientation.Horizontal)
+        self.waveslide.setMinimum(480)
+        self.waveslide.setMaximum(800)
+        self.layout.addWidget(self.waveslide,1,0)
+        self.canvas0 = FigureCanvas(figs[0])
+        self.canvas1 = FigureCanvas(figs[1])
+        self.canvas2 = FigureCanvas(figs[2])
+        self.canvas0.draw_idle()
+        self.canvas1.draw_idle()
+        self.canvas2.draw_idle()
+        self.layout.addWidget(self.canvas0,0,0)
+        self.layout.addWidget(self.canvas1,2,0)
+        self.layout.addWidget(self.canvas2,0,2)
+        self.line = figs[3]
+        self.line2 = figs[4]
+        self.line3 = figs[5]
+        self.line4 = figs[6]
+        self.delslide.valueChanged.connect(lambda: self.no_func(self.delslide.value()))
+        self.waveslide.valueChanged.connect(lambda: self.no_func2(self.waveslide.value()))
+
+        self.layout2 = QW.QVBoxLayout()
+        self.delslide_view = QW.QLineEdit()
+        self.delslide_view.setReadOnly(True)
+        self.delslide_view.setPlaceholderText("Displays the Delay")
+        self.waveslide_view = QW.QLineEdit()
+        self.waveslide_view.setReadOnly(True)
+        self.waveslide_view.setPlaceholderText("Displays the Wavelength")
+        self.layout2.addWidget(self.waveslide_view)
+        self.layout2.addWidget(self.delslide_view)
+        self.layout.addLayout(self.layout2,2,2)
+
+    def no_func(self,sliderval):
+        self.delslide_view.setText(f"Delay Index: {sliderval}")
+        self.line.set_ydata([sliderval,sliderval])
+        self.canvas0.draw()
+
+    def no_func2(self,sliderval):
+        self.waveslide_view.setText(f"Wave Index: {sliderval}")
+        self.line2.set_xdata([sliderval,sliderval])
+        self.canvas0.draw()
+
 
 class Animation_Display(QW.QWidget):
     def __init__(self, data, log, x, y):
