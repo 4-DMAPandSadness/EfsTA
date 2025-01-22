@@ -1,7 +1,7 @@
-
 from PyQt5 import QtWidgets as QW
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPalette, QColor, QGuiApplication
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 
@@ -13,6 +13,7 @@ import numpy as np
 import os as os
 import TTIMG
 import Settings as SET
+import logging
 
 from Importers import RichertOKEImport
 
@@ -874,9 +875,50 @@ class MainWindow(QW.QMainWindow):
             combobox.setCurrentIndex(0)
         if hasattr(self, 'cm') is True:
             self.cm = None
+def setup_logger():
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    report_dir = "crashreports"
+    if not os.path.exists(f"{os.getcwd()}/{report_dir}"):
+        os.mkdir(report_dir)
+    global file
+    file = f"{os.getcwd()}/{report_dir}/CRASH_{datetime.now().strftime('%Y%m%dT%H%M%S')}.log"
+    handler = logging.FileHandler(file, encoding="utf-8")
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
+
+def exception_hook(exc_type, exc_value, exc_traceback):
+    logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    msg = QW.QMessageBox()
+    msg.setIcon(QW.QMessageBox.Critical)
+    msg.setWindowTitle("Error")
+    msg.setText(f"An unexpected error occured and the program will terminate.\nThe crash report can be found here:\n{file}")
+    msg.setDetailedText(f"Error type: {exc_type.__name__}\n{exc_value}")
+    msg.exec_()
+    sys.exit(1)
+
+class StreamToLogger:
+    def __init__(self, logger, level):
+        self.logger = logger
+        self.level = level
+
+    def write(self, message):
+        if message.strip():
+            self.logger.log(self.level, message)
+
+    def flush(self):
+        pass
 
 if __name__ == '__main__':
     import sys
+    logger = setup_logger()
+    logging.info("Program started.")
+    sys.stdout = StreamToLogger(logger, logging.INFO)
+    sys.stderr = StreamToLogger(logger, logging.ERROR)
+    sys.excepthook = exception_hook
     if not QW.QApplication.instance():
         app = QW.QApplication(sys.argv)
     else:
@@ -885,4 +927,7 @@ if __name__ == '__main__':
     mainwindow = MainWindow()
     app.setQuitOnLastWindowClosed(True)
     mainwindow.show()
-    sys.exit(app.exec_())
+    try:
+        sys.exit(app.exec_())
+    except Exception as e:
+        logging.critical("Critical error while closing the program!", exc_info=e)
